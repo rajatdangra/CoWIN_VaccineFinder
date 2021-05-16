@@ -54,7 +54,7 @@ namespace VaccineFinder
                     }
                     else
                     {
-                        stInfo = "No Slots Found. Last status checked: " + DateTime.Now.ToString("dd/MMM/yyyy hh:mm:ss tt");
+                        stInfo = "No Slots Found for Pin Code: " + userDetails.PinCode + ". Last status checked: " + DateTime.Now.ToString("dd/MMM/yyyy hh:mm:ss tt");
                         logger.Info(stInfo);
                         Console.WriteLine(stInfo);
                         Thread.Sleep(AppConfig.PollingTime);
