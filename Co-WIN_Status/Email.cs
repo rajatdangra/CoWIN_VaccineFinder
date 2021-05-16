@@ -19,6 +19,7 @@ namespace Co_WIN_Status
         {
             try
             {
+                logger.Info("SendEmail start.");
                 var mailMessage = new MimeMessage();
                 mailMessage.From.Add(new MailboxAddress("abc", "abc@gmail.com"));
                 mailMessage.To.Add(new MailboxAddress(AppConfig.FullName, AppConfig.Email));

@@ -20,7 +20,7 @@ namespace Co_WIN_Status
         {
             try
             {
-                string stInfo = "Status API Call Started.\n";
+                string stInfo = "Status API Call Started for PinCode: "+ userDetails.PinCode;
                 logger.Info(stInfo);
                 Console.WriteLine(stInfo);
 
@@ -43,7 +43,7 @@ namespace Co_WIN_Status
                     }
                     if (vaccineSlotFound)
                     {
-                        var slotDetails = "Vaccine Slots are available:\n" + slots.ToString();
+                        var slotDetails = "Hi "+ userDetails.FullName + "\nVaccine Slots are available for PinCode: " + userDetails.PinCode + ".\n" + slots.ToString() + "Regards,\nYour Vaccine Finder :)";
                         stInfo = "Slots Found: Status API Call End.";
                         Co_WIN_Status.Email.SendEmail(slotDetails);
                         Console.WriteLine(stInfo);

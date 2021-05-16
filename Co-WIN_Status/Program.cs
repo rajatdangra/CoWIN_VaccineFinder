@@ -31,40 +31,70 @@ namespace Co_WIN_Status
             Console.WriteLine("Please verify to Proceed: Y/N");
             
             var confirmation = Console.ReadLine();
+            while(confirmation.ToLower() != "n" && confirmation.ToLower() != "y")
+            {
+                stInfo = "Invalid Input. Please Retry.";
+                logger.Error(stInfo + ": " + confirmation);
+                Console.WriteLine(stInfo);
+                Console.WriteLine("Please verify to Proceed: Y/N");
+                confirmation = Console.ReadLine();
+            }
             if (confirmation.ToLower() == "n")
             {
                 Console.WriteLine("Please Enter your Email: ");
                 var Email = Console.ReadLine();
+                while(!userDetails.IsValidEmail(Email))
+                {
+                    stInfo = "Invalid Input. Please Retry.";
+                    logger.Error(stInfo + ": " + Email);
+                    Console.WriteLine(stInfo);
+                    Console.WriteLine("Please Enter your Email: ");
+                    Email = Console.ReadLine();
+                }
                 userDetails.Email = Email;
+
                 Console.WriteLine("Please Enter your PinCode: ");
                 var PinCode = Console.ReadLine();
+                while (!userDetails.isValidPinCode(PinCode))
+                {
+                    stInfo = "Invalid Input. Please Retry.";
+                    logger.Error(stInfo + ": " + PinCode);
+                    Console.WriteLine(stInfo);
+                    Console.WriteLine("Please Enter your PinCode: ");
+                    PinCode = Console.ReadLine();
+                }
                 userDetails.PinCode = PinCode;
+
                 Console.WriteLine("Please Enter your MinAgeCriteria: ");
                 var MinAgeCriteria = Console.ReadLine();
-                userDetails.AgeCriteria = Convert.ToInt32(MinAgeCriteria);
+                int age;
+                while(!int.TryParse(MinAgeCriteria, out age))
+                {
+                    stInfo = "Invalid Input. Please Retry.";
+                    logger.Error(stInfo + ": " + MinAgeCriteria);
+                    Console.WriteLine(stInfo);
+                    Console.WriteLine("Please Enter your MinAgeCriteria: ");
+                    MinAgeCriteria = Console.ReadLine();
+                }
+                userDetails.AgeCriteria = age;
+
                 Console.WriteLine("Please Enter your Phone: ");
                 var Phone = Console.ReadLine();
                 userDetails.Phone = Phone;
+
                 Console.WriteLine("Please Enter your FirstName: ");
                 var FirstName = Console.ReadLine();
                 userDetails.FirstName = FirstName;
                 Console.WriteLine("Please Enter your LastName: ");
                 var LastName = Console.ReadLine();
                 userDetails.LastName = LastName;
+
                 if (AppConfig.SaveUserDetails)
                 {
                     Console.WriteLine("Updating Default Settings");
                     AppConfig.UpdateConfig(userDetails);
                     Console.WriteLine("Updated Default Settings");
                 }
-            }
-            else if (confirmation.ToLower() != "y")
-            {
-                stInfo = "Invalid Input. Please Restart.";
-                logger.Error(stInfo + ": " + confirmation);
-                Console.WriteLine(stInfo);
-                Console.ReadKey();
-                return;
             }
             VaccineFinder vf = new VaccineFinder();
             vf.CheckVaccineAvailabilityStatus(userDetails);
