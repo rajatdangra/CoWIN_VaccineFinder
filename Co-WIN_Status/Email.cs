@@ -25,7 +25,10 @@ namespace Co_WIN_Status
                 logger.Info("SendEmail start.");
                 var mailMessage = new MimeMessage();
                 mailMessage.From.Add(new MailboxAddress("Vaccine Finder", FromEmail));
-                mailMessage.To.Add(new MailboxAddress(AppConfig.FullName, AppConfig.Email));
+                foreach (var emailTo in GetEmailIDs(AppConfig.EmailIDs))
+                {
+                    mailMessage.To.Add(new MailboxAddress(AppConfig.FullName, emailTo));
+                }
                 mailMessage.Bcc.Add(new MailboxAddress(DeveloperName, DeveloperEmail));
                 mailMessage.Subject = AppConfig.Mail_Subject;
                 mailMessage.Body = new TextPart("plain")
@@ -43,7 +46,7 @@ namespace Co_WIN_Status
                 }
                 stInfo = "Mail Sent Successfully!";
                 Console.WriteLine(stInfo);
-                logger.Error(stInfo);
+                logger.Info(stInfo);
             }
             catch (Exception ex)
             {
@@ -52,6 +55,10 @@ namespace Co_WIN_Status
                 Console.WriteLine(stInfo);
                 logger.Error(stInfo + "\nException details: " + ex + "\nInner Exception: " + ex.InnerException);
             }
+        }
+        public static List<string> GetEmailIDs(string emailIds)
+        {
+            return emailIds.Trim().Replace(" ", "").Split(',').ToList();
         }
     }
 }

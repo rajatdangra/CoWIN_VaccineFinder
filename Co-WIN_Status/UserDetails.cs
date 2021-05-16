@@ -9,19 +9,35 @@ namespace Co_WIN_Status
 {
     public class UserDetails
     {
-        public UserDetails(string email, string pinCode, int ageCriteria)
+        public UserDetails(List<string> emailIds, string pinCode, int ageCriteria)
         {
-            Email = email;
+            EmailIDs = new List<string>();
+            EmailIDs.AddRange(emailIds);
             PinCode = pinCode;
             AgeCriteria = ageCriteria;
         }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string FullName { get { return FirstName + (string.IsNullOrWhiteSpace(FirstName)? "" : " ") + LastName; } }
-        public string Email { get; set; }
+        public string FullName { get { return FirstName + (string.IsNullOrWhiteSpace(FirstName) ? "" : " ") + LastName; } }
+        public List<string> EmailIDs { get; set; }
+        public string EmailIdsString { get { return string.Join(",", EmailIDs); } }
         public string PinCode { get; set; }
         public string Phone { get; set; }
         public int AgeCriteria { get; set; }
+
+        public bool IsValidEmailIds(List<string> emailList)
+        {
+            bool isValid = true;
+            foreach (var email in emailList)
+            {
+                if (!IsValidEmail(email))
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+            return isValid;
+        }
 
         public bool IsValidEmail(string email)
         {

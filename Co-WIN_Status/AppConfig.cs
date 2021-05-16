@@ -12,7 +12,7 @@ namespace Co_WIN_Status
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        internal static string Email => Convert.ToString(ConfigurationManager.AppSettings["Email"]);
+        internal static string EmailIDs => Convert.ToString(ConfigurationManager.AppSettings["EmailIDs"]);
         internal static string PinCode => Convert.ToString(ConfigurationManager.AppSettings["PinCode"]);
         internal static int MinAgeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["MinAgeLimit"]);
         internal static string Phone => Convert.ToString(ConfigurationManager.AppSettings["Phone"]);
@@ -22,6 +22,7 @@ namespace Co_WIN_Status
         internal static bool SaveUserDetails => String.Equals(ConfigurationManager.AppSettings["SaveUserDetails"], "1");
         internal static int PollingTime => Convert.ToInt32(ConfigurationManager.AppSettings["PollingTime"]);
         internal static string CoWIN_URL => Convert.ToString(ConfigurationManager.AppSettings["CoWIN_URL"]);
+        internal static string CoWIN_BookingURL => Convert.ToString(ConfigurationManager.AppSettings["CoWIN_BookingURL"]);
         internal static string Mail_Subject => Convert.ToString(ConfigurationManager.AppSettings["Mail_Subject"]);
         //internal static int Retry_Count => Convert.ToInt32(ConfigurationManager.AppSettings["Retry_Count"]);
 
@@ -43,7 +44,7 @@ namespace Co_WIN_Status
                 var settings = configFile.AppSettings.Settings;
 
                 Dictionary<string, string> appSettings = new Dictionary<string, string>();
-                appSettings.Add("Email", defaultDetails.Email);
+                appSettings.Add("EmailIDs", defaultDetails.EmailIdsString);
                 appSettings.Add("PinCode", defaultDetails.PinCode);
                 appSettings.Add("Phone", defaultDetails.Phone);
                 appSettings.Add("MinAgeLimit", Convert.ToString(defaultDetails.AgeCriteria));

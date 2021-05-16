@@ -15,7 +15,11 @@ namespace Co_WIN_Status
             logger.Info(stInfo);
             Console.WriteLine(stInfo);
 
-            UserDetails userDetails = new UserDetails(AppConfig.Email, AppConfig.PinCode, AppConfig.MinAgeLimit)
+            string emailIdsString = AppConfig.EmailIDs;
+            List<string> emailIDs = Email.GetEmailIDs(emailIdsString);
+            string PinCode = AppConfig.PinCode;
+
+            UserDetails userDetails = new UserDetails(emailIDs, PinCode, AppConfig.MinAgeLimit)
             {
                 FirstName = AppConfig.FirstName,
                 LastName = AppConfig.LastName,
@@ -23,15 +27,15 @@ namespace Co_WIN_Status
             };
 
             Console.WriteLine("Pin Code: " + userDetails.PinCode);
-            Console.WriteLine("Email: " + userDetails.Email);
+            Console.WriteLine("Email Ids: " + emailIdsString);
             Console.WriteLine("Minimum Age Limit: " + userDetails.AgeCriteria + "+");
-            Console.WriteLine("First Name: " + userDetails.FirstName);
-            Console.WriteLine("Last Name: " + userDetails.LastName);
-            Console.WriteLine("Phone: " + userDetails.Phone);
+            Console.WriteLine("First Name (optional): " + userDetails.FirstName);
+            Console.WriteLine("Last Name (optional): " + userDetails.LastName);
+            Console.WriteLine("Phone (optional): " + userDetails.Phone);
             Console.WriteLine("Please verify to Proceed: Y/N");
-            
+
             var confirmation = Console.ReadLine();
-            while(confirmation.ToLower() != "n" && confirmation.ToLower() != "y")
+            while (confirmation.ToLower() != "n" && confirmation.ToLower() != "y")
             {
                 stInfo = "Invalid Input. Please Retry.";
                 logger.Error(stInfo + ": " + confirmation);
@@ -41,26 +45,28 @@ namespace Co_WIN_Status
             }
             if (confirmation.ToLower() == "n")
             {
-                Console.WriteLine("Please Enter your Email: ");
-                var Email = Console.ReadLine();
-                while(!userDetails.IsValidEmail(Email))
+                Console.WriteLine("Please Enter your Email Ids (Comma separated): ");
+                emailIdsString = Console.ReadLine();
+                emailIDs = Email.GetEmailIDs(emailIdsString);
+                while (!userDetails.IsValidEmailIds(emailIDs))
                 {
                     stInfo = "Invalid Input. Please Retry.";
-                    logger.Error(stInfo + ": " + Email);
+                    logger.Error(stInfo + ": " + emailIdsString);
                     Console.WriteLine(stInfo);
-                    Console.WriteLine("Please Enter your Email: ");
-                    Email = Console.ReadLine();
+                    Console.WriteLine("Please Enter your Email Ids (Comma separated): ");
+                    emailIdsString = Console.ReadLine();
+                    emailIDs = Email.GetEmailIDs(emailIdsString);
                 }
-                userDetails.Email = Email;
+                userDetails.EmailIDs = emailIDs.ToList();
 
-                Console.WriteLine("Please Enter your PinCode: ");
-                var PinCode = Console.ReadLine();
+                Console.WriteLine("Please Enter your Pin Code: ");
+                PinCode = Console.ReadLine();
                 while (!userDetails.isValidPinCode(PinCode))
                 {
                     stInfo = "Invalid Input. Please Retry.";
                     logger.Error(stInfo + ": " + PinCode);
                     Console.WriteLine(stInfo);
-                    Console.WriteLine("Please Enter your PinCode: ");
+                    Console.WriteLine("Please Enter your Pin Code: ");
                     PinCode = Console.ReadLine();
                 }
                 userDetails.PinCode = PinCode;
@@ -68,7 +74,7 @@ namespace Co_WIN_Status
                 Console.WriteLine("Please Enter your Min Age Criteria: ");
                 var MinAgeCriteria = Console.ReadLine();
                 int age;
-                while(!int.TryParse(MinAgeCriteria, out age))
+                while (!int.TryParse(MinAgeCriteria, out age))
                 {
                     stInfo = "Invalid Input. Please Retry.";
                     logger.Error(stInfo + ": " + MinAgeCriteria);
@@ -78,14 +84,14 @@ namespace Co_WIN_Status
                 }
                 userDetails.AgeCriteria = age;
 
-                Console.WriteLine("Please Enter your Phone: ");
+                Console.WriteLine("Please Enter your Phone (optional): ");
                 var Phone = Console.ReadLine();
                 userDetails.Phone = Phone;
 
-                Console.WriteLine("Please Enter your FirstName: ");
+                Console.WriteLine("Please Enter your First Name (optional): ");
                 var FirstName = Console.ReadLine();
                 userDetails.FirstName = FirstName;
-                Console.WriteLine("Please Enter your LastName: ");
+                Console.WriteLine("Please Enter your Last Name (optional): ");
                 var LastName = Console.ReadLine();
                 userDetails.LastName = LastName;
 
@@ -96,6 +102,35 @@ namespace Co_WIN_Status
                     Console.WriteLine("Updated Default Settings");
                 }
             }
+
+            #region Final Validation before Call
+            if (!userDetails.IsValidEmailIds(emailIDs))
+            {
+                while (!userDetails.IsValidEmailIds(emailIDs))
+                {
+                    stInfo = "Invalid Input. Please Retry.";
+                    logger.Error(stInfo + ": " + emailIdsString);
+                    Console.WriteLine(stInfo);
+                    Console.WriteLine("Please Enter your Email Ids (Comma separated): ");
+                    emailIdsString = Console.ReadLine();
+                    emailIDs = Email.GetEmailIDs(emailIdsString);
+                }
+                userDetails.EmailIDs = emailIDs.ToList();
+            }
+            if (!userDetails.isValidPinCode(PinCode))
+            {
+                while (!userDetails.isValidPinCode(PinCode))
+                {
+                    stInfo = "Invalid Input. Please Retry.";
+                    logger.Error(stInfo + ": " + PinCode);
+                    Console.WriteLine(stInfo);
+                    Console.WriteLine("Please Enter your Pin Code: ");
+                    PinCode = Console.ReadLine();
+                }
+                userDetails.PinCode = PinCode;
+            }
+            #endregion
+
             VaccineFinder vf = new VaccineFinder();
             vf.CheckVaccineAvailabilityStatus(userDetails);
         }
