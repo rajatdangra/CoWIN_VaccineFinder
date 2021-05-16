@@ -37,6 +37,7 @@ namespace Co_WIN_Status
                     smtpClient.Send(mailMessage);
                     smtpClient.Disconnect(true);
                 }
+                logger.Error("Mail Sent Successfully!");
             }
             catch (Exception ex)
             {

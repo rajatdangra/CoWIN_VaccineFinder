@@ -16,15 +16,13 @@ namespace Co_WIN_Status
         {
         }
 
-        public void CheckVaccineAvailabilityStatus(string email, string pinCode, int ageCriteria)
+        public void CheckVaccineAvailabilityStatus(UserDetails userDetails)
         {
             try
             {
                 string stInfo = "Status API Call Started.\n";
                 logger.Info(stInfo);
                 Console.WriteLine(stInfo);
-
-                UserDetails userDetails = new UserDetails(email, pinCode, ageCriteria);
 
                 bool vaccineSlotFound = false;
                 while (!vaccineSlotFound)
@@ -35,7 +33,7 @@ namespace Co_WIN_Status
                     {
                         foreach (var session in center.sessions)
                         {
-                            if (session.available_capacity > 0 && session.min_age_limit <= ageCriteria)
+                            if (session.available_capacity > 0 && session.min_age_limit <= userDetails.AgeCriteria)
                             {
                                 vaccineSlotFound = true;
                                 var details = string.Format("Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Address: {5}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, center.address);

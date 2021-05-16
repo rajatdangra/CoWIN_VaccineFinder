@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Co_WIN_Status
 {
-    class UserDetails
+    public class UserDetails
     {
         public UserDetails(string email, string pinCode, int ageCriteria)
         {
