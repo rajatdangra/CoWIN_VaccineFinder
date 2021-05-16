@@ -17,7 +17,7 @@ namespace Co_WIN_Status
         }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string FullName { get { return FirstName + " " + LastName; } }
+        public string FullName { get { return FirstName + (string.IsNullOrWhiteSpace(FirstName)? "" : " ") + LastName; } }
         public string Email { get; set; }
         public string PinCode { get; set; }
         public string Phone { get; set; }

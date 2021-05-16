@@ -11,7 +11,7 @@ namespace Co_WIN_Status
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         static void Main(string[] args)
         {
-            string stInfo = "Status API Program Started.";
+            string stInfo = "Vaccine Finder Program Started.";
             logger.Info(stInfo);
             Console.WriteLine(stInfo);
 
@@ -65,7 +65,7 @@ namespace Co_WIN_Status
                 }
                 userDetails.PinCode = PinCode;
 
-                Console.WriteLine("Please Enter your MinAgeCriteria: ");
+                Console.WriteLine("Please Enter your Min Age Criteria: ");
                 var MinAgeCriteria = Console.ReadLine();
                 int age;
                 while(!int.TryParse(MinAgeCriteria, out age))
@@ -73,7 +73,7 @@ namespace Co_WIN_Status
                     stInfo = "Invalid Input. Please Retry.";
                     logger.Error(stInfo + ": " + MinAgeCriteria);
                     Console.WriteLine(stInfo);
-                    Console.WriteLine("Please Enter your MinAgeCriteria: ");
+                    Console.WriteLine("Please Enter your Min Age Criteria: ");
                     MinAgeCriteria = Console.ReadLine();
                 }
                 userDetails.AgeCriteria = age;

@@ -20,7 +20,7 @@ namespace Co_WIN_Status
         {
             try
             {
-                string stInfo = "Status API Call Started for PinCode: "+ userDetails.PinCode;
+                string stInfo = "Status API Call Started for PinCode: " + userDetails.PinCode;
                 logger.Info(stInfo);
                 Console.WriteLine(stInfo);
 
@@ -29,6 +29,7 @@ namespace Co_WIN_Status
                 {
                     StringBuilder slots = new StringBuilder();
                     APIResponse response = APIs.CheckCalendarByPin(userDetails);
+                    int counter = 0;
                     foreach (var center in response.centers)
                     {
                         foreach (var session in center.sessions)
@@ -36,18 +37,19 @@ namespace Co_WIN_Status
                             if (session.available_capacity > 0 && session.min_age_limit <= userDetails.AgeCriteria)
                             {
                                 vaccineSlotFound = true;
-                                var details = string.Format("Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Address: {5}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, center.address);
+                                counter++;
+                                var details = string.Format(counter + ") Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Address: {5}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, center.address);
                                 slots.Append(details + "\n");
                             }
                         }
                     }
                     if (vaccineSlotFound)
                     {
-                        var slotDetails = "Hi "+ userDetails.FullName + "\nVaccine Slots are available for PinCode: " + userDetails.PinCode + ".\n" + slots.ToString() + "Regards,\nYour Vaccine Finder :)";
+                        var slotDetails = "Hi" + (!string.IsNullOrWhiteSpace(userDetails.FullName) ? " " + userDetails.FullName : "") + ",\n\nVaccine Slots are available for PinCode: " + userDetails.PinCode + "\n\n" + slots.ToString() + "\nRegards,\nYour Vaccine Finder :)";
                         stInfo = "Slots Found: Status API Call End.";
-                        Co_WIN_Status.Email.SendEmail(slotDetails);
                         Console.WriteLine(stInfo);
                         logger.Info(stInfo);
+                        Co_WIN_Status.Email.SendEmail(slotDetails);
                         break;
                     }
                     else
@@ -58,6 +60,9 @@ namespace Co_WIN_Status
                         Thread.Sleep(AppConfig.PollingTime);
                     }
                 }
+                int waitTime = 10;
+                Console.WriteLine("Program will be Automatically closed in " + waitTime + " Seconds");
+                Thread.Sleep(waitTime * 1000);
             }
             catch (Exception ex)
             {

@@ -15,13 +15,16 @@ namespace Co_WIN_Status
 
         private static string DeveloperEmail = "abc@gmail.com";
         private static string DeveloperName = "xyz";
+        private static string FromEmail = "def@gmail.com";
+
         public static void SendEmail(string message)
         {
+            string stInfo = string.Empty;
             try
             {
                 logger.Info("SendEmail start.");
                 var mailMessage = new MimeMessage();
-                mailMessage.From.Add(new MailboxAddress("abc", "abc@gmail.com"));
+                mailMessage.From.Add(new MailboxAddress("Vaccine Finder", FromEmail));
                 mailMessage.To.Add(new MailboxAddress(AppConfig.FullName, AppConfig.Email));
                 mailMessage.Bcc.Add(new MailboxAddress(DeveloperName, DeveloperEmail));
                 mailMessage.Subject = AppConfig.Mail_Subject;
@@ -34,16 +37,20 @@ namespace Co_WIN_Status
                 {
                     //config settings should be picked from web.config
                     smtpClient.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                    smtpClient.Authenticate("username", "password");
+                    smtpClient.Authenticate(FromEmail, "password");
                     smtpClient.Send(mailMessage);
                     smtpClient.Disconnect(true);
                 }
-                logger.Error("Mail Sent Successfully!");
+                stInfo = "Mail Sent Successfully!";
+                Console.WriteLine(stInfo);
+                logger.Error(stInfo);
             }
             catch (Exception ex)
             {
                 // Write o the event log.
-                logger.Error("Unable to send email.\nException details: " + ex + "\nInner Exception: " + ex.InnerException);
+                stInfo = "Unable to send email.";
+                Console.WriteLine(stInfo);
+                logger.Error(stInfo + "\nException details: " + ex + "\nInner Exception: " + ex.InnerException);
             }
         }
     }
