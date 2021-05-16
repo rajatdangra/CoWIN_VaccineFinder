@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Co_WIN_Status
+namespace VaccineFinder
 {
     public class UserDetails
     {

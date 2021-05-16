@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using NLog;
 
-namespace Co_WIN_Status
+namespace VaccineFinder
 {
     public class AppConfig
     {

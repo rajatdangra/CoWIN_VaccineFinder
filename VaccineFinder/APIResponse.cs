@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Co_WIN_Status
+namespace VaccineFinder
 {
     class APIResponse
     {

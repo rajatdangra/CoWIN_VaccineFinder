@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Co_WIN_Status
+namespace VaccineFinder
 {
     public class VaccineFinder
     {
@@ -49,7 +49,7 @@ namespace Co_WIN_Status
                         stInfo = "Slots Found: Status API Call End.";
                         Console.WriteLine(stInfo);
                         logger.Info(stInfo);
-                        Co_WIN_Status.Email.SendEmail(slotDetails);
+                        global::VaccineFinder.Email.SendEmail(slotDetails);
                         break;
                     }
                     else

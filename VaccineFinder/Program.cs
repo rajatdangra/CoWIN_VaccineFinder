@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NLog;
 
-namespace Co_WIN_Status
+namespace VaccineFinder
 {
     class Program
     {

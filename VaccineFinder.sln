@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Co-WIN_Status", "Co-WIN_Status\Co-WIN_Status.csproj", "{C990DF10-7555-4760-93F3-3C3C8D11A3A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaccineFinder", "VaccineFinder\VaccineFinder.csproj", "{C990DF10-7555-4760-93F3-3C3C8D11A3A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
