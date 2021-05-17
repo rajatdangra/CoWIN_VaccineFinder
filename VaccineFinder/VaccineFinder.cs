@@ -30,10 +30,10 @@ namespace VaccineFinder
                 {
                     StringBuilder slots = new StringBuilder();
                     APIResponse response = APIs.CheckCalendarByPin(userDetails);
-                    
+
                     if (response == null)
                         break;
-                    
+
                     int counter = 0;
                     foreach (var center in response.centers)
                     {
@@ -54,7 +54,9 @@ namespace VaccineFinder
                         stInfo = "Slots Found: Status API Call End.";
                         Console.WriteLine(stInfo);
                         logger.Info(stInfo);
-                        global::VaccineFinder.Email.SendEmail(slotDetails);
+                        Thread beepThread = new Thread(new ThreadStart(PlayBeep));
+                        beepThread.Start();
+                        Email.SendEmail(slotDetails);
                         break;
                     }
                     else
@@ -76,6 +78,15 @@ namespace VaccineFinder
                 Console.WriteLine(stInfo);
                 Console.WriteLine("Program will be Automatically closed in " + waitTime + " Seconds");
                 Thread.Sleep(waitTime * 1000);
+            }
+        }
+
+        public void PlayBeep()
+        {
+            //Play Beep sound
+            for (int i = 0; i < 4; i++)
+            {
+                Console.Beep(1500, 500);
             }
         }
     }
