@@ -37,7 +37,9 @@ namespace VaccineFinder
 
             catch (Exception ex)
             {
-                logger.Error("Error in CheckCalendarByPin:\n" + ex);
+                var stInfo = "Error in CheckCalendarByPin:\n" + ex;
+                Console.WriteLine("Please check your Internet Connection\n" + stInfo);
+                logger.Error(stInfo);
                 return null;
             }
         }

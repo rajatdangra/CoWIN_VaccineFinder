@@ -18,9 +18,10 @@ namespace VaccineFinder
 
         public void CheckVaccineAvailabilityStatus(UserDetails userDetails)
         {
+            int waitTime = 10;
+            string stInfo = "Status API Call Started for Pin Code: " + userDetails.PinCode;
             try
             {
-                string stInfo = "Status API Call Started for Pin Code: " + userDetails.PinCode;
                 logger.Info(stInfo);
                 Console.WriteLine(stInfo);
 
@@ -29,6 +30,10 @@ namespace VaccineFinder
                 {
                     StringBuilder slots = new StringBuilder();
                     APIResponse response = APIs.CheckCalendarByPin(userDetails);
+                    
+                    if (response == null)
+                        break;
+                    
                     int counter = 0;
                     foreach (var center in response.centers)
                     {
@@ -60,13 +65,17 @@ namespace VaccineFinder
                         Thread.Sleep(AppConfig.PollingTime);
                     }
                 }
-                int waitTime = 10;
+
                 Console.WriteLine("Program will be Automatically closed in " + waitTime + " Seconds");
                 Thread.Sleep(waitTime * 1000);
             }
             catch (Exception ex)
             {
-                logger.Error("Error in CheckVaccineAvailabilityStatus:\n" + ex);
+                stInfo = "Error in CheckVaccineAvailabilityStatus:\n" + ex;
+                logger.Error(stInfo);
+                Console.WriteLine(stInfo);
+                Console.WriteLine("Program will be Automatically closed in " + waitTime + " Seconds");
+                Thread.Sleep(waitTime * 1000);
             }
         }
     }

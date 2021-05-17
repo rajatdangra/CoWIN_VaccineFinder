@@ -11,6 +11,7 @@ namespace VaccineFinder
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionTrapper);
             string stInfo = "Vaccine Finder Program Started.";
             logger.Info(stInfo);
             Console.WriteLine(stInfo);
@@ -133,6 +134,15 @@ namespace VaccineFinder
 
             VaccineFinder vf = new VaccineFinder();
             vf.CheckVaccineAvailabilityStatus(userDetails);
+        }
+
+        static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
+        {
+            logger.Error(e.ExceptionObject.ToString());
+            Console.WriteLine(e.ExceptionObject.ToString());
+            Console.WriteLine("Press Enter to continue");
+            Console.ReadLine();
+            Environment.Exit(1);
         }
     }
 }
