@@ -16,7 +16,7 @@ namespace VaccineFinder
         {
         }
 
-        public void CheckVaccineAvailabilityStatus(UserDetails userDetails, int pollingTime)
+        public void CheckVaccineAvailabilityStatus(UserDetails userDetails, int pollingTime, DateTime date)
         {
             int waitTime = 10;
             string stInfo = "Status API Call Started for Pin Code: " + userDetails.PinCode;
@@ -29,7 +29,7 @@ namespace VaccineFinder
                 while (!vaccineSlotFound)
                 {
                     StringBuilder slots = new StringBuilder();
-                    APIResponse response = APIs.CheckCalendarByPin(userDetails);
+                    APIResponse response = APIs.CheckCalendarByPin(userDetails, date);
 
                     if (response == null)
                         break;

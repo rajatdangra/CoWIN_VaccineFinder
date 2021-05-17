@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using NLog;
@@ -20,6 +21,7 @@ namespace VaccineFinder
             List<string> emailIDs = Email.GetEmailIDs(emailIdsString);
             string PinCode = AppConfig.PinCode;
             int pollingTime = AppConfig.PollingTime;
+            DateTime date = DateTime.Now;
 
             UserDetails userDetails = new UserDetails(emailIDs, PinCode, AppConfig.MinAgeLimit)
             {
@@ -31,9 +33,10 @@ namespace VaccineFinder
             Console.WriteLine("Pin Code: " + userDetails.PinCode);
             Console.WriteLine("Email Ids: " + emailIdsString);
             Console.WriteLine("Minimum Age Limit: " + userDetails.AgeCriteria + "+");
+            Console.WriteLine("From Date: " + date.ToString("dd-MM-yyyy"));
             Console.WriteLine("First Name (optional): " + userDetails.FirstName);
             Console.WriteLine("Last Name (optional): " + userDetails.LastName);
-            Console.WriteLine("Phone (optional): " + userDetails.Phone);
+            //Console.WriteLine("Phone (optional): " + userDetails.Phone);
             Console.WriteLine("Retry Frequency (Seconds): " + pollingTime);
             Console.WriteLine("Please verify to Proceed: Y/N");
 
@@ -87,16 +90,21 @@ namespace VaccineFinder
                 }
                 userDetails.AgeCriteria = age;
 
-                Console.WriteLine("Please Enter your Phone (optional): ");
-                var Phone = Console.ReadLine();
-                userDetails.Phone = Phone;
+                //Console.WriteLine("Please Enter your Phone (optional): ");
+                //var Phone = Console.ReadLine();
+                //userDetails.Phone = Phone;
 
-                Console.WriteLine("Please Enter your First Name (optional): ");
-                var FirstName = Console.ReadLine();
-                userDetails.FirstName = FirstName;
-                Console.WriteLine("Please Enter your Last Name (optional): ");
-                var LastName = Console.ReadLine();
-                userDetails.LastName = LastName;
+                Console.WriteLine("Please Enter 'From Date' (dd-MM-yyyy): ");
+                var dateString = Console.ReadLine();
+                CultureInfo provider = CultureInfo.InvariantCulture;
+                while (!DateTime.TryParseExact(dateString, "dd-MM-yyyy", provider, DateTimeStyles.None, out date))
+                {
+                    stInfo = "Invalid Input. Please Retry.";
+                    logger.Error(stInfo + ": " + dateString);
+                    Console.WriteLine(stInfo);
+                    Console.WriteLine("Please Enter 'From Date' (dd-MM-yyyy): ");
+                    dateString = Console.ReadLine();
+                }
 
                 Console.WriteLine("Please Enter Retry Frequency (Seconds): ");
                 var retryFrequency = Console.ReadLine();
@@ -108,6 +116,13 @@ namespace VaccineFinder
                     Console.WriteLine("Please Enter Retry Frequency (Seconds): ");
                     retryFrequency = Console.ReadLine();
                 }
+
+                Console.WriteLine("Please Enter your First Name (optional): ");
+                var FirstName = Console.ReadLine();
+                userDetails.FirstName = FirstName;
+                Console.WriteLine("Please Enter your Last Name (optional): ");
+                var LastName = Console.ReadLine();
+                userDetails.LastName = LastName;
 
                 if (AppConfig.SaveUserDetails)
                 {
@@ -146,7 +161,7 @@ namespace VaccineFinder
             #endregion
 
             VaccineFinder vf = new VaccineFinder();
-            vf.CheckVaccineAvailabilityStatus(userDetails, pollingTime);
+            vf.CheckVaccineAvailabilityStatus(userDetails, pollingTime, date);
         }
 
         static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)

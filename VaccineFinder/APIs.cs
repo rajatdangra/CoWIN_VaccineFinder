@@ -14,13 +14,13 @@ namespace VaccineFinder
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static APIResponse CheckCalendarByPin(UserDetails details)
+        public static APIResponse CheckCalendarByPin(UserDetails details, DateTime date)
         {
             try
             {
                 var postData = "?";
                 postData += "pincode=" + details.PinCode;
-                postData += "&date=" + DateTime.Now.ToString("dd-MM-yyyy");
+                postData += "&date=" + date.ToString("dd-MM-yyyy");
 
                 var request = (HttpWebRequest)WebRequest.Create(AppConfig.CoWIN_URL + postData);
 
