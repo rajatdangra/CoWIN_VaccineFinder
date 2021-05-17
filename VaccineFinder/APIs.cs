@@ -18,9 +18,21 @@ namespace VaccineFinder
         {
             try
             {
+                #region Generate Random String to ignore Caching
+                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                var stringChars = new char[16];
+                var random = new Random();
+                for (int i = 0; i < stringChars.Length; i++)
+                {
+                    stringChars[i] = chars[random.Next(chars.Length)];
+                }
+                string randomString = new String(stringChars);
+                #endregion
+
                 var postData = "?";
                 postData += "pincode=" + details.PinCode;
                 postData += "&date=" + date.ToString("dd-MM-yyyy");
+                postData += "&random=" + randomString;
 
                 var request = (HttpWebRequest)WebRequest.Create(AppConfig.CoWIN_URL + postData);
 

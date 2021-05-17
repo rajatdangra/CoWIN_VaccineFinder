@@ -34,10 +34,10 @@ namespace VaccineFinder
             Console.WriteLine("Email Ids: " + emailIdsString);
             Console.WriteLine("Minimum Age Limit: " + userDetails.AgeCriteria + "+");
             Console.WriteLine("From Date: " + date.ToString("dd-MM-yyyy"));
+            Console.WriteLine("Retry Frequency (Seconds): " + pollingTime);
             Console.WriteLine("First Name (optional): " + userDetails.FirstName);
             Console.WriteLine("Last Name (optional): " + userDetails.LastName);
             //Console.WriteLine("Phone (optional): " + userDetails.Phone);
-            Console.WriteLine("Retry Frequency (Seconds): " + pollingTime);
             Console.WriteLine("Please verify to Proceed: Y/N");
 
             var confirmation = Console.ReadLine();
