@@ -26,7 +26,7 @@ namespace VaccineFinder
         internal static string Mail_Subject => Convert.ToString(ConfigurationManager.AppSettings["Mail_Subject"]);
         //internal static int Retry_Count => Convert.ToInt32(ConfigurationManager.AppSettings["Retry_Count"]);
 
-        public static void UpdateConfig(UserDetails defaultDetails)
+        public static void UpdateConfig(UserDetails defaultDetails, int PollingTime)
         {
             logger.Info("UpdateConfig started");
             try
@@ -50,6 +50,7 @@ namespace VaccineFinder
                 appSettings.Add("MinAgeLimit", Convert.ToString(defaultDetails.AgeCriteria));
                 appSettings.Add("FirstName", defaultDetails.FirstName);
                 appSettings.Add("LastName", defaultDetails.LastName);
+                appSettings.Add("PollingTime", Convert.ToString(PollingTime));
 
                 bool change = false;
                 foreach (var kv in appSettings)

@@ -19,6 +19,7 @@ namespace VaccineFinder
             string emailIdsString = AppConfig.EmailIDs;
             List<string> emailIDs = Email.GetEmailIDs(emailIdsString);
             string PinCode = AppConfig.PinCode;
+            int pollingTime = AppConfig.PollingTime;
 
             UserDetails userDetails = new UserDetails(emailIDs, PinCode, AppConfig.MinAgeLimit)
             {
@@ -33,6 +34,7 @@ namespace VaccineFinder
             Console.WriteLine("First Name (optional): " + userDetails.FirstName);
             Console.WriteLine("Last Name (optional): " + userDetails.LastName);
             Console.WriteLine("Phone (optional): " + userDetails.Phone);
+            Console.WriteLine("Retry Frequency (Seconds): " + pollingTime);
             Console.WriteLine("Please verify to Proceed: Y/N");
 
             var confirmation = Console.ReadLine();
@@ -96,10 +98,21 @@ namespace VaccineFinder
                 var LastName = Console.ReadLine();
                 userDetails.LastName = LastName;
 
+                Console.WriteLine("Please Enter Retry Frequency (Seconds): ");
+                var retryFrequency = Console.ReadLine();
+                while (!int.TryParse(retryFrequency, out pollingTime))
+                {
+                    stInfo = "Invalid Input. Please Retry.";
+                    logger.Error(stInfo + ": " + retryFrequency);
+                    Console.WriteLine(stInfo);
+                    Console.WriteLine("Please Enter Retry Frequency (Seconds): ");
+                    retryFrequency = Console.ReadLine();
+                }
+
                 if (AppConfig.SaveUserDetails)
                 {
                     Console.WriteLine("Updating Default Settings");
-                    AppConfig.UpdateConfig(userDetails);
+                    AppConfig.UpdateConfig(userDetails, pollingTime);
                     Console.WriteLine("Updated Default Settings");
                 }
             }
@@ -133,7 +146,7 @@ namespace VaccineFinder
             #endregion
 
             VaccineFinder vf = new VaccineFinder();
-            vf.CheckVaccineAvailabilityStatus(userDetails);
+            vf.CheckVaccineAvailabilityStatus(userDetails, pollingTime);
         }
 
         static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)

@@ -16,7 +16,7 @@ namespace VaccineFinder
         {
         }
 
-        public void CheckVaccineAvailabilityStatus(UserDetails userDetails)
+        public void CheckVaccineAvailabilityStatus(UserDetails userDetails, int pollingTime)
         {
             int waitTime = 10;
             string stInfo = "Status API Call Started for Pin Code: " + userDetails.PinCode;
@@ -62,7 +62,7 @@ namespace VaccineFinder
                         stInfo = "No Slots Found for Pin Code: " + userDetails.PinCode + ". Last status checked: " + DateTime.Now.ToString("dd/MMM/yyyy hh:mm:ss tt");
                         logger.Info(stInfo);
                         Console.WriteLine(stInfo);
-                        Thread.Sleep(AppConfig.PollingTime);
+                        Thread.Sleep(TimeSpan.FromSeconds(pollingTime));
                     }
                 }
 
