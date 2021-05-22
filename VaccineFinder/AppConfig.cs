@@ -12,21 +12,34 @@ namespace VaccineFinder
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        internal static string EmailIDs => Convert.ToString(ConfigurationManager.AppSettings["EmailIDs"]);
-        internal static string PinCode => Convert.ToString(ConfigurationManager.AppSettings["PinCode"]);
-        internal static int MinAgeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["MinAgeLimit"]);
         internal static string Phone => Convert.ToString(ConfigurationManager.AppSettings["Phone"]);
+        internal static string PinCode => Convert.ToString(ConfigurationManager.AppSettings["PinCode"]);
+        internal static string BeneficiaryIDs => Convert.ToString(ConfigurationManager.AppSettings["BeneficiaryIDs"]);
+        internal static int SlotPreference => Convert.ToInt32(ConfigurationManager.AppSettings["SlotPreference"]);
+        internal static bool AutoBookCenter => String.Equals(ConfigurationManager.AppSettings["AutoBookCenter"], "1");
+        internal static bool VerifyBeneficiaries => String.Equals(ConfigurationManager.AppSettings["VerifyBeneficiaries"], "1");
+        internal static string EmailIDs => Convert.ToString(ConfigurationManager.AppSettings["EmailIDs"]);
+        internal static int MinAgeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["MinAgeLimit"]);
+        internal static int Dose => Convert.ToInt32(ConfigurationManager.AppSettings["Dose"]);
         internal static string FirstName => Convert.ToString(ConfigurationManager.AppSettings["FirstName"]);
         internal static string LastName => Convert.ToString(ConfigurationManager.AppSettings["LastName"]);
         internal static string FullName => FirstName + " " + LastName;
         internal static bool SaveUserDetails => String.Equals(ConfigurationManager.AppSettings["SaveUserDetails"], "1");
         internal static int PollingTime => Convert.ToInt32(ConfigurationManager.AppSettings["PollingTime"]);
-        internal static string CoWIN_URL => Convert.ToString(ConfigurationManager.AppSettings["CoWIN_URL"]);
-        internal static string CoWIN_BookingURL => Convert.ToString(ConfigurationManager.AppSettings["CoWIN_BookingURL"]);
+        internal static bool SendEmail => String.Equals(ConfigurationManager.AppSettings["SendEmail"], "1");
+        internal static string Secret => Convert.ToString(ConfigurationManager.AppSettings["Secret"]);
+        internal static string Cowin_BaseUrl => Convert.ToString(ConfigurationManager.AppSettings["Cowin_BaseUrl"]);
+        internal static string GenerateOTPUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["GenerateOTPUrl"]);
+        internal static string ConfirmOTPUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["ConfirmOTPUrl"]);
+        internal static string GetBeneficiariesUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["GetBeneficiariesUrl"]);
+        internal static string CalendarByPinUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["CalendarByPinUrl"]);
+        internal static string CalendarByDistrictUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["CalendarByDistrictUrl"]);
+        internal static string ScheduleAppointmentUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["ScheduleAppointmentUrl"]);
+        internal static string CoWIN_RegistrationURL => Convert.ToString(ConfigurationManager.AppSettings["CoWIN_RegistrationURL"]);
         internal static string Mail_Subject => Convert.ToString(ConfigurationManager.AppSettings["Mail_Subject"]);
         //internal static int Retry_Count => Convert.ToInt32(ConfigurationManager.AppSettings["Retry_Count"]);
 
-        public static void UpdateConfig(UserDetails defaultDetails, int PollingTime)
+        public static void UpdateConfig(UserDetails defaultDetails)
         {
             logger.Info("UpdateConfig started");
             try
@@ -44,10 +57,14 @@ namespace VaccineFinder
                 var settings = configFile.AppSettings.Settings;
 
                 Dictionary<string, string> appSettings = new Dictionary<string, string>();
-                appSettings.Add("EmailIDs", defaultDetails.EmailIdsString);
-                appSettings.Add("PinCode", defaultDetails.PinCode);
                 appSettings.Add("Phone", defaultDetails.Phone);
-                appSettings.Add("MinAgeLimit", Convert.ToString(defaultDetails.AgeCriteria));
+                appSettings.Add("EmailIDs", defaultDetails.EmailIdsString);
+                appSettings.Add("BeneficiaryIDs", defaultDetails.UserPreference.BeneficiaryIdsString);
+                appSettings.Add("SlotPreference", Convert.ToString(defaultDetails.UserPreference.SlotPreference));
+                appSettings.Add("PinCode", defaultDetails.UserPreference.PinCode);
+                appSettings.Add("MinAgeLimit", Convert.ToString(defaultDetails.UserPreference.AgeCriteria));
+                appSettings.Add("Dose", Convert.ToString(defaultDetails.UserPreference.Dose));
+                appSettings.Add("AutoBookCenter", Convert.ToString(defaultDetails.UserPreference.AutoBookCenter));
                 appSettings.Add("FirstName", defaultDetails.FirstName);
                 appSettings.Add("LastName", defaultDetails.LastName);
                 appSettings.Add("PollingTime", Convert.ToString(PollingTime));
