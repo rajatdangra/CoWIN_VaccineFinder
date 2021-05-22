@@ -36,7 +36,8 @@ namespace VaccineFinder
         internal static string CalendarByDistrictUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["CalendarByDistrictUrl"]);
         internal static string ScheduleAppointmentUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["ScheduleAppointmentUrl"]);
         internal static string CoWIN_RegistrationURL => Convert.ToString(ConfigurationManager.AppSettings["CoWIN_RegistrationURL"]);
-        internal static string Mail_Subject => Convert.ToString(ConfigurationManager.AppSettings["Mail_Subject"]);
+        internal static string Availablity_MailSubject => Convert.ToString(ConfigurationManager.AppSettings["Availablity_MailSubject"]);
+        internal static string Booking_MailSubject => Convert.ToString(ConfigurationManager.AppSettings["Booking_MailSubject"]);
         //internal static int Retry_Count => Convert.ToInt32(ConfigurationManager.AppSettings["Retry_Count"]);
 
         public static void UpdateConfig(UserDetails defaultDetails)
@@ -64,7 +65,7 @@ namespace VaccineFinder
                 appSettings.Add("PinCode", defaultDetails.UserPreference.PinCode);
                 appSettings.Add("MinAgeLimit", Convert.ToString(defaultDetails.UserPreference.AgeCriteria));
                 appSettings.Add("Dose", Convert.ToString(defaultDetails.UserPreference.Dose));
-                appSettings.Add("AutoBookCenter", Convert.ToString(defaultDetails.UserPreference.AutoBookCenter));
+                appSettings.Add("AutoBookCenter", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.AutoBookCenter)));
                 appSettings.Add("FirstName", defaultDetails.FirstName);
                 appSettings.Add("LastName", defaultDetails.LastName);
                 appSettings.Add("PollingTime", Convert.ToString(PollingTime));

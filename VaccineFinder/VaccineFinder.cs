@@ -61,8 +61,12 @@ namespace VaccineFinder
             var sessions = CheckVaccineAvailabilityStatus();
             if (sessions != null && sessions.Count > 0)
             {
-                if (AppConfig.AutoBookCenter)
-                    sessionNumber = 0;
+                if (UserDetails.UserPreference.AutoBookCenter)
+                {
+                    //Sort based on More Available Capacity
+                    sessions = sessions.OrderByDescending(a => a.availableCapacity).ToList();
+                    sessionNumber = 1;
+                }
                 else
                 {
                     inputMessage = "Please enter your preference Center Number.";
@@ -252,6 +256,12 @@ namespace VaccineFinder
                         break;
 
                     int counter = 0;
+                    bool isVaccineDose1 = UserDetails.UserPreference.Dose == 1;
+
+                    //var allSessions = response.centers.SelectMany(a => a.sessions).Where(x => (isVaccineDose1 ? x.available_capacity_dose1 > 0 : x.available_capacity_dose2 > 0) && x.min_age_limit <= UserDetails.UserPreference.AgeCriteria);
+                    ////Sort based on Nearest date and More Available Capacity
+                    //allSessions = allSessions.OrderBy(a => a.date).ThenByDescending(x => (isVaccineDose1 ? x.available_capacity_dose1 : x.available_capacity_dose2));
+
                     foreach (var center in response.centers)
                     {
                         foreach (var session in center.sessions)
@@ -260,16 +270,21 @@ namespace VaccineFinder
                             {
                                 vaccineSlotFound = true;
                                 counter++;
-                                var details = string.Format(counter + ") Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Address: {5}, Session Id: {6}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, center.address, session.session_id);
+                                var details = string.Format(counter + ") Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}, Session Id: {8}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, session.available_capacity_dose1, session.available_capacity_dose2, center.address, session.session_id);
                                 slots.Append(details + "\n");
 
-                                if (currSession == null)
-                                    currSession = new SessionProxy();
-                                currSession.session_id = session.session_id;
-                                currSession.slots.AddRange(session.slots);
+                                int chosenDoseAvailability = (isVaccineDose1 ? session.available_capacity_dose1 : session.available_capacity_dose2);
+                                if (chosenDoseAvailability > 0)//For Dose 1 or 2 selection
+                                {
+                                    if (currSession == null)
+                                        currSession = new SessionProxy();
+                                    currSession.session_id = session.session_id;
+                                    currSession.availableCapacity = chosenDoseAvailability;
+                                    currSession.slots.AddRange(session.slots);
 
-                                sessions.Add(currSession);
-                                currSession = null;
+                                    sessions.Add(currSession);
+                                    currSession = null;
+                                }
                             }
                         }
                     }
@@ -286,7 +301,8 @@ namespace VaccineFinder
 
                         if (AppConfig.SendEmail)
                         {
-                            Thread mailThread = new Thread(() => Email.SendEmail(slotDetails));
+                            var subject = AppConfig.Availablity_MailSubject + " for Pin Code: " + UserDetails.UserPreference.PinCode;
+                            Thread mailThread = new Thread(() => Email.SendEmail(slotDetails, subject));
                             mailThread.Start();
                         }
                         break;
@@ -353,7 +369,7 @@ namespace VaccineFinder
             bool slotBooked = false;
             string stInfo = "BookSlot Call Started for phone: " + UserDetails.Phone;
             logger.Info(stInfo);
-            Console.WriteLine(stInfo);
+            //Console.WriteLine(stInfo);
 
             SlotBookingResponse response = null;
             try
@@ -382,7 +398,7 @@ namespace VaccineFinder
 
                     if (AppConfig.SendEmail)
                     {
-                        Thread mailThread = new Thread(() => Email.SendEmail(bookingDetails));
+                        Thread mailThread = new Thread(() => Email.SendEmail(bookingDetails, AppConfig.Booking_MailSubject));
                         mailThread.Start();
                     }
                 }

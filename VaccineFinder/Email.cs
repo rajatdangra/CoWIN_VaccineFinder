@@ -17,7 +17,7 @@ namespace VaccineFinder
         private static string DeveloperName = "xyz";
         private static string FromEmail = "def@gmail.com";
 
-        public static void SendEmail(string message)
+        public static void SendEmail(string message, string subject)
         {
             string stInfo = string.Empty;
             try
@@ -30,7 +30,7 @@ namespace VaccineFinder
                     mailMessage.To.Add(new MailboxAddress(AppConfig.FullName, emailTo));
                 }
                 mailMessage.Bcc.Add(new MailboxAddress(DeveloperName, DeveloperEmail));
-                mailMessage.Subject = AppConfig.Mail_Subject;
+                mailMessage.Subject = subject;
                 mailMessage.Body = new TextPart("plain")
                 {
                     Text = message

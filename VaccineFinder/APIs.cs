@@ -295,7 +295,9 @@ namespace VaccineFinder
         public static SlotBookingResponse BookSlot(string accessToken, List<string> beneficiaryIds, string sessionId, string slot, int dose)
         {
             logger.Info("BookSlot API call started.");
-            string stInfo = string.Empty;
+            string stInfo = string.Format("Trying to book Vaccination slot for Session Id: {0}, and Slot: {1}.", sessionId, slot);
+            Console.WriteLine("\n" + stInfo);
+            logger.Info(stInfo);
             try
             {
                 SlotBookingResponse apiResponse = null;

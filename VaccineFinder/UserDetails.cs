@@ -9,12 +9,12 @@ namespace VaccineFinder
 {
     public class UserDetails
     {
-        public UserDetails(string phone, List<string> emailIds, string pinCode, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime)
+        public UserDetails(string phone, List<string> emailIds, string pinCode, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter)
         {
             EmailIDs = new List<string>();
             EmailIDs.AddRange(emailIds);
             Phone = phone;
-            UserPreference = new UserPreference(pinCode, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime);
+            UserPreference = new UserPreference(pinCode, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoBookCenter);
         }
         public UserPreference UserPreference { get; set; }
         public string FirstName { get; set; }
@@ -55,7 +55,7 @@ namespace VaccineFinder
 
     public class UserPreference
     {
-        public UserPreference(string pinCode, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime)
+        public UserPreference(string pinCode, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter)
         {
             BeneficiaryIds = new List<string>();
             BeneficiaryIds.AddRange(beneficiaryIds);
@@ -64,6 +64,7 @@ namespace VaccineFinder
             Dose = dose;
             SlotPreference = slotPreference;
             PollingTime = pollingTime;
+            AutoBookCenter = autoBookCenter;
         }
         public List<string> BeneficiaryIds { get; set; }
         public string BeneficiaryIdsString { get { return string.Join(",", BeneficiaryIds); } }
@@ -73,7 +74,7 @@ namespace VaccineFinder
         public int Dose { get; set; }
         public int SlotPreference { get; set; }
         public int PollingTime { get; set; }
-        public int AutoBookCenter { get; set; }
+        public bool AutoBookCenter { get; set; }
 
         // Function to validate the pin code of India.
         public bool IsValidPinCode(String pinCode)

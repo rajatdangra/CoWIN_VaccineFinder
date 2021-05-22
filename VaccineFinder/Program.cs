@@ -26,7 +26,7 @@ namespace VaccineFinder
             string PinCode = AppConfig.PinCode;
             DateTime date = DateTime.Now;
 
-            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCode, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime)
+            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCode, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoBookCenter)
             {
                 FirstName = AppConfig.FirstName,
                 LastName = AppConfig.LastName,
