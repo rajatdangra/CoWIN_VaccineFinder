@@ -137,7 +137,7 @@ namespace VaccineFinder
                 {
                     apiResponse = JsonConvert.DeserializeObject<ValidateMobileOTPResponse>(responseString);
 
-                    stInfo = "OTP Verified. Bearer Token Generated Successfully.";
+                    stInfo = "OTP Verified. Bearer Token Generated Successfully at " + DateTime.Now.ToDetailString();
                     Console.WriteLine(stInfo);
                     logger.Info(stInfo);
                 }

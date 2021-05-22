@@ -38,6 +38,8 @@ namespace VaccineFinder
         internal static string CoWIN_RegistrationURL => Convert.ToString(ConfigurationManager.AppSettings["CoWIN_RegistrationURL"]);
         internal static string Availablity_MailSubject => Convert.ToString(ConfigurationManager.AppSettings["Availablity_MailSubject"]);
         internal static string Booking_MailSubject => Convert.ToString(ConfigurationManager.AppSettings["Booking_MailSubject"]);
+        internal static int OtpExpiryTimeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["OtpExpiryTimeLimit"]);
+        internal static int TokenExpiryTimeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["TokenExpiryTimeLimit"]);
         //internal static int Retry_Count => Convert.ToInt32(ConfigurationManager.AppSettings["Retry_Count"]);
 
         public static void UpdateConfig(UserDetails defaultDetails)

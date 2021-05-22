@@ -111,7 +111,7 @@ namespace VaccineFinder
                 }
                 userDetails.UserPreference.Dose = dose;
 
-                inputMessage = "Please Enter Slot Preference (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM";
+                inputMessage = "Please Enter Slot Preference (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM)";
                 Console.WriteLine(inputMessage);
                 var slotPreference = Console.ReadLine();
                 int slot;
