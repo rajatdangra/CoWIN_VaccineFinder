@@ -331,7 +331,7 @@ namespace VaccineFinder
             bool slotBooked = false;
             slotBooked = BookSlotWithSessionPref(sessionIds, sessionPreference, slotPreference);
 
-            if (!slotBooked && AppConfig.AutoBookCenter) //if auto center booking. Check if other center are available
+            if (!slotBooked && UserDetails.UserPreference.AutoBookCenter) //if auto center booking. Check if other center are available
             {
                 int retryCount = 1;
                 int sessionNumber = 1;
@@ -386,8 +386,8 @@ namespace VaccineFinder
                 if (response != null)
                 {
                     slotBooked = true;
-                    var bookingDetails = "Hi" + (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : "") + ",\n\nYour Vaccine Slot has been booked Successfully!" + "\nBelow are the details:\n" + "Confirmation number: " + response.appointment_confirmation_no
-                        + "\nBeneficiary Ids: " + UserDetails.UserPreference.BeneficiaryIds + "\nSlot: " + slot + "\n\nRegards,\nYour Vaccine Finder :)";
+                    var bookingDetails = "Hi" + (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : "") + ",\n\nYour Vaccine Slot has been booked Successfully!" + "\n\nBelow are the details:\n" + "\tConfirmation number: " + response.appointment_confirmation_no
+                        + "\n\tBeneficiary Ids: " + UserDetails.UserPreference.BeneficiaryIdsString + "\nSlot: " + slot + "\n\nRegards,\nYour Vaccine Finder :)";
 
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + response.appointment_confirmation_no;
                     //Console.WriteLine(stInfo);

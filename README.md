@@ -1,6 +1,7 @@
 # Co-WIN: Vaccine Finder
 Vaccine Finder: based on Pincode and Age Limit Criteria.
 Send notification on Mail, if slots are available.
+Book Slots and Send notification on Mail, if Booked successfully.
 
 
 Installation instructions:
@@ -14,9 +15,9 @@ User Inputs:
 
 Mandatory:
 	1) Phone number
-	2) Beneficiary Ids: Ids found in Co-Win app against individual user. Format - Comma separated (eg. 123456, 7891011)
-	3) Dose (eg. 1 or 2)
-	4) Pin-Code
+	2) Pin-Code
+	3) Beneficiary Ids: Ids found in Co-Win app against individual user. Format - Comma separated (eg. 123456, 7891011)
+	4) Dose (eg. 1 or 2)
 	5) Email Ids: Email ids where mail will be sent in case of slots availability. Format - Comma separated (eg. abc@gmail.com, def@gmail.com)
 	6) Minimum Age Limit: 18 or 45
 	7) Slot Preference: (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM)
@@ -27,7 +28,7 @@ Optional:
 	1) First Name - will be used in E-Mail.
 	2) Last Name - will be used in E-Mail.
 	
-In App.Config:
+In App.Config: (Highly Recommended not to update these settings)
 	1) AutoBookCenter - If True ("1"), it auto picks center with the most available slots. If false, it asks user to input preferred center.
 	2) VerifyBeneficiaries - To verify beneficiaries, before slot booking (highly recommended: True)
 	3) SendEmail - True or False to enable mail.
@@ -38,7 +39,12 @@ Process:
 	3) Verify OTP.
 	4) Verify Beneficiaries.
 	5) Check Available slots.
-	Case 1) Vaccine slots available: Program will make a beep sound to notify, and Users will get E-Mails on defined Email Ids.
-			1) Take preferred center input from user if AutoBookCenter.
-			2) Try to book slots, with Slot preference, then book other slots (whichever is available).
+	Case 1) Vaccine slots available: Program will Display Available Centres, make a beep sound to notify, and Users will get E-Mails on defined Email Ids. Proceed to Booking (next step).			
 	Case 2) Vaccine slots not available: Program will retry at user defined Retry Frequency.
+	6) Start Booking:
+			1) AutoBookCenter:
+				case a) If AutoBookCenter is False ("0"), get preferred center input (number) from user, and only try to book slots of specific center. 
+				case b) If AutoBookCenter is True ("1"), it will sort available center based on availability, then tries to book slot, it will hit all the centers until slot is successfully booked.
+			2) Try to book slots, with Slot preference, then book other slots (whichever is available).
+			3) Confirmation mail on User email ids.
+	7) Automatically close in 15 seconds.
