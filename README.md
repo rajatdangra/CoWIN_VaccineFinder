@@ -48,3 +48,6 @@ Process:
 			2) Try to book slots, with Slot preference, then book other slots (whichever is available).
 			3) Confirmation mail on User email ids.
 	7) Automatically close in 15 seconds.
+	
+	
+Note: This is a Personal Project, I do NOT endorse this for Public use. Developed for Educational Purpose only; USE AT YOUR OWN RISK. I SHOULD NOT BE DEEMED RESPONSIBLE FOR ANY LEGAL CONCERNS. DO NOT SHARE THIS.

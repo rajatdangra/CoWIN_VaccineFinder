@@ -292,10 +292,10 @@ namespace VaccineFinder
         //    }
         //}
 
-        public static SlotBookingResponse BookSlot(string accessToken, List<string> beneficiaryIds, string sessionId, string slot, int dose)
+        public static SlotBookingResponse BookSlot(string accessToken, List<string> beneficiaryIds, string sessionId, string slot, int dose, DateTime date)
         {
             logger.Info("BookSlot API call started.");
-            string stInfo = string.Format("Trying to book Vaccination slot for Session Id: {0}, and Slot: {1}.", sessionId, slot);
+            string stInfo = string.Format("Trying to book Vaccination slot for Date: {0}, Slot: {1}, Session Id: {2}.", date.ToString("dd-MM-yyyy"), slot, sessionId);
             Console.WriteLine("\n" + stInfo);
             logger.Info(stInfo);
             try
@@ -324,7 +324,7 @@ namespace VaccineFinder
                 }
                 else
                 {
-                    stInfo = string.Format("Unable to book Vaccination slot for Session Id: {0}, and Slot: {1}.", sessionId, slot);
+                    stInfo = string.Format("Unable to book Vaccination slot for Date: {0}, Slot: {1}, Session Id: {2}.", date.ToString("dd-MM-yyyy"), slot, sessionId);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                         stInfo += responseString;
                     Console.WriteLine(stInfo);

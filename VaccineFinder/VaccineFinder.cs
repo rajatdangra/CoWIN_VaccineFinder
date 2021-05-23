@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -285,7 +286,7 @@ namespace VaccineFinder
 
                     if (vaccineSlotFound)
                     {
-                        var slotDetails = "Hi" + (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : "") + ",\n\nVaccine Slots are available for Pin Codes: " + UserDetails.UserPreference.PinCodeString + "\n\n" + slots.ToString() + "\nPlease book your slots ASAP on " + AppConfig.CoWIN_RegistrationURL + "\n\nRegards,\nYour Vaccine Finder :)";
+                        var slotDetails = string.Format("Hi{0},\n\nVaccine Slots are available for Pin Codes: {1}\n\n{2}\nPlease book your slots ASAP on {3}\n\nRegards,\nYour Vaccine Finder :)", (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : ""), UserDetails.UserPreference.PinCodeString, slots.ToString(), AppConfig.CoWIN_RegistrationURL);
 
                         stInfo = string.Format("\nSlots Found at {0}", DateTime.Now.ToDetailString());
                         Console.WriteLine(stInfo);
@@ -370,6 +371,10 @@ namespace VaccineFinder
                                 if (currSession == null)
                                     currSession = new SessionProxy();
                                 currSession.session_id = session.session_id;
+                                CultureInfo provider = CultureInfo.InvariantCulture;
+                                DateTime date = new DateTime();
+                                if (DateTime.TryParseExact(session.date, "dd-MM-yyyy", provider, DateTimeStyles.None, out date))
+                                    currSession.date = date;
                                 currSession.availableCapacity = chosenDoseAvailability;
                                 currSession.slots.AddRange(session.slots);
 
@@ -453,27 +458,28 @@ namespace VaccineFinder
         public bool BookSlotActual(SessionProxy session, int slotNumber)
         {
             bool slotBooked = false;
-            string stInfo = "BookSlot Call Started for phone: " + UserDetails.Phone;
+            string sessionId = string.Empty;
+            string slot = string.Empty;
+            DateTime date = default(DateTime);
+            if (session != null)
+            {
+                sessionId = session.session_id;
+                slot = session.slots[slotNumber - 1];
+                date = session.date;
+            }
+            string stInfo = string.Format("BookSlot Call Started for Date: {0}, Slot: {1}, Session Id: {2}.", date.ToString("dd-MM-yyyy"), slot, sessionId);
             logger.Info(stInfo);
             //Console.WriteLine(stInfo);
 
             SlotBookingResponse response = null;
             try
             {
-                string sessionId = string.Empty;
-                string slot = string.Empty;
-                if (session != null)
-                {
-                    sessionId = session.session_id;
-                    slot = session.slots[slotNumber - 1];
-                }
-                response = APIs.BookSlot(AccessToken, UserDetails.UserPreference.BeneficiaryIds, sessionId, slot, UserDetails.UserPreference.Dose);
+                response = APIs.BookSlot(AccessToken, UserDetails.UserPreference.BeneficiaryIds, sessionId, slot, UserDetails.UserPreference.Dose, date);
 
                 if (response != null)
                 {
                     slotBooked = true;
-                    var bookingDetails = "Hi" + (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : "") + ",\n\nYour Vaccine Slot has been booked Successfully!" + "\n\nBelow are the details:\n" + "\tConfirmation number: " + response.appointment_confirmation_no
-                        + "\n\tBeneficiary Ids: " + UserDetails.UserPreference.BeneficiaryIdsString + "\nSlot: " + slot + "\n\nRegards,\nYour Vaccine Finder :)";
+                    var bookingDetails = string.Format("Hi{0},\n\nYour Vaccine Slot has been booked Successfully!\n\nBelow are the details:\n\tConfirmation number: {1}\n\tBeneficiary Ids: {2}\n\tDate: {3}\n\tSlot: {4}\n\nRegards,\nYour Vaccine Finder :)", (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : ""), response.appointment_confirmation_no, UserDetails.UserPreference.BeneficiaryIdsString, (session.date.IsDefault() ? "" : session.date.ToString("dd-MM-yyyy")), slot);
 
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + response.appointment_confirmation_no;
                     //Console.WriteLine(stInfo);
