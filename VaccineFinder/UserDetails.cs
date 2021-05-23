@@ -9,12 +9,12 @@ namespace VaccineFinder
 {
     public class UserDetails
     {
-        public UserDetails(string phone, List<string> emailIds, string pinCode, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter)
+        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter)
         {
             EmailIDs = new List<string>();
             EmailIDs.AddRange(emailIds);
             Phone = phone;
-            UserPreference = new UserPreference(pinCode, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoBookCenter);
+            UserPreference = new UserPreference(pinCodes, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoBookCenter);
         }
         public UserPreference UserPreference { get; set; }
         public string FirstName { get; set; }
@@ -55,11 +55,12 @@ namespace VaccineFinder
 
     public class UserPreference
     {
-        public UserPreference(string pinCode, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter)
+        public UserPreference(List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter)
         {
             BeneficiaryIds = new List<string>();
             BeneficiaryIds.AddRange(beneficiaryIds);
-            PinCode = pinCode;
+            PinCodes = new List<string>();
+            PinCodes.AddRange(pinCodes);
             AgeCriteria = ageCriteria;
             Dose = dose;
             SlotPreference = slotPreference;
@@ -68,13 +69,28 @@ namespace VaccineFinder
         }
         public List<string> BeneficiaryIds { get; set; }
         public string BeneficiaryIdsString { get { return string.Join(",", BeneficiaryIds); } }
-        public string PinCode { get; set; }
+        public List<string> PinCodes { get; set; }
+        public string PinCodeString { get { return string.Join(",", PinCodes); } }
         //public string District { get; set; }
         public int AgeCriteria { get; set; }
         public int Dose { get; set; }
         public int SlotPreference { get; set; }
         public int PollingTime { get; set; }
         public bool AutoBookCenter { get; set; }
+
+        public bool IsValidPinCodes(List<string> pinCodeList)
+        {
+            bool isValid = true;
+            foreach (var pinCode in pinCodeList)
+            {
+                if (!IsValidPinCode(pinCode))
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+            return isValid;
+        }
 
         // Function to validate the pin code of India.
         public bool IsValidPinCode(String pinCode)
@@ -87,6 +103,10 @@ namespace VaccineFinder
         public static List<string> GetBeneficiaryIds(string beneficiaryIds)
         {
             return beneficiaryIds.Trim().Replace(" ", "").Split(',').ToList();
+        }
+        public static List<string> GetPincodes(string pinCodes)
+        {
+            return pinCodes.Trim().Replace(" ", "").Split(',').ToList();
         }
     }
 }

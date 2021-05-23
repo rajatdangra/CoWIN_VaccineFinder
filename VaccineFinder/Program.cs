@@ -23,21 +23,23 @@ namespace VaccineFinder
             List<string> EmailIDs = Email.GetEmailIDs(emailIdsString);
             string beneficiaryIdsString = AppConfig.BeneficiaryIDs;
             List<string> BeneficiaryIds = UserPreference.GetBeneficiaryIds(beneficiaryIdsString);
-            string PinCode = AppConfig.PinCode;
+            string pinCodesString = AppConfig.PinCodes;
+            List<string> PinCodes = UserPreference.GetBeneficiaryIds(pinCodesString);
             DateTime date = DateTime.Now;
 
-            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCode, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoBookCenter)
+            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoBookCenter)
             {
                 FirstName = AppConfig.FirstName,
                 LastName = AppConfig.LastName,
             };
 
             Console.WriteLine("Phone Number: " + userDetails.Phone);
-            Console.WriteLine("Pin Code: " + userDetails.UserPreference.PinCode);
+            Console.WriteLine("Pin Codes: " + pinCodesString);
             Console.WriteLine("Beneficiary Ids: " + beneficiaryIdsString);
             Console.WriteLine("Minimum Age Limit: " + userDetails.UserPreference.AgeCriteria + "+");
             Console.WriteLine("Dose: " + userDetails.UserPreference.Dose);
             Console.WriteLine("Slot Preference: " + userDetails.UserPreference.SlotPreference);
+            Console.WriteLine("Auto-Pick Center: " + userDetails.UserPreference.AutoBookCenter);
             Console.WriteLine("Email Ids: " + emailIdsString);
             Console.WriteLine("From Date: " + date.ToString("dd-MM-yyyy"));
             Console.WriteLine("Retry Frequency (Seconds): " + userDetails.UserPreference.PollingTime);
@@ -46,24 +48,26 @@ namespace VaccineFinder
 
             var confirmationMessage = "Please verify to Proceed: Y/N";
             var confirmation = TakeConfirmation(confirmationMessage);
-            confirmationMessage = "Are you good to go with rest of the settings?";
+            confirmationMessage = "Are you good to go with rest of the settings: Y/N ?";
             string inputMessage = string.Empty;
             if (confirmation.ToLower() == "n")
             {
                 if (confirmation.ToLower() == "n")
                 {
-                    inputMessage = "Please Enter your Pin Code: ";
+                    inputMessage = "Please Enter your Pin Codes (Comma separated): ";
                     Console.WriteLine(inputMessage);
-                    PinCode = Console.ReadLine();
-                    while (!userDetails.UserPreference.IsValidPinCode(PinCode))
+                    pinCodesString = Console.ReadLine();
+                    PinCodes = UserPreference.GetPincodes(pinCodesString);
+                    while (!userDetails.UserPreference.IsValidPinCodes(PinCodes))
                     {
                         stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + PinCode);
+                        logger.Error(stInfo + ": " + pinCodesString);
                         Console.WriteLine(stInfo);
                         Console.WriteLine(inputMessage);
-                        PinCode = Console.ReadLine();
+                        pinCodesString = Console.ReadLine();
+                        PinCodes = UserPreference.GetPincodes(pinCodesString);
                     }
-                    userDetails.UserPreference.PinCode = PinCode;
+                    userDetails.UserPreference.PinCodes = PinCodes.ToList();
                     confirmation = TakeConfirmation(confirmationMessage);
                 }
                 if (confirmation.ToLower() == "n")
@@ -152,6 +156,14 @@ namespace VaccineFinder
                 }
                 if (confirmation.ToLower() == "n")
                 {
+                    inputMessage = "Auto-Pick Center: Y/N ?";
+                    confirmation = TakeConfirmation(inputMessage);
+                    userDetails.UserPreference.AutoBookCenter = (confirmation.ToLower() == "y");
+
+                    confirmation = TakeConfirmation(confirmationMessage);
+                }
+                if (confirmation.ToLower() == "n")
+                {
                     inputMessage = "Please Enter 'From Date' (dd-MM-yyyy): ";
                     Console.WriteLine(inputMessage);
                     var dateString = Console.ReadLine();
@@ -216,6 +228,20 @@ namespace VaccineFinder
                 userDetails.Phone = Phone;
             }
 
+            if (!userDetails.UserPreference.IsValidPinCodes(PinCodes))
+            {
+                while (!userDetails.UserPreference.IsValidPinCodes(PinCodes))
+                {
+                    stInfo = "Invalid Pin Codes. Please Retry.";
+                    logger.Error(stInfo + ": " + pinCodesString);
+                    Console.WriteLine(stInfo);
+                    Console.WriteLine("Please Enter your Pin Codes: ");
+                    pinCodesString = Console.ReadLine();
+                    PinCodes = UserPreference.GetPincodes(pinCodesString);
+                }
+                userDetails.UserPreference.PinCodes = PinCodes;
+            }
+
             if (!userDetails.IsValidEmailIds(EmailIDs))
             {
                 while (!userDetails.IsValidEmailIds(EmailIDs))
@@ -228,18 +254,6 @@ namespace VaccineFinder
                     EmailIDs = Email.GetEmailIDs(emailIdsString);
                 }
                 userDetails.EmailIDs = EmailIDs.ToList();
-            }
-            if (!userDetails.UserPreference.IsValidPinCode(PinCode))
-            {
-                while (!userDetails.UserPreference.IsValidPinCode(PinCode))
-                {
-                    stInfo = "Invalid Pin Code. Please Retry.";
-                    logger.Error(stInfo + ": " + PinCode);
-                    Console.WriteLine(stInfo);
-                    Console.WriteLine("Please Enter your Pin Code: ");
-                    PinCode = Console.ReadLine();
-                }
-                userDetails.UserPreference.PinCode = PinCode;
             }
             #endregion
 

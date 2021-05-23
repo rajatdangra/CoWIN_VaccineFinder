@@ -13,7 +13,7 @@ namespace VaccineFinder
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         internal static string Phone => Convert.ToString(ConfigurationManager.AppSettings["Phone"]);
-        internal static string PinCode => Convert.ToString(ConfigurationManager.AppSettings["PinCode"]);
+        internal static string PinCodes => Convert.ToString(ConfigurationManager.AppSettings["PinCodes"]);
         internal static string BeneficiaryIDs => Convert.ToString(ConfigurationManager.AppSettings["BeneficiaryIDs"]);
         internal static int SlotPreference => Convert.ToInt32(ConfigurationManager.AppSettings["SlotPreference"]);
         internal static bool AutoBookCenter => String.Equals(ConfigurationManager.AppSettings["AutoBookCenter"], "1");
@@ -64,7 +64,7 @@ namespace VaccineFinder
                 appSettings.Add("EmailIDs", defaultDetails.EmailIdsString);
                 appSettings.Add("BeneficiaryIDs", defaultDetails.UserPreference.BeneficiaryIdsString);
                 appSettings.Add("SlotPreference", Convert.ToString(defaultDetails.UserPreference.SlotPreference));
-                appSettings.Add("PinCode", defaultDetails.UserPreference.PinCode);
+                appSettings.Add("PinCodes", defaultDetails.UserPreference.PinCodeString);
                 appSettings.Add("MinAgeLimit", Convert.ToString(defaultDetails.UserPreference.AgeCriteria));
                 appSettings.Add("Dose", Convert.ToString(defaultDetails.UserPreference.Dose));
                 appSettings.Add("AutoBookCenter", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.AutoBookCenter)));

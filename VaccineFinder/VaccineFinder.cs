@@ -63,8 +63,8 @@ namespace VaccineFinder
             {
                 if (UserDetails.UserPreference.AutoBookCenter)
                 {
-                    //Sort based on More Available Capacity
-                    sessions = sessions.OrderByDescending(a => a.availableCapacity).ToList();
+                    ////Sort based on More Available Capacity
+                    //sessions = sessions.OrderByDescending(a => a.availableCapacity).ToList();
                     sessionNumber = 1;
                 }
                 else
@@ -246,69 +246,46 @@ namespace VaccineFinder
 
         public List<SessionProxy> CheckVaccineAvailabilityStatus()
         {
-            string stInfo = "Status Call Started for Pin Code: " + UserDetails.UserPreference.PinCode;
+            string stInfo = "Status Call Started for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
             logger.Info(stInfo);
             Console.WriteLine("\n" + stInfo);
             List<SessionProxy> sessions = new List<SessionProxy>();
-            SessionProxy currSession = null;
             try
             {
                 bool vaccineSlotFound = false;
-                while (!vaccineSlotFound)
+                bool errorOccured = false;
+                while (!vaccineSlotFound && !errorOccured)
                 {
-                    StringBuilder slots = new StringBuilder();
-                    //StringBuilder otherDoseSlots = new StringBuilder();
-                    AvailabilityStatusAPIResponse response = APIs.CheckCalendarByPin(UserDetails.UserPreference.PinCode, Date, AccessToken);
-
-                    if (response == null)
-                        break;
+                    stInfo = "Status Call End for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
+                    logger.Info(stInfo);
+                    Console.WriteLine("\n" + stInfo);
 
                     int counter = 0;
-                    bool isVaccineDose1 = UserDetails.UserPreference.Dose == 1;
-
-                    //var allSessions = response.centers.SelectMany(a => a.sessions).Where(x => (isVaccineDose1 ? x.available_capacity_dose1 > 0 : x.available_capacity_dose2 > 0) && x.min_age_limit <= UserDetails.UserPreference.AgeCriteria);
-                    ////Sort based on Nearest date and More Available Capacity
-                    //allSessions = allSessions.OrderBy(a => a.date).ThenByDescending(x => (isVaccineDose1 ? x.available_capacity_dose1 : x.available_capacity_dose2));
-
-                    foreach (var center in response.centers)
+                    StringBuilder slots = new StringBuilder();
+                    foreach (var pinCode in UserDetails.UserPreference.PinCodes)
                     {
-                        foreach (var session in center.sessions)
+                        var sessionsByPin = CheckVaccineAvailabilityStatusByPin(pinCode, counter, ref slots);
+                        if (sessionsByPin == null)
                         {
-                            if (session.available_capacity > 0 && session.min_age_limit <= UserDetails.UserPreference.AgeCriteria)
+                            errorOccured = true;
+                            break;
+                        }
+                        if (sessionsByPin.Count > 0)
+                        {
+                            counter += sessionsByPin.Count;
+                            vaccineSlotFound = true;
+                            if (UserDetails.UserPreference.AutoBookCenter)
                             {
-                                int chosenDoseAvailability = (isVaccineDose1 ? session.available_capacity_dose1 : session.available_capacity_dose2);
-                                if (chosenDoseAvailability > 0)//For Dose 1 or 2 selection
-                                {
-                                    vaccineSlotFound = true;
-                                    counter++;
-                                    var details = string.Format(counter + ") Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}, Session Id: {8}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, session.available_capacity_dose1, session.available_capacity_dose2, center.address, session.session_id);
-                                    slots.Append(details + "\n");
-
-                                    stInfo = string.Format("Dose {0} is available", (isVaccineDose1 ? 1 : 2));
-                                    logger.Info(stInfo);
-
-                                    if (currSession == null)
-                                        currSession = new SessionProxy();
-                                    currSession.session_id = session.session_id;
-                                    currSession.availableCapacity = chosenDoseAvailability;
-                                    currSession.slots.AddRange(session.slots);
-
-                                    sessions.Add(currSession);
-                                    currSession = null;
-                                }
-                                else
-                                {
-                                    stInfo = string.Format("Other Dose {0} is available", (isVaccineDose1 ? 2 : 1));
-                                    logger.Info(stInfo);
-                                    //var details = string.Format(counter + ") Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}, Session Id: {8}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, session.available_capacity_dose1, session.available_capacity_dose2, center.address, session.session_id);
-                                    //otherDoseSlots.Append(details + "\n");
-                                }
+                                //Sort based on More Available Capacity
+                                sessionsByPin = sessionsByPin.OrderByDescending(a => a.availableCapacity).ToList();
                             }
+                            sessions.AddRange(sessionsByPin);
                         }
                     }
+
                     if (vaccineSlotFound)
                     {
-                        var slotDetails = "Hi" + (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : "") + ",\n\nVaccine Slots are available for Pin Code: " + UserDetails.UserPreference.PinCode + "\n\n" + slots.ToString() + "\nPlease book your slots ASAP on " + AppConfig.CoWIN_RegistrationURL + "\n\nRegards,\nYour Vaccine Finder :)";
+                        var slotDetails = "Hi" + (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : "") + ",\n\nVaccine Slots are available for Pin Codes: " + UserDetails.UserPreference.PinCodeString + "\n\n" + slots.ToString() + "\nPlease book your slots ASAP on " + AppConfig.CoWIN_RegistrationURL + "\n\nRegards,\nYour Vaccine Finder :)";
 
                         stInfo = string.Format("\nSlots Found at {0}", DateTime.Now.ToDetailString());
                         Console.WriteLine(stInfo);
@@ -319,7 +296,7 @@ namespace VaccineFinder
 
                         if (AppConfig.SendEmail)
                         {
-                            var subject = AppConfig.Availablity_MailSubject + " for Pin Code: " + UserDetails.UserPreference.PinCode;
+                            var subject = AppConfig.Availablity_MailSubject + " for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
                             Thread mailThread = new Thread(() => Email.SendEmail(slotDetails, subject));
                             mailThread.Start();
                         }
@@ -327,12 +304,18 @@ namespace VaccineFinder
                     }
                     else
                     {
-                        stInfo = "No Slots Found for Pin Code: " + UserDetails.UserPreference.PinCode + ". Last status checked: " + DateTime.Now.ToDetailString();
+                        stInfo = "No Slots Found for Pin Codes: " + UserDetails.UserPreference.PinCodeString + ". Last status checked: " + DateTime.Now.ToDetailString();
                         logger.Info(stInfo);
                         Console.WriteLine(stInfo);
-                        Thread.Sleep(TimeSpan.FromSeconds(UserDetails.UserPreference.PollingTime));
+                        if (!errorOccured)
+                            Thread.Sleep(TimeSpan.FromSeconds(UserDetails.UserPreference.PollingTime));
                     }
                 }
+
+                stInfo = "Status Call End for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
+                logger.Info(stInfo);
+                Console.WriteLine("\n" + stInfo);
+
                 return sessions;
             }
             catch (Exception ex)
@@ -341,6 +324,91 @@ namespace VaccineFinder
                 logger.Error(stInfo);
                 Console.WriteLine(stInfo);
                 return sessions;
+            }
+        }
+
+        public List<SessionProxy> CheckVaccineAvailabilityStatusByPin(string pinCode, int foundedCount, ref StringBuilder slots)
+        {
+            string stInfo = "Status Call Started for Pin Code: " + pinCode;
+            logger.Info(stInfo);
+            Console.WriteLine(stInfo);
+            List<SessionProxy> sessions = new List<SessionProxy>();
+            SessionProxy currSession = null;
+            try
+            {
+                bool vaccineSlotFound = false;
+                AvailabilityStatusAPIResponse response = APIs.CheckCalendarByPin(pinCode, Date, AccessToken);
+
+                if (response == null)
+                    return null;
+
+                int counter = 0;
+                counter += foundedCount;
+                bool isVaccineDose1 = UserDetails.UserPreference.Dose == 1;
+
+                //var allSessions = response.centers.SelectMany(a => a.sessions).Where(x => (isVaccineDose1 ? x.available_capacity_dose1 > 0 : x.available_capacity_dose2 > 0) && x.min_age_limit <= UserDetails.UserPreference.AgeCriteria);
+                ////Sort based on Nearest date and More Available Capacity
+                //allSessions = allSessions.OrderBy(a => a.date).ThenByDescending(x => (isVaccineDose1 ? x.available_capacity_dose1 : x.available_capacity_dose2));
+
+                foreach (var center in response.centers)
+                {
+                    foreach (var session in center.sessions)
+                    {
+                        if (session.available_capacity > 0 && session.min_age_limit <= UserDetails.UserPreference.AgeCriteria)
+                        {
+                            int chosenDoseAvailability = (isVaccineDose1 ? session.available_capacity_dose1 : session.available_capacity_dose2);
+                            if (chosenDoseAvailability > 0)//For Dose 1 or 2 selection
+                            {
+                                vaccineSlotFound = true;
+                                counter++;
+                                var details = string.Format(counter + ") Date: {0}, Name: {1}, Pin Code: {2}, Centre ID: {3}, Min Age: {4}, Available Capacity: {5}, Available Capacity Dose1: {6}, Available Capacity Dose2: {7}, Address: {8}, Session Id: {9}", session.date, center.name, pinCode, center.center_id, session.min_age_limit, session.available_capacity, session.available_capacity_dose1, session.available_capacity_dose2, center.address, session.session_id);
+                                slots.Append(details + "\n");
+
+                                stInfo = string.Format("Dose {0} is available", (isVaccineDose1 ? 1 : 2));
+                                logger.Info(stInfo);
+
+                                if (currSession == null)
+                                    currSession = new SessionProxy();
+                                currSession.session_id = session.session_id;
+                                currSession.availableCapacity = chosenDoseAvailability;
+                                currSession.slots.AddRange(session.slots);
+
+                                sessions.Add(currSession);
+                                currSession = null;
+                            }
+                            else
+                            {
+                                stInfo = string.Format("Other Dose {0} is available", (isVaccineDose1 ? 2 : 1));
+                                logger.Info(stInfo);
+                                //var details = string.Format(counter + ") Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}, Session Id: {8}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, session.available_capacity_dose1, session.available_capacity_dose2, center.address, session.session_id);
+                                //otherDoseSlots.Append(details + "\n");
+                            }
+                        }
+                    }
+                }
+                if (vaccineSlotFound)
+                {
+                    stInfo = string.Format("\nSlots Found for PinCode: {0} at {1}", pinCode, DateTime.Now.ToDetailString());
+                    Console.WriteLine(stInfo);
+                    logger.Info(stInfo);
+                    Thread soundThread = new Thread(() => Sound.PlayBeep(4, 1500, 500));
+                    soundThread.Start();
+                }
+                else
+                {
+                    stInfo = "No Slots Found for Pin Code: " + pinCode + ". Last status checked: " + DateTime.Now.ToDetailString();
+                    logger.Info(stInfo);
+                    Console.WriteLine(stInfo);
+                    //Thread.Sleep(TimeSpan.FromSeconds(UserDetails.UserPreference.PollingTime));
+                }
+                return sessions;
+            }
+            catch (Exception ex)
+            {
+                stInfo = "Error in CheckVaccineAvailabilityStatus:\n" + ex;
+                logger.Error(stInfo);
+                Console.WriteLine(stInfo);
+                return null;
             }
         }
 

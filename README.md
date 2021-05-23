@@ -15,7 +15,7 @@ User Inputs:
 
 Mandatory:
 	1) Phone number
-	2) Pin-Code
+	2) Pin-Codes : Search is based on Priority order defined (first come basis). Format - Comma separated (eg. 100001, 100002)
 	3) Beneficiary Ids: Ids found in Co-Win app against individual user. Format - Comma separated (eg. 123456, 7891011)
 	4) Dose (eg. 1 or 2)
 	5) Email Ids: Email ids where mail will be sent in case of slots availability. Format - Comma separated (eg. abc@gmail.com, def@gmail.com)
@@ -23,15 +23,15 @@ Mandatory:
 	7) Slot Preference: (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM)
 	8) From Date: Date from which vaccination slots will be searched (for 7 days). Format - "dd-MM-yyyy" (eg. 31-03-2021)
 	9) Retry Frequency (in Seconds): Frequency at which retry call should happen (in case of no slots found), (eg. 10). Value less than 3 Seconds is not recommended due to rate limiting imposed by the Government.
+	10) AutoBookCenter - If True ("1"), it auto picks center with the combination of 'Pin-code priority and the center with most available slots'. If false, it asks user to input preferred center.
 
 Optional:
 	1) First Name - will be used in E-Mail.
 	2) Last Name - will be used in E-Mail.
 	
 In App.Config: (Highly Recommended not to update these settings)
-	1) AutoBookCenter - If True ("1"), it auto picks center with the most available slots. If false, it asks user to input preferred center.
-	2) VerifyBeneficiaries - To verify beneficiaries, before slot booking (highly recommended: True)
-	3) SendEmail - True or False to enable mail.
+	1) VerifyBeneficiaries - To verify beneficiaries, before slot booking (highly recommended: True)
+	2) SendEmail - True or False to enable mail.
 
 Process:
 	1) Confirm inputs from user.
