@@ -361,7 +361,7 @@ namespace VaccineFinder
                             {
                                 vaccineSlotFound = true;
                                 counter++;
-                                var details = string.Format(counter + ") Date: {0}, Name: {1}, Pin Code: {2}, Centre ID: {3}, Min Age: {4}, Available Capacity: {5}, Available Capacity Dose1: {6}, Available Capacity Dose2: {7}, Address: {8}, Session Id: {9}", session.date, center.name, pinCode, center.center_id, session.min_age_limit, session.available_capacity, session.available_capacity_dose1, session.available_capacity_dose2, center.address, session.session_id);
+                                var details = string.Format(counter + ") Date: {0}, Name: {1}, Pin Code: {2}, Vaccine: {3}, Min Age: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}", session.date, center.name, pinCode, session.vaccine, session.min_age_limit, session.available_capacity_dose1, session.available_capacity_dose2, center.address);
                                 slots.Append(details + "\n");
 
                                 stInfo = string.Format("Dose {0} is available", (isVaccineDose1 ? 1 : 2));
@@ -380,7 +380,7 @@ namespace VaccineFinder
                             {
                                 stInfo = string.Format("Other Dose {0} is available", (isVaccineDose1 ? 2 : 1));
                                 logger.Info(stInfo);
-                                //var details = string.Format(counter + ") Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}, Session Id: {8}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, session.available_capacity_dose1, session.available_capacity_dose2, center.address, session.session_id);
+                                //var details = string.Format(counter + ") Date: {0}, Name: {1}, Pin Code: {2}, Vaccine: {3}, Min Age: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}", session.date, center.name, pinCode, session.vaccine, session.min_age_limit, session.available_capacity_dose1, session.available_capacity_dose2, center.address);
                                 //otherDoseSlots.Append(details + "\n");
                             }
                         }
