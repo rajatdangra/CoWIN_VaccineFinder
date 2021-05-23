@@ -9,12 +9,12 @@ namespace VaccineFinder
 {
     public class UserDetails
     {
-        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter)
+        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter, bool includePaidService)
         {
             EmailIDs = new List<string>();
             EmailIDs.AddRange(emailIds);
             Phone = phone;
-            UserPreference = new UserPreference(pinCodes, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoBookCenter);
+            UserPreference = new UserPreference(pinCodes, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoBookCenter, includePaidService);
         }
         public UserPreference UserPreference { get; set; }
         public string FirstName { get; set; }
@@ -55,7 +55,7 @@ namespace VaccineFinder
 
     public class UserPreference
     {
-        public UserPreference(List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter)
+        public UserPreference(List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter, bool includePaidService)
         {
             BeneficiaryIds = new List<string>();
             BeneficiaryIds.AddRange(beneficiaryIds);
@@ -66,6 +66,7 @@ namespace VaccineFinder
             SlotPreference = slotPreference;
             PollingTime = pollingTime;
             AutoBookCenter = autoBookCenter;
+            IncludePaidService = includePaidService;
         }
         public List<string> BeneficiaryIds { get; set; }
         public string BeneficiaryIdsString { get { return string.Join(",", BeneficiaryIds); } }
@@ -77,6 +78,7 @@ namespace VaccineFinder
         public int SlotPreference { get; set; }
         public int PollingTime { get; set; }
         public bool AutoBookCenter { get; set; }
+        public bool IncludePaidService { get; set; }
 
         public bool IsValidPinCodes(List<string> pinCodeList)
         {

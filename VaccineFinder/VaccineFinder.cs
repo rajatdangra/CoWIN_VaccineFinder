@@ -353,6 +353,12 @@ namespace VaccineFinder
 
                 foreach (var center in response.centers)
                 {
+                    if (!UserDetails.UserPreference.IncludePaidService && center.fee_type.ToLower() != "free")//fee_type = "Paid"
+                    {
+                        stInfo = string.Format("Fee Type for {0} center is {1}", center.name, center.fee_type);
+                        logger.Info(stInfo);
+                        continue;
+                    }
                     foreach (var session in center.sessions)
                     {
                         if (session.available_capacity > 0 && session.min_age_limit <= UserDetails.UserPreference.AgeCriteria)

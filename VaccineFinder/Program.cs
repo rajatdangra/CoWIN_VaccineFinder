@@ -27,7 +27,7 @@ namespace VaccineFinder
             List<string> PinCodes = UserPreference.GetBeneficiaryIds(pinCodesString);
             DateTime date = DateTime.Now;
 
-            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoBookCenter)
+            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoBookCenter, AppConfig.IncludePaidService)
             {
                 FirstName = AppConfig.FirstName,
                 LastName = AppConfig.LastName,
@@ -40,6 +40,7 @@ namespace VaccineFinder
             Console.WriteLine("Dose: " + userDetails.UserPreference.Dose);
             Console.WriteLine("Slot Preference: " + userDetails.UserPreference.SlotPreference);
             Console.WriteLine("Auto-Pick Center: " + userDetails.UserPreference.AutoBookCenter);
+            Console.WriteLine("Include Paid Service: " + userDetails.UserPreference.IncludePaidService);
             Console.WriteLine("Email Ids: " + emailIdsString);
             Console.WriteLine("From Date: " + date.ToString("dd-MM-yyyy"));
             Console.WriteLine("Retry Frequency (Seconds): " + userDetails.UserPreference.PollingTime);
@@ -204,6 +205,13 @@ namespace VaccineFinder
                     Console.WriteLine("Please Enter your Last Name (optional): ");
                     var LastName = Console.ReadLine();
                     userDetails.LastName = LastName;
+                }
+                if (confirmation.ToLower() == "n")
+                {
+                    inputMessage = "Include Paid Service: Y/N ?";
+                    confirmation = TakeConfirmation(inputMessage);
+                    userDetails.UserPreference.IncludePaidService = (confirmation.ToLower() == "y");
+                    //confirmation = TakeConfirmation(confirmationMessage);
                 }
 
                 if (AppConfig.SaveUserDetails)
