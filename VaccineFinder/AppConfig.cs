@@ -70,7 +70,7 @@ namespace VaccineFinder
                 appSettings.Add("AutoBookCenter", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.AutoBookCenter)));
                 appSettings.Add("FirstName", defaultDetails.FirstName);
                 appSettings.Add("LastName", defaultDetails.LastName);
-                appSettings.Add("PollingTime", Convert.ToString(PollingTime));
+                appSettings.Add("PollingTime", Convert.ToString(defaultDetails.UserPreference.PollingTime));
 
                 bool change = false;
                 foreach (var kv in appSettings)

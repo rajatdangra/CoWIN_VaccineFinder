@@ -188,6 +188,13 @@ namespace VaccineFinder
                         UserDetails.UserPreference.BeneficiaryIds = UserPreference.GetBeneficiaryIds(benInput);
                     }
                     areBeneficiariesVerified = true;
+
+                    if (AppConfig.SaveUserDetails)
+                    {
+                        Console.WriteLine("Updating Default Settings");
+                        AppConfig.UpdateConfig(UserDetails);
+                        Console.WriteLine("Updated Default Settings");
+                    }
                 }
                 else
                 {
