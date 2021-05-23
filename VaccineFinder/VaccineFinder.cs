@@ -257,6 +257,7 @@ namespace VaccineFinder
                 while (!vaccineSlotFound)
                 {
                     StringBuilder slots = new StringBuilder();
+                    //StringBuilder otherDoseSlots = new StringBuilder();
                     AvailabilityStatusAPIResponse response = APIs.CheckCalendarByPin(UserDetails.UserPreference.PinCode, Date, AccessToken);
 
                     if (response == null)
@@ -275,14 +276,17 @@ namespace VaccineFinder
                         {
                             if (session.available_capacity > 0 && session.min_age_limit <= UserDetails.UserPreference.AgeCriteria)
                             {
-                                vaccineSlotFound = true;
-                                counter++;
-                                var details = string.Format(counter + ") Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}, Session Id: {8}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, session.available_capacity_dose1, session.available_capacity_dose2, center.address, session.session_id);
-                                slots.Append(details + "\n");
-
                                 int chosenDoseAvailability = (isVaccineDose1 ? session.available_capacity_dose1 : session.available_capacity_dose2);
                                 if (chosenDoseAvailability > 0)//For Dose 1 or 2 selection
                                 {
+                                    vaccineSlotFound = true;
+                                    counter++;
+                                    var details = string.Format(counter + ") Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}, Session Id: {8}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, session.available_capacity_dose1, session.available_capacity_dose2, center.address, session.session_id);
+                                    slots.Append(details + "\n");
+
+                                    stInfo = string.Format("Dose {0} is available", (isVaccineDose1 ? 1 : 2));
+                                    logger.Info(stInfo);
+
                                     if (currSession == null)
                                         currSession = new SessionProxy();
                                     currSession.session_id = session.session_id;
@@ -291,6 +295,13 @@ namespace VaccineFinder
 
                                     sessions.Add(currSession);
                                     currSession = null;
+                                }
+                                else
+                                {
+                                    stInfo = string.Format("Other Dose {0} is available", (isVaccineDose1 ? 2 : 1));
+                                    logger.Info(stInfo);
+                                    //var details = string.Format(counter + ") Date: {0}, Name: {1}, Centre ID: {2}, Min Age: {3}, Available Capacity: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}, Session Id: {8}", session.date, center.name, center.center_id, session.min_age_limit, session.available_capacity, session.available_capacity_dose1, session.available_capacity_dose2, center.address, session.session_id);
+                                    //otherDoseSlots.Append(details + "\n");
                                 }
                             }
                         }
