@@ -16,7 +16,7 @@ namespace VaccineFinder
         internal static string PinCodes => Convert.ToString(ConfigurationManager.AppSettings["PinCodes"]);
         internal static string BeneficiaryIDs => Convert.ToString(ConfigurationManager.AppSettings["BeneficiaryIDs"]);
         internal static int SlotPreference => Convert.ToInt32(ConfigurationManager.AppSettings["SlotPreference"]);
-        internal static bool AutoBookCenter => String.Equals(ConfigurationManager.AppSettings["AutoBookCenter"], "1");
+        internal static bool AutoPickCenter => String.Equals(ConfigurationManager.AppSettings["AutoPickCenter"], "1");
         internal static bool IncludePaidService => String.Equals(ConfigurationManager.AppSettings["IncludePaidService"], "1");
         internal static bool VerifyBeneficiaries => String.Equals(ConfigurationManager.AppSettings["VerifyBeneficiaries"], "1");
         internal static string EmailIDs => Convert.ToString(ConfigurationManager.AppSettings["EmailIDs"]);
@@ -68,7 +68,7 @@ namespace VaccineFinder
                 appSettings.Add("PinCodes", defaultDetails.UserPreference.PinCodeString);
                 appSettings.Add("MinAgeLimit", Convert.ToString(defaultDetails.UserPreference.AgeCriteria));
                 appSettings.Add("Dose", Convert.ToString(defaultDetails.UserPreference.Dose));
-                appSettings.Add("AutoBookCenter", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.AutoBookCenter)));
+                appSettings.Add("AutoPickCenter", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.AutoPickCenter)));
                 appSettings.Add("IncludePaidService", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.IncludePaidService)));
                 appSettings.Add("FirstName", defaultDetails.FirstName);
                 appSettings.Add("LastName", defaultDetails.LastName);

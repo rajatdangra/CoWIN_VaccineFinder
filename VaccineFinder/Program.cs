@@ -27,7 +27,7 @@ namespace VaccineFinder
             List<string> PinCodes = UserPreference.GetBeneficiaryIds(pinCodesString);
             DateTime date = DateTime.Now;
 
-            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoBookCenter, AppConfig.IncludePaidService)
+            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoPickCenter, AppConfig.IncludePaidService)
             {
                 FirstName = AppConfig.FirstName,
                 LastName = AppConfig.LastName,
@@ -39,7 +39,7 @@ namespace VaccineFinder
             Console.WriteLine("Minimum Age Limit: " + userDetails.UserPreference.AgeCriteria + "+");
             Console.WriteLine("Dose: " + userDetails.UserPreference.Dose);
             Console.WriteLine("Slot Preference: " + userDetails.UserPreference.SlotPreference);
-            Console.WriteLine("Auto-Pick Center: " + userDetails.UserPreference.AutoBookCenter);
+            Console.WriteLine("Auto-Pick Center: " + userDetails.UserPreference.AutoPickCenter);
             Console.WriteLine("Include Paid Service: " + userDetails.UserPreference.IncludePaidService);
             Console.WriteLine("Email Ids: " + emailIdsString);
             Console.WriteLine("From Date: " + date.ToString("dd-MM-yyyy"));
@@ -159,7 +159,7 @@ namespace VaccineFinder
                 {
                     inputMessage = "Auto-Pick Center: Y/N ?";
                     confirmation = TakeConfirmation(inputMessage);
-                    userDetails.UserPreference.AutoBookCenter = (confirmation.ToLower() == "y");
+                    userDetails.UserPreference.AutoPickCenter = (confirmation.ToLower() == "y");
 
                     confirmation = TakeConfirmation(confirmationMessage);
                 }

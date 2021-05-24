@@ -129,6 +129,7 @@ namespace VaccineFinder
                 var requestObj = new ValidateMobileOTPRequest() { otp = otp, txnId = txnId };
                 var serRequestObj = JsonConvert.SerializeObject(requestObj);
                 request.AddParameter("application/json", serRequestObj, ParameterType.RequestBody);
+                request.AddHeader("Origin", AppConfig.CoWIN_RegistrationURL);
                 IRestResponse response = client.Execute(request);
                 var responseString = response.Content;
                 //Console.WriteLine(responseString);

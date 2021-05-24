@@ -62,7 +62,7 @@ namespace VaccineFinder
             var sessions = CheckVaccineAvailabilityStatus();
             if (sessions != null && sessions.Count > 0)
             {
-                if (UserDetails.UserPreference.AutoBookCenter)
+                if (UserDetails.UserPreference.AutoPickCenter)
                 {
                     ////Sort based on More Available Capacity
                     //sessions = sessions.OrderByDescending(a => a.availableCapacity).ToList();
@@ -275,7 +275,7 @@ namespace VaccineFinder
                         {
                             counter += sessionsByPin.Count;
                             vaccineSlotFound = true;
-                            if (UserDetails.UserPreference.AutoBookCenter)
+                            if (UserDetails.UserPreference.AutoPickCenter)
                             {
                                 //Sort based on More Available Capacity
                                 sessionsByPin = sessionsByPin.OrderByDescending(a => a.availableCapacity).ToList();
@@ -428,7 +428,7 @@ namespace VaccineFinder
             bool slotBooked = false;
             slotBooked = BookSlotWithSessionPref(sessionIds, sessionPreference, slotPreference);
 
-            if (!slotBooked && UserDetails.UserPreference.AutoBookCenter) //if auto center booking. Check if other center are available
+            if (!slotBooked && UserDetails.UserPreference.AutoPickCenter) //if auto center booking. Check if other center are available
             {
                 int retryCount = 1;
                 int sessionNumber = 1;

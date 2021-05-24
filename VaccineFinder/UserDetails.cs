@@ -9,12 +9,12 @@ namespace VaccineFinder
 {
     public class UserDetails
     {
-        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter, bool includePaidService)
+        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService)
         {
             EmailIDs = new List<string>();
             EmailIDs.AddRange(emailIds);
             Phone = phone;
-            UserPreference = new UserPreference(pinCodes, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoBookCenter, includePaidService);
+            UserPreference = new UserPreference(pinCodes, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoPickCenter, includePaidService);
         }
         public UserPreference UserPreference { get; set; }
         public string FirstName { get; set; }
@@ -55,7 +55,7 @@ namespace VaccineFinder
 
     public class UserPreference
     {
-        public UserPreference(List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoBookCenter, bool includePaidService)
+        public UserPreference(List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService)
         {
             BeneficiaryIds = new List<string>();
             BeneficiaryIds.AddRange(beneficiaryIds);
@@ -65,7 +65,7 @@ namespace VaccineFinder
             Dose = dose;
             SlotPreference = slotPreference;
             PollingTime = pollingTime;
-            AutoBookCenter = autoBookCenter;
+            AutoPickCenter = autoPickCenter;
             IncludePaidService = includePaidService;
         }
         public List<string> BeneficiaryIds { get; set; }
@@ -77,7 +77,7 @@ namespace VaccineFinder
         public int Dose { get; set; }
         public int SlotPreference { get; set; }
         public int PollingTime { get; set; }
-        public bool AutoBookCenter { get; set; }
+        public bool AutoPickCenter { get; set; }
         public bool IncludePaidService { get; set; }
 
         public bool IsValidPinCodes(List<string> pinCodeList)

@@ -23,7 +23,7 @@ Mandatory:
 	7) Slot Preference: (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM)
 	8) From Date: Date from which vaccination slots will be searched (for 7 days). Format - "dd-MM-yyyy" (eg. 31-03-2021)
 	9) Retry Frequency (in Seconds): Frequency at which retry call should happen (in case of no slots found), (eg. 10). Value less than 3 Seconds is not recommended due to rate limiting imposed by the Government.
-	10) AutoBookCenter - If True ("1"), it auto picks center with the combination of 'Pin-code priority and the center with most available slots'. If false, it asks user to input preferred center.
+	10) AutoPickCenter - If True ("1"), it auto picks center with the combination of 'Pin-code priority and the center with most available slots'. If false, it asks user to input preferred center.
 	11) IncludePaidService - If True ("1"), it will also include centers with as 'Paid' Service (Fee Type). If false, it will only pick centers with 'Free' service.
 
 Optional:
