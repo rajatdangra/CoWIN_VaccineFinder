@@ -104,7 +104,7 @@ namespace VaccineFinder
                 }
                 if (finalConfirmation.ToLower() == "n")
                 {
-                    updateConfirmationMessage = CreateCustomMessage("Dose Number");
+                    updateConfirmationMessage = CreateCustomMessage("Dose number");
                     updateConfirmation = TakeConfirmation(updateConfirmationMessage);
 
                     if (updateConfirmation.ToLower() == "y")

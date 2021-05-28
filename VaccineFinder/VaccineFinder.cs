@@ -173,9 +173,11 @@ namespace VaccineFinder
                     stInfo = "Beneficiaries fetched Successfully!";
                     //Console.WriteLine(stInfo);
                     logger.Info(stInfo);
-
+                    
+                    bool updateRequired = false;
                     while (!AreBeneficiariesVerified(response))
                     {
+                        updateRequired = true;
                         Console.WriteLine("\nBelow are the beneficiaries registered in your account:");
                         int counter = 0;
                         foreach (var ben in response.beneficiaries)
@@ -190,7 +192,7 @@ namespace VaccineFinder
                     }
                     areBeneficiariesVerified = true;
 
-                    if (AppConfig.SaveUserDetails)
+                    if (updateRequired && AppConfig.SaveUserDetails)
                     {
                         Console.WriteLine("Updating Default Settings");
                         AppConfig.UpdateConfig(UserDetails);

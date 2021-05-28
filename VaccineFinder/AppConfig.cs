@@ -87,7 +87,7 @@ namespace VaccineFinder
                     var value = kv.Value;
                     if (settings[key] == null)
                     {
-                        logger.Warn("While reading the app.config, this line had no key/value attributes modify: " + key);
+                        logger.Warn("While reading the App.config, this line had no key/value attributes modify: " + key);
                         //settings.Add(key, value);
                     }
                     else if (settings[key].Value != value)
@@ -100,16 +100,16 @@ namespace VaccineFinder
                 {
                     configFile.Save(ConfigurationSaveMode.Modified);
                     ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-                    logger.Info("Updated app.config file");
+                    logger.Info("Updated App.config file");
                 }
                 else
                 {
-                    logger.Info("No need to update app.config file because appsetting are accurate in app.config file");
+                    logger.Info("No need to update App.config file because appsetting are accurate in App.config file");
                 }
             }
             catch (Exception ex)
             {
-                logger.Info("Unable to update app.config file" + "\n" + ex);
+                logger.Info("Unable to update App.config file" + "\n" + ex);
             }
             finally
             {
