@@ -366,26 +366,36 @@ namespace VaccineFinder
                             int chosenDoseAvailability = (isVaccineDose1 ? session.available_capacity_dose1 : session.available_capacity_dose2);
                             if (chosenDoseAvailability > 0)//For Dose 1 or 2 selection
                             {
-                                vaccineSlotFound = true;
-                                counter++;
-                                var details = string.Format(counter + ") Date: {0}, Name: {1}, Pin Code: {2}, Vaccine: {3}, Min Age: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}", session.date, center.name, pinCode, session.vaccine, session.min_age_limit, session.available_capacity_dose1, session.available_capacity_dose2, center.address);
-                                slots.Append(details + "\n");
+                                bool isPreferenceVaccine = UserDetails.UserPreference.IsPreferenceVaccine(session.vaccine);
+                                if (isPreferenceVaccine)
+                                {
+                                    vaccineSlotFound = true;
+                                    counter++;
+                                    var details = string.Format(counter + ") Date: {0}, Name: {1}, Pin Code: {2}, Vaccine: {3}, Min Age: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}", session.date, center.name, pinCode, session.vaccine, session.min_age_limit, session.available_capacity_dose1, session.available_capacity_dose2, center.address);
+                                    slots.Append(details + "\n");
 
-                                stInfo = string.Format("Dose {0} is available", (isVaccineDose1 ? 1 : 2));
-                                logger.Info(stInfo);
+                                    stInfo = string.Format("Dose {0} is available", (isVaccineDose1 ? 1 : 2));
+                                    logger.Info(stInfo);
 
-                                if (currSession == null)
-                                    currSession = new SessionProxy();
-                                currSession.session_id = session.session_id;
-                                CultureInfo provider = CultureInfo.InvariantCulture;
-                                DateTime date = new DateTime();
-                                if (DateTime.TryParseExact(session.date, "dd-MM-yyyy", provider, DateTimeStyles.None, out date))
-                                    currSession.date = date;
-                                currSession.availableCapacity = chosenDoseAvailability;
-                                currSession.slots.AddRange(session.slots);
+                                    if (currSession == null)
+                                        currSession = new SessionProxy();
+                                    currSession.session_id = session.session_id;
+                                    CultureInfo provider = CultureInfo.InvariantCulture;
+                                    DateTime date = new DateTime();
+                                    if (DateTime.TryParseExact(session.date, "dd-MM-yyyy", provider, DateTimeStyles.None, out date))
+                                        currSession.date = date;
+                                    currSession.availableCapacity = chosenDoseAvailability;
+                                    currSession.slots.AddRange(session.slots);
 
-                                sessions.Add(currSession);
-                                currSession = null;
+                                    sessions.Add(currSession);
+                                    currSession = null;
+                                }
+                                else
+                                {
+                                    stInfo = string.Format("Other Vaccine {0} is available in Center: {1}", session.vaccine, center.name);
+                                    Console.WriteLine(stInfo);
+                                    logger.Info(stInfo);
+                                }
                             }
                             else
                             {

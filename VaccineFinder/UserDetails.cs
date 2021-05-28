@@ -9,12 +9,12 @@ namespace VaccineFinder
 {
     public class UserDetails
     {
-        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService)
+        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService, string vaccine)
         {
             EmailIDs = new List<string>();
             EmailIDs.AddRange(emailIds);
             Phone = phone;
-            UserPreference = new UserPreference(pinCodes, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoPickCenter, includePaidService);
+            UserPreference = new UserPreference(pinCodes, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoPickCenter, includePaidService, vaccine);
         }
         public UserPreference UserPreference { get; set; }
         public string FirstName { get; set; }
@@ -55,7 +55,7 @@ namespace VaccineFinder
 
     public class UserPreference
     {
-        public UserPreference(List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService)
+        public UserPreference(List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService, string vaccine)
         {
             BeneficiaryIds = new List<string>();
             BeneficiaryIds.AddRange(beneficiaryIds);
@@ -67,6 +67,7 @@ namespace VaccineFinder
             PollingTime = pollingTime;
             AutoPickCenter = autoPickCenter;
             IncludePaidService = includePaidService;
+            Vaccine = vaccine;
         }
         public List<string> BeneficiaryIds { get; set; }
         public string BeneficiaryIdsString { get { return string.Join(",", BeneficiaryIds); } }
@@ -79,6 +80,9 @@ namespace VaccineFinder
         public int PollingTime { get; set; }
         public bool AutoPickCenter { get; set; }
         public bool IncludePaidService { get; set; }
+        public string Vaccine { get; set; }
+        public IEnumerable<VaccineName> vaccines { get { return Enum.GetValues(typeof(VaccineName)).Cast<VaccineName>(); } }
+        public bool IsSpecificVaccine { get { return VaccineName.Any.GetDescription().ToUpper() != Vaccine.ToUpper(); } }
 
         public bool IsValidPinCodes(List<string> pinCodeList)
         {
@@ -101,6 +105,11 @@ namespace VaccineFinder
             Match match = regex.Match(pinCode);
             return match.Success;
         }
+        // Function to validate Vaccine.
+        public bool IsValidVaccine(String vaccine)
+        {
+            return vaccines.Select(a => a.GetDescription().ToUpper()).Contains(vaccine.ToUpper());
+        }
 
         public static List<string> GetBeneficiaryIds(string beneficiaryIds)
         {
@@ -109,6 +118,15 @@ namespace VaccineFinder
         public static List<string> GetPincodes(string pinCodes)
         {
             return pinCodes.Trim().Replace(" ", "").Split(',').ToList();
+        }
+
+        public string GetVaccineNames()
+        {
+            return string.Join(", ", vaccines.Select(a => a.GetDescription()));
+        }
+        public bool IsPreferenceVaccine(string vaccine)
+        {
+            return !IsSpecificVaccine ? true : (vaccine.ToUpper().Trim() == Vaccine.ToUpper().Trim());
         }
     }
 }

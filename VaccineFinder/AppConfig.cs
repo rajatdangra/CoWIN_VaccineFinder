@@ -22,12 +22,16 @@ namespace VaccineFinder
         internal static string EmailIDs => Convert.ToString(ConfigurationManager.AppSettings["EmailIDs"]);
         internal static int MinAgeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["MinAgeLimit"]);
         internal static int Dose => Convert.ToInt32(ConfigurationManager.AppSettings["Dose"]);
+        internal static string Vaccine => Convert.ToString(ConfigurationManager.AppSettings["Vaccine"]);
         internal static string FirstName => Convert.ToString(ConfigurationManager.AppSettings["FirstName"]);
         internal static string LastName => Convert.ToString(ConfigurationManager.AppSettings["LastName"]);
         internal static string FullName => FirstName + " " + LastName;
-        internal static bool SaveUserDetails => String.Equals(ConfigurationManager.AppSettings["SaveUserDetails"], "1");
         internal static int PollingTime => Convert.ToInt32(ConfigurationManager.AppSettings["PollingTime"]);
+
+        internal static bool SaveUserDetails => String.Equals(ConfigurationManager.AppSettings["SaveUserDetails"], "1");
         internal static bool SendEmail => String.Equals(ConfigurationManager.AppSettings["SendEmail"], "1");
+
+        #region Co-WIN APIs
         internal static string Secret => Convert.ToString(ConfigurationManager.AppSettings["Secret"]);
         internal static string Cowin_BaseUrl => Convert.ToString(ConfigurationManager.AppSettings["Cowin_BaseUrl"]);
         internal static string GenerateOTPUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["GenerateOTPUrl"]);
@@ -41,6 +45,7 @@ namespace VaccineFinder
         internal static string Booking_MailSubject => Convert.ToString(ConfigurationManager.AppSettings["Booking_MailSubject"]);
         internal static int OtpExpiryTimeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["OtpExpiryTimeLimit"]);
         internal static int TokenExpiryTimeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["TokenExpiryTimeLimit"]);
+        #endregion
         //internal static int Retry_Count => Convert.ToInt32(ConfigurationManager.AppSettings["Retry_Count"]);
 
         public static void UpdateConfig(UserDetails defaultDetails)
@@ -72,6 +77,7 @@ namespace VaccineFinder
                 appSettings.Add("IncludePaidService", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.IncludePaidService)));
                 appSettings.Add("FirstName", defaultDetails.FirstName);
                 appSettings.Add("LastName", defaultDetails.LastName);
+                appSettings.Add("Vaccine", defaultDetails.UserPreference.Vaccine);
                 appSettings.Add("PollingTime", Convert.ToString(defaultDetails.UserPreference.PollingTime));
 
                 bool change = false;

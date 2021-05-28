@@ -99,6 +99,7 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="Email.cs" />
+    <Compile Include="EnumExtensions.cs" />
     <Compile Include="Hash.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="StringMethods.cs" />
     <Compile Include="UserDetails.cs" />
     <Compile Include="VaccineFinder.cs" />
+    <Compile Include="VaccineName.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

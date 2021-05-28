@@ -27,7 +27,7 @@ namespace VaccineFinder
             List<string> PinCodes = UserPreference.GetBeneficiaryIds(pinCodesString);
             DateTime date = DateTime.Now;
 
-            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoPickCenter, AppConfig.IncludePaidService)
+            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoPickCenter, AppConfig.IncludePaidService, AppConfig.Vaccine)
             {
                 FirstName = AppConfig.FirstName,
                 LastName = AppConfig.LastName,
@@ -38,6 +38,7 @@ namespace VaccineFinder
             Console.WriteLine("Beneficiary Ids: " + beneficiaryIdsString);
             Console.WriteLine("Minimum Age Limit: " + userDetails.UserPreference.AgeCriteria + "+");
             Console.WriteLine("Dose: " + userDetails.UserPreference.Dose);
+            Console.WriteLine("Vaccine: " + userDetails.UserPreference.Vaccine);
             Console.WriteLine("Slot Preference: " + userDetails.UserPreference.SlotPreference);
             Console.WriteLine("Auto-Pick Center: " + userDetails.UserPreference.AutoPickCenter);
             Console.WriteLine("Include Paid Service: " + userDetails.UserPreference.IncludePaidService);
@@ -136,6 +137,22 @@ namespace VaccineFinder
                         slotPreference = Console.ReadLine();
                     }
                     userDetails.UserPreference.SlotPreference = slot;
+                    confirmation = TakeConfirmation(confirmationMessage);
+                }
+                if (confirmation.ToLower() == "n")
+                {
+                    inputMessage = "Please Enter your Vaccine: " + userDetails.UserPreference.GetVaccineNames();
+                    Console.WriteLine(inputMessage);
+                    var vaccine = Console.ReadLine();
+                    while (!userDetails.UserPreference.IsValidVaccine(vaccine))
+                    {
+                        stInfo = "Invalid Input. Please Retry.";
+                        logger.Error(stInfo + ": " + vaccine);
+                        Console.WriteLine(stInfo);
+                        Console.WriteLine(inputMessage);
+                        vaccine = Console.ReadLine();
+                    }
+                    userDetails.UserPreference.Vaccine = vaccine;
                     confirmation = TakeConfirmation(confirmationMessage);
                 }
                 if (confirmation.ToLower() == "n")
