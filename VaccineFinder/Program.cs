@@ -48,186 +48,247 @@ namespace VaccineFinder
             Console.WriteLine("First Name (optional): " + userDetails.FirstName);
             Console.WriteLine("Last Name (optional): " + userDetails.LastName);
 
-            var confirmationMessage = "Please verify to Proceed: Y/N";
-            var confirmation = TakeConfirmation(confirmationMessage);
-            confirmationMessage = "Are you good to go with rest of the settings: Y/N ?";
+            var finalConfirmationMessage = "Are you good to go with these settings: Y/N ?";
+            var finalConfirmation = TakeConfirmation(finalConfirmationMessage);
             string inputMessage = string.Empty;
-            if (confirmation.ToLower() == "n")
+            if (finalConfirmation.ToLower() == "n")
             {
-                if (confirmation.ToLower() == "n")
+                string updateConfirmationMessage = string.Empty;
+                string updateConfirmation = string.Empty;
+                if (finalConfirmation.ToLower() == "n")
                 {
-                    inputMessage = "Please Enter your Pin Codes (Comma separated): ";
-                    Console.WriteLine(inputMessage);
-                    pinCodesString = Console.ReadLine();
-                    PinCodes = UserPreference.GetPincodes(pinCodesString);
-                    while (!userDetails.UserPreference.IsValidPinCodes(PinCodes))
+                    updateConfirmationMessage = CreateCustomMessage("Pin Codes");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
                     {
-                        stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + pinCodesString);
-                        Console.WriteLine(stInfo);
+                        inputMessage = "Please Enter your Pin Codes (Comma separated): ";
                         Console.WriteLine(inputMessage);
                         pinCodesString = Console.ReadLine();
                         PinCodes = UserPreference.GetPincodes(pinCodesString);
+                        while (!userDetails.UserPreference.IsValidPinCodes(PinCodes))
+                        {
+                            stInfo = "Invalid Input. Please Retry.";
+                            logger.Error(stInfo + ": " + pinCodesString);
+                            Console.WriteLine(stInfo);
+                            Console.WriteLine(inputMessage);
+                            pinCodesString = Console.ReadLine();
+                            PinCodes = UserPreference.GetPincodes(pinCodesString);
+                        }
+                        userDetails.UserPreference.PinCodes = PinCodes.ToList();
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                     }
-                    userDetails.UserPreference.PinCodes = PinCodes.ToList();
-                    confirmation = TakeConfirmation(confirmationMessage);
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
-                    inputMessage = "Please Enter your Min Age Criteria: ";
-                    Console.WriteLine(inputMessage);
-                    var MinAgeCriteria = Console.ReadLine();
-                    int age;
-                    while (!int.TryParse(MinAgeCriteria, out age))
+                    updateConfirmationMessage = CreateCustomMessage("Min Age Criteria");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
                     {
-                        stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + MinAgeCriteria);
-                        Console.WriteLine(stInfo);
+                        inputMessage = "Please Enter your Min Age Criteria: ";
                         Console.WriteLine(inputMessage);
-                        MinAgeCriteria = Console.ReadLine();
+                        var MinAgeCriteria = Console.ReadLine();
+                        int age;
+                        while (!int.TryParse(MinAgeCriteria, out age))
+                        {
+                            stInfo = "Invalid Input. Please Retry.";
+                            logger.Error(stInfo + ": " + MinAgeCriteria);
+                            Console.WriteLine(stInfo);
+                            Console.WriteLine(inputMessage);
+                            MinAgeCriteria = Console.ReadLine();
+                        }
+                        userDetails.UserPreference.AgeCriteria = age;
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                     }
-                    userDetails.UserPreference.AgeCriteria = age;
-                    confirmation = TakeConfirmation(confirmationMessage);
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
-                    inputMessage = "Please Enter your Dose number: ";
-                    Console.WriteLine(inputMessage);
-                    var doseString = Console.ReadLine();
-                    int dose;
-                    while (!int.TryParse(doseString, out dose) || (dose != 1 && dose != 2))
+                    updateConfirmationMessage = CreateCustomMessage("Dose Number");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
                     {
-                        stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + doseString);
-                        Console.WriteLine(stInfo);
+                        inputMessage = "Please Enter your Dose number: ";
                         Console.WriteLine(inputMessage);
-                        doseString = Console.ReadLine();
+                        var doseString = Console.ReadLine();
+                        int dose;
+                        while (!int.TryParse(doseString, out dose) || (dose != 1 && dose != 2))
+                        {
+                            stInfo = "Invalid Input. Please Retry.";
+                            logger.Error(stInfo + ": " + doseString);
+                            Console.WriteLine(stInfo);
+                            Console.WriteLine(inputMessage);
+                            doseString = Console.ReadLine();
+                        }
+                        userDetails.UserPreference.Dose = dose;
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                     }
-                    userDetails.UserPreference.Dose = dose;
-                    confirmation = TakeConfirmation(confirmationMessage);
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
-                    inputMessage = "Please Enter your Phone Number: ";
-                    Console.WriteLine(inputMessage);
-                    Phone = Console.ReadLine();
-                    while (!userDetails.IsValidMobileNumber(Phone))
+                    updateConfirmationMessage = CreateCustomMessage("Phone Number");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
                     {
-                        stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + Phone);
-                        Console.WriteLine(stInfo);
+                        inputMessage = "Please Enter your Phone Number: ";
                         Console.WriteLine(inputMessage);
                         Phone = Console.ReadLine();
+                        while (!userDetails.IsValidMobileNumber(Phone))
+                        {
+                            stInfo = "Invalid Input. Please Retry.";
+                            logger.Error(stInfo + ": " + Phone);
+                            Console.WriteLine(stInfo);
+                            Console.WriteLine(inputMessage);
+                            Phone = Console.ReadLine();
+                        }
+                        userDetails.Phone = Phone;
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                     }
-                    userDetails.Phone = Phone;
-                    confirmation = TakeConfirmation(confirmationMessage);
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
-                    inputMessage = "Please Enter Slot Preference (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM)";
-                    Console.WriteLine(inputMessage);
-                    var slotPreference = Console.ReadLine();
-                    int slot;
-                    while (!int.TryParse(slotPreference, out slot) && slot <= 4)
+                    updateConfirmationMessage = CreateCustomMessage("Slot Preference");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
                     {
-                        stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + slotPreference);
-                        Console.WriteLine(stInfo);
+                        inputMessage = "Please Enter Slot Preference (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM)";
                         Console.WriteLine(inputMessage);
-                        slotPreference = Console.ReadLine();
+                        var slotPreference = Console.ReadLine();
+                        int slot;
+                        while (!int.TryParse(slotPreference, out slot) && slot <= 4)
+                        {
+                            stInfo = "Invalid Input. Please Retry.";
+                            logger.Error(stInfo + ": " + slotPreference);
+                            Console.WriteLine(stInfo);
+                            Console.WriteLine(inputMessage);
+                            slotPreference = Console.ReadLine();
+                        }
+                        userDetails.UserPreference.SlotPreference = slot;
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                     }
-                    userDetails.UserPreference.SlotPreference = slot;
-                    confirmation = TakeConfirmation(confirmationMessage);
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
-                    inputMessage = "Please Enter your Vaccine: " + userDetails.UserPreference.GetVaccineNames();
-                    Console.WriteLine(inputMessage);
-                    var vaccine = Console.ReadLine();
-                    while (!userDetails.UserPreference.IsValidVaccine(vaccine))
+                    updateConfirmationMessage = CreateCustomMessage("Vaccine");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
                     {
-                        stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + vaccine);
-                        Console.WriteLine(stInfo);
+                        inputMessage = "Please Enter your Vaccine: " + userDetails.UserPreference.GetVaccineNames();
                         Console.WriteLine(inputMessage);
-                        vaccine = Console.ReadLine();
+                        var vaccine = Console.ReadLine();
+                        while (!userDetails.UserPreference.IsValidVaccine(vaccine))
+                        {
+                            stInfo = "Invalid Input. Please Retry.";
+                            logger.Error(stInfo + ": " + vaccine);
+                            Console.WriteLine(stInfo);
+                            Console.WriteLine(inputMessage);
+                            vaccine = Console.ReadLine();
+                        }
+                        userDetails.UserPreference.Vaccine = vaccine;
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                     }
-                    userDetails.UserPreference.Vaccine = vaccine;
-                    confirmation = TakeConfirmation(confirmationMessage);
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
-                    inputMessage = "Please Enter Retry Frequency (Seconds): ";
-                    Console.WriteLine(inputMessage);
-                    var retryFrequency = Console.ReadLine();
-                    int pollingTime;
-                    while (!int.TryParse(retryFrequency, out pollingTime))
+                    updateConfirmationMessage = CreateCustomMessage("Retry Frequency");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
                     {
-                        stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + retryFrequency);
-                        Console.WriteLine(stInfo);
+                        inputMessage = "Please Enter Retry Frequency (Seconds): ";
                         Console.WriteLine(inputMessage);
-                        retryFrequency = Console.ReadLine();
+                        var retryFrequency = Console.ReadLine();
+                        int pollingTime;
+                        while (!int.TryParse(retryFrequency, out pollingTime))
+                        {
+                            stInfo = "Invalid Input. Please Retry.";
+                            logger.Error(stInfo + ": " + retryFrequency);
+                            Console.WriteLine(stInfo);
+                            Console.WriteLine(inputMessage);
+                            retryFrequency = Console.ReadLine();
+                        }
+                        userDetails.UserPreference.PollingTime = pollingTime;
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                     }
-                    userDetails.UserPreference.PollingTime = pollingTime;
-                    confirmation = TakeConfirmation(confirmationMessage);
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
                     inputMessage = "Auto-Pick Center: Y/N ?";
-                    confirmation = TakeConfirmation(inputMessage);
-                    userDetails.UserPreference.AutoPickCenter = (confirmation.ToLower() == "y");
+                    finalConfirmation = TakeConfirmation(inputMessage);
+                    userDetails.UserPreference.AutoPickCenter = (finalConfirmation.ToLower() == "y");
 
-                    confirmation = TakeConfirmation(confirmationMessage);
+                    finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
-                    inputMessage = "Please Enter 'From Date' (dd-MM-yyyy): ";
-                    Console.WriteLine(inputMessage);
-                    var dateString = Console.ReadLine();
-                    CultureInfo provider = CultureInfo.InvariantCulture;
-                    while (!DateTime.TryParseExact(dateString, "dd-MM-yyyy", provider, DateTimeStyles.None, out date))
+                    updateConfirmationMessage = CreateCustomMessage("From Date");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
                     {
-                        stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + dateString);
-                        Console.WriteLine(stInfo);
+                        inputMessage = "Please Enter 'From Date' (dd-MM-yyyy): ";
                         Console.WriteLine(inputMessage);
-                        dateString = Console.ReadLine();
+                        var dateString = Console.ReadLine();
+                        CultureInfo provider = CultureInfo.InvariantCulture;
+                        while (!DateTime.TryParseExact(dateString, "dd-MM-yyyy", provider, DateTimeStyles.None, out date))
+                        {
+                            stInfo = "Invalid Input. Please Retry.";
+                            logger.Error(stInfo + ": " + dateString);
+                            Console.WriteLine(stInfo);
+                            Console.WriteLine(inputMessage);
+                            dateString = Console.ReadLine();
+                        }
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                     }
-                    confirmation = TakeConfirmation(confirmationMessage);
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
-                    inputMessage = "Please Enter your Email Ids (Comma separated): ";
-                    Console.WriteLine(inputMessage);
-                    emailIdsString = Console.ReadLine();
-                    EmailIDs = Email.GetEmailIDs(emailIdsString);
-                    while (!userDetails.IsValidEmailIds(EmailIDs))
+                    updateConfirmationMessage = CreateCustomMessage("Email Ids");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
                     {
-                        stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + emailIdsString);
-                        Console.WriteLine(stInfo);
+                        inputMessage = "Please Enter your Email Ids (Comma separated): ";
                         Console.WriteLine(inputMessage);
                         emailIdsString = Console.ReadLine();
                         EmailIDs = Email.GetEmailIDs(emailIdsString);
+                        while (!userDetails.IsValidEmailIds(EmailIDs))
+                        {
+                            stInfo = "Invalid Input. Please Retry.";
+                            logger.Error(stInfo + ": " + emailIdsString);
+                            Console.WriteLine(stInfo);
+                            Console.WriteLine(inputMessage);
+                            emailIdsString = Console.ReadLine();
+                            EmailIDs = Email.GetEmailIDs(emailIdsString);
+                        }
+                        userDetails.EmailIDs = EmailIDs.ToList();
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                     }
-                    userDetails.EmailIDs = EmailIDs.ToList();
-                    confirmation = TakeConfirmation(confirmationMessage);
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
-                    Console.WriteLine("Please Enter your First Name (optional): ");
-                    var FirstName = Console.ReadLine();
-                    userDetails.FirstName = FirstName;
-                    Console.WriteLine("Please Enter your Last Name (optional): ");
-                    var LastName = Console.ReadLine();
-                    userDetails.LastName = LastName;
+                    updateConfirmationMessage = CreateCustomMessage("First/Last Name");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
+                    {
+                        Console.WriteLine("Please Enter your First Name (optional): ");
+                        var FirstName = Console.ReadLine();
+                        userDetails.FirstName = FirstName;
+                        Console.WriteLine("Please Enter your Last Name (optional): ");
+                        var LastName = Console.ReadLine();
+                        userDetails.LastName = LastName;
+                    }
                 }
-                if (confirmation.ToLower() == "n")
+                if (finalConfirmation.ToLower() == "n")
                 {
                     inputMessage = "Include Paid Service: Y/N ?";
-                    confirmation = TakeConfirmation(inputMessage);
-                    userDetails.UserPreference.IncludePaidService = (confirmation.ToLower() == "y");
+                    finalConfirmation = TakeConfirmation(inputMessage);
+                    userDetails.UserPreference.IncludePaidService = (finalConfirmation.ToLower() == "y");
                     //confirmation = TakeConfirmation(confirmationMessage);
                 }
 
@@ -297,6 +358,10 @@ namespace VaccineFinder
             Console.WriteLine("Press Enter to continue");
             Console.ReadLine();
             Environment.Exit(1);
+        }
+        public static string CreateCustomMessage(string propertyName)
+        {
+            return string.Format("Would you like to update {0} ? : Y / N", propertyName);
         }
 
         public static string TakeConfirmation(string message)
