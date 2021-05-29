@@ -39,7 +39,7 @@ namespace VaccineFinder
             while (ValidateMobileOTPResponse == null)
             {
                 stInfo = "Invalid OTP. Please Retry.";
-                logger.Error(stInfo + ": " + otp);
+                logger.Info(stInfo + ": " + otp);
                 //Console.WriteLine(stInfo);
                 Console.WriteLine(inputMessage);
                 otp = Console.ReadLine();
@@ -76,7 +76,7 @@ namespace VaccineFinder
                     while (!int.TryParse(sessionNumberString, out sessionNumber) || sessionNumber > sessions.Count)
                     {
                         stInfo = "Invalid Input. Please Retry.";
-                        logger.Error(stInfo + ": " + sessionNumberString);
+                        logger.Info(stInfo + ": " + sessionNumberString);
                         Console.WriteLine(stInfo);
                         Console.WriteLine(inputMessage);
                         sessionNumberString = Console.ReadLine();
@@ -173,7 +173,7 @@ namespace VaccineFinder
                     stInfo = "Beneficiaries fetched Successfully!";
                     //Console.WriteLine(stInfo);
                     logger.Info(stInfo);
-                    
+
                     bool updateRequired = false;
                     while (!AreBeneficiariesVerified(response))
                     {
@@ -261,7 +261,7 @@ namespace VaccineFinder
                 {
                     stInfo = "Status Call End for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
                     logger.Info(stInfo);
-                    Console.WriteLine("\n" + stInfo);
+                    //Console.WriteLine("\n" + stInfo);
 
                     int counter = 0;
                     StringBuilder slots = new StringBuilder();
@@ -309,7 +309,7 @@ namespace VaccineFinder
                     {
                         stInfo = "No Slots Found for Pin Codes: " + UserDetails.UserPreference.PinCodeString + ". Last status checked: " + DateTime.Now.ToDetailString();
                         logger.Info(stInfo);
-                        Console.WriteLine(stInfo);
+                        //Console.WriteLine(stInfo);
                         if (!errorOccured)
                             Thread.Sleep(TimeSpan.FromSeconds(UserDetails.UserPreference.PollingTime));
                     }
@@ -368,6 +368,9 @@ namespace VaccineFinder
                             int chosenDoseAvailability = (isVaccineDose1 ? session.available_capacity_dose1 : session.available_capacity_dose2);
                             if (chosenDoseAvailability > 0)//For Dose 1 or 2 selection
                             {
+                                stInfo = string.Format("Dose {0} is available in Center: {1}", (isVaccineDose1 ? 1 : 2), center.name);
+                                logger.Info(stInfo);
+
                                 bool isPreferenceVaccine = UserDetails.UserPreference.IsPreferenceVaccine(session.vaccine);
                                 if (isPreferenceVaccine)
                                 {
@@ -375,8 +378,9 @@ namespace VaccineFinder
                                     counter++;
                                     var details = string.Format(counter + ") Date: {0}, Name: {1}, Pin Code: {2}, Vaccine: {3}, Min Age: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}", session.date, center.name, pinCode, session.vaccine, session.min_age_limit, session.available_capacity_dose1, session.available_capacity_dose2, center.address);
                                     slots.Append(details + "\n");
+                                    logger.Info(details);
 
-                                    stInfo = string.Format("Dose {0} is available", (isVaccineDose1 ? 1 : 2));
+                                    stInfo = string.Format("Vaccine {0} is available in Center: {1}", session.vaccine, center.name);
                                     logger.Info(stInfo);
 
                                     if (currSession == null)
@@ -401,7 +405,7 @@ namespace VaccineFinder
                             }
                             else
                             {
-                                stInfo = string.Format("Other Dose {0} is available", (isVaccineDose1 ? 2 : 1));
+                                stInfo = string.Format("Other Dose {0} is available in Center: {1}", (isVaccineDose1 ? 2 : 1), center.name);
                                 logger.Info(stInfo);
                                 //var details = string.Format(counter + ") Date: {0}, Name: {1}, Pin Code: {2}, Vaccine: {3}, Min Age: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}", session.date, center.name, pinCode, session.vaccine, session.min_age_limit, session.available_capacity_dose1, session.available_capacity_dose2, center.address);
                                 //otherDoseSlots.Append(details + "\n");

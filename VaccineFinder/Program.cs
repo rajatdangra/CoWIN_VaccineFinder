@@ -69,7 +69,7 @@ namespace VaccineFinder
                         while (!userDetails.UserPreference.IsValidPinCodes(PinCodes))
                         {
                             stInfo = "Invalid Input. Please Retry.";
-                            logger.Error(stInfo + ": " + pinCodesString);
+                            logger.Info(stInfo + ": " + pinCodesString);
                             Console.WriteLine(stInfo);
                             Console.WriteLine(inputMessage);
                             pinCodesString = Console.ReadLine();
@@ -93,7 +93,7 @@ namespace VaccineFinder
                         while (!int.TryParse(MinAgeCriteria, out age))
                         {
                             stInfo = "Invalid Input. Please Retry.";
-                            logger.Error(stInfo + ": " + MinAgeCriteria);
+                            logger.Info(stInfo + ": " + MinAgeCriteria);
                             Console.WriteLine(stInfo);
                             Console.WriteLine(inputMessage);
                             MinAgeCriteria = Console.ReadLine();
@@ -116,7 +116,7 @@ namespace VaccineFinder
                         while (!int.TryParse(doseString, out dose) || (dose != 1 && dose != 2))
                         {
                             stInfo = "Invalid Input. Please Retry.";
-                            logger.Error(stInfo + ": " + doseString);
+                            logger.Info(stInfo + ": " + doseString);
                             Console.WriteLine(stInfo);
                             Console.WriteLine(inputMessage);
                             doseString = Console.ReadLine();
@@ -138,7 +138,7 @@ namespace VaccineFinder
                         while (!userDetails.IsValidMobileNumber(Phone))
                         {
                             stInfo = "Invalid Input. Please Retry.";
-                            logger.Error(stInfo + ": " + Phone);
+                            logger.Info(stInfo + ": " + Phone);
                             Console.WriteLine(stInfo);
                             Console.WriteLine(inputMessage);
                             Phone = Console.ReadLine();
@@ -161,7 +161,7 @@ namespace VaccineFinder
                         while (!int.TryParse(slotPreference, out slot) && slot <= 4)
                         {
                             stInfo = "Invalid Input. Please Retry.";
-                            logger.Error(stInfo + ": " + slotPreference);
+                            logger.Info(stInfo + ": " + slotPreference);
                             Console.WriteLine(stInfo);
                             Console.WriteLine(inputMessage);
                             slotPreference = Console.ReadLine();
@@ -183,7 +183,7 @@ namespace VaccineFinder
                         while (!userDetails.UserPreference.IsValidVaccine(vaccine))
                         {
                             stInfo = "Invalid Input. Please Retry.";
-                            logger.Error(stInfo + ": " + vaccine);
+                            logger.Info(stInfo + ": " + vaccine);
                             Console.WriteLine(stInfo);
                             Console.WriteLine(inputMessage);
                             vaccine = Console.ReadLine();
@@ -206,7 +206,7 @@ namespace VaccineFinder
                         while (!int.TryParse(retryFrequency, out pollingTime))
                         {
                             stInfo = "Invalid Input. Please Retry.";
-                            logger.Error(stInfo + ": " + retryFrequency);
+                            logger.Info(stInfo + ": " + retryFrequency);
                             Console.WriteLine(stInfo);
                             Console.WriteLine(inputMessage);
                             retryFrequency = Console.ReadLine();
@@ -237,7 +237,7 @@ namespace VaccineFinder
                         while (!DateTime.TryParseExact(dateString, "dd-MM-yyyy", provider, DateTimeStyles.None, out date))
                         {
                             stInfo = "Invalid Input. Please Retry.";
-                            logger.Error(stInfo + ": " + dateString);
+                            logger.Info(stInfo + ": " + dateString);
                             Console.WriteLine(stInfo);
                             Console.WriteLine(inputMessage);
                             dateString = Console.ReadLine();
@@ -259,7 +259,7 @@ namespace VaccineFinder
                         while (!userDetails.IsValidEmailIds(EmailIDs))
                         {
                             stInfo = "Invalid Input. Please Retry.";
-                            logger.Error(stInfo + ": " + emailIdsString);
+                            logger.Info(stInfo + ": " + emailIdsString);
                             Console.WriteLine(stInfo);
                             Console.WriteLine(inputMessage);
                             emailIdsString = Console.ReadLine();
@@ -306,7 +306,7 @@ namespace VaccineFinder
                 while (!userDetails.IsValidMobileNumber(Phone))
                 {
                     stInfo = "Invalid Phone. Please Retry.";
-                    logger.Error(stInfo + ": " + Phone);
+                    logger.Info(stInfo + ": " + Phone);
                     Console.WriteLine(stInfo);
                     Console.WriteLine("Please Enter your Phone Number: ");
                     Phone = Console.ReadLine();
@@ -319,7 +319,7 @@ namespace VaccineFinder
                 while (!userDetails.UserPreference.IsValidPinCodes(PinCodes))
                 {
                     stInfo = "Invalid Pin Codes. Please Retry.";
-                    logger.Error(stInfo + ": " + pinCodesString);
+                    logger.Info(stInfo + ": " + pinCodesString);
                     Console.WriteLine(stInfo);
                     Console.WriteLine("Please Enter your Pin Codes: ");
                     pinCodesString = Console.ReadLine();
@@ -333,7 +333,7 @@ namespace VaccineFinder
                 while (!userDetails.IsValidEmailIds(EmailIDs))
                 {
                     stInfo = "Invalid Email. Please Retry.";
-                    logger.Error(stInfo + ": " + emailIdsString);
+                    logger.Info(stInfo + ": " + emailIdsString);
                     Console.WriteLine(stInfo);
                     Console.WriteLine("Please Enter your Email Ids (Comma separated): ");
                     emailIdsString = Console.ReadLine();
@@ -373,7 +373,7 @@ namespace VaccineFinder
             while (confirmation.ToLower() != "n" && confirmation.ToLower() != "y")
             {
                 stInfo = "Invalid Input. Please Retry.";
-                logger.Error(stInfo + ": " + confirmation);
+                logger.Info(stInfo + ": " + confirmation);
                 Console.WriteLine(stInfo);
                 Console.WriteLine(message);
                 confirmation = Console.ReadLine();
