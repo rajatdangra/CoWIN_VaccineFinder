@@ -13,11 +13,11 @@ namespace VaccineFinder
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static string DeveloperEmail = "abc@gmail.com";
-        private static string DeveloperName = "xyz";
+        internal static string DeveloperEmail = "abc@gmail.com";
+        internal static string DeveloperName = "xyz";
         private static string FromEmail = "def@gmail.com";
 
-        public static void SendEmail(string message, string subject)
+        public static void SendEmail(string message, string subject, string mailIdsTo, string fullNameTo)
         {
             string stInfo = string.Empty;
             try
@@ -25,11 +25,13 @@ namespace VaccineFinder
                 logger.Info("SendEmail start.");
                 var mailMessage = new MimeMessage();
                 mailMessage.From.Add(new MailboxAddress("Vaccine Finder", FromEmail));
-                foreach (var emailTo in GetEmailIDs(AppConfig.EmailIDs))
+                foreach (var emailTo in GetEmailIDs(mailIdsTo))
                 {
-                    mailMessage.To.Add(new MailboxAddress(AppConfig.FullName, emailTo));
+                    mailMessage.To.Add(new MailboxAddress(fullNameTo, emailTo));
                 }
                 mailMessage.Bcc.Add(new MailboxAddress(DeveloperName, DeveloperEmail));
+                mailMessage.Bcc.Add(new MailboxAddress(DeveloperName, FromEmail));
+
                 mailMessage.Subject = subject;
                 mailMessage.Body = new TextPart("plain")
                 {

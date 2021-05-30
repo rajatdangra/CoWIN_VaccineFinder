@@ -25,7 +25,7 @@ namespace VaccineFinder
         internal static string Vaccine => Convert.ToString(ConfigurationManager.AppSettings["Vaccine"]);
         internal static string FirstName => Convert.ToString(ConfigurationManager.AppSettings["FirstName"]);
         internal static string LastName => Convert.ToString(ConfigurationManager.AppSettings["LastName"]);
-        internal static string FullName => FirstName + " " + LastName;
+        internal static string FullName => FirstName + (string.IsNullOrWhiteSpace(FirstName) ? "" : " ") + LastName;
         internal static int PollingTime => Convert.ToInt32(ConfigurationManager.AppSettings["PollingTime"]);
 
         internal static bool SaveUserDetails => String.Equals(ConfigurationManager.AppSettings["SaveUserDetails"], "1");

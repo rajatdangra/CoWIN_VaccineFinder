@@ -300,7 +300,7 @@ namespace VaccineFinder
                         if (AppConfig.SendEmail)
                         {
                             var subject = AppConfig.Availablity_MailSubject + " for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
-                            Thread mailThread = new Thread(() => Email.SendEmail(slotDetails, subject));
+                            Thread mailThread = new Thread(() => Email.SendEmail(slotDetails, subject, UserDetails.EmailIdsString, UserDetails.FullName));
                             mailThread.Start();
                         }
                         break;
@@ -512,7 +512,7 @@ namespace VaccineFinder
 
                     if (AppConfig.SendEmail)
                     {
-                        Thread mailThread = new Thread(() => Email.SendEmail(bookingDetails, AppConfig.Booking_MailSubject));
+                        Thread mailThread = new Thread(() => Email.SendEmail(bookingDetails, AppConfig.Booking_MailSubject, UserDetails.EmailIdsString, UserDetails.FullName));
                         mailThread.Start();
                     }
                 }

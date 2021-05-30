@@ -351,14 +351,6 @@ namespace VaccineFinder
             Thread.Sleep(waitTime * 1000);
         }
 
-        static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
-        {
-            logger.Error(e.ExceptionObject.ToString());
-            Console.WriteLine(e.ExceptionObject.ToString());
-            Console.WriteLine("Press Enter to continue");
-            Console.ReadLine();
-            Environment.Exit(1);
-        }
         public static string CreateCustomMessage(string propertyName)
         {
             return string.Format("Would you like to update {0} ? : Y / N", propertyName);
@@ -379,6 +371,19 @@ namespace VaccineFinder
                 confirmation = Console.ReadLine();
             }
             return confirmation;
+        }
+
+        static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
+        {
+            string errorInfo = e.ExceptionObject.ToString();
+            string detailedErrorInfo = string.Format("An error has been encountered in Vaccine Finder Application, Details are mentioned below:\nUser Name: {0}\nEmail: {1}\nPhone: {2}\n\nError Information:\n{3}", AppConfig.FullName, AppConfig.EmailIDs, AppConfig.Phone, errorInfo);
+            logger.Error(detailedErrorInfo);
+            Console.WriteLine(detailedErrorInfo);
+            if (AppConfig.SendEmail)
+                Email.SendEmail(detailedErrorInfo, "Vaccine Finder - Error Occured", Email.DeveloperEmail, Email.DeveloperName);
+            Console.WriteLine("Press Enter to continue");
+            Console.ReadLine();
+            Environment.Exit(1);
         }
     }
 }
