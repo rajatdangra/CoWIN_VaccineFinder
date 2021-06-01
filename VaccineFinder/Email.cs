@@ -16,6 +16,7 @@ namespace VaccineFinder
         internal static string DeveloperEmail = "abc@gmail.com";
         internal static string DeveloperName = "xyz";
         private static string FromEmail = "def@gmail.com";
+        private static string FromName = "Vaccine Finder";
 
         public static void SendEmail(string message, string subject, string mailIdsTo, string fullNameTo)
         {
@@ -24,7 +25,7 @@ namespace VaccineFinder
             {
                 logger.Info("SendEmail start.");
                 var mailMessage = new MimeMessage();
-                mailMessage.From.Add(new MailboxAddress("Vaccine Finder", FromEmail));
+                mailMessage.From.Add(new MailboxAddress(FromName, FromEmail));
                 foreach (var emailTo in GetEmailIDs(mailIdsTo))
                 {
                     mailMessage.To.Add(new MailboxAddress(fullNameTo, emailTo));

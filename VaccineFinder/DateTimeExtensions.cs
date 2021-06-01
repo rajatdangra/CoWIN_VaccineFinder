@@ -8,6 +8,11 @@ namespace VaccineFinder
 {
     public static class DateTimeExtensions
     {
+        public static bool IsInPeriod(this DateTime date, DateTime startDate, DateTime endDate)
+        {
+            return date >= startDate && date <= endDate;
+        }
+
         public static bool IsDefault(this DateTime date)
         {
             return date == default(DateTime);
