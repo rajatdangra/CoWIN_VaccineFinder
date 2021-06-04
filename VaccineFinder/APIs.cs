@@ -46,7 +46,7 @@ namespace VaccineFinder
                 {
                     stInfo = "Could not generate Otp";
                     logger.Info(stInfo);
-                    ConsoleMethods.PrintError(stInfo);
+                    ConsoleMethods.PrintError("Please check your Internet Connection\n" + stInfo);
                 }
                 #endregion
 
@@ -140,7 +140,7 @@ namespace VaccineFinder
 
                     stInfo = "OTP Verified. Bearer Token Generated Successfully at " + DateTime.Now.ToDetailString();
                     logger.Info(stInfo);
-                    ConsoleMethods.PrintSuccess(stInfo);
+                    //ConsoleMethods.PrintSuccess(stInfo);
                 }
                 else
                 {
@@ -163,7 +163,7 @@ namespace VaccineFinder
             }
         }
 
-        public static GetBeneficiariesResponse GetBeneficiaries(string accessToken)
+        public static GetBeneficiariesResponse GetBeneficiaries(string phone)
         {
             string stInfo = string.Empty;
             logger.Info("GetBeneficiaries API call started.");
@@ -173,7 +173,7 @@ namespace VaccineFinder
                 var client = new RestClient(AppConfig.GetBeneficiariesUrl);
                 client.Timeout = -1;
                 var request = new RestRequest(Method.GET);
-                request.AddHeader("Authorization", "Bearer " + accessToken);
+                request.AddHeader("Authorization", "Bearer " + OTPAuthenticator.BEARER_TOKEN);
                 client.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36";
                 IRestResponse response = client.Execute(request);
                 var responseString = response.Content;
@@ -186,11 +186,14 @@ namespace VaccineFinder
                     logger.Info(stInfo);
                     ConsoleMethods.PrintSuccess(stInfo);
                 }
+                else if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    ConsoleMethods.PrintProgress($"[WARNING] Session Expired : Regenerating Auth Token");
+                    new OTPAuthenticator().ValidateUser(phone);
+                }
                 else
                 {
                     stInfo = "Unable to Fetch Beneficiaries.";
-                    if (response.StatusCode == HttpStatusCode.Unauthorized)
-                        stInfo += responseString;
                     logger.Info(stInfo);
                     ConsoleMethods.PrintError(stInfo);
                 }
@@ -209,10 +212,11 @@ namespace VaccineFinder
             }
         }
 
-        public static AvailabilityStatusAPIResponse CheckCalendarByPin(string pinCode, DateTime date, string accessToken)
+        public static AvailabilityStatusAPIResponse CheckCalendarByPin(string pinCode, DateTime date, string phone)
         {
             logger.Info("CheckCalendarByPin API call started.");
             AvailabilityStatusAPIResponse apiResponse = null;
+            string stInfo = string.Empty;
             try
             {
                 #region Generate Random String to ignore Caching
@@ -224,23 +228,48 @@ namespace VaccineFinder
                 postData += "&date=" + date.ToString("dd-MM-yyyy");
                 postData += "&random=" + randomString;
 
-                var request = (HttpWebRequest)WebRequest.Create(AppConfig.CalendarByPinUrl + postData);
-                request.PreAuthenticate = true;
-                request.Headers.Add("Authorization", "Bearer " + accessToken);
-                request.Method = "GET";
-                var response = (HttpWebResponse)request.GetResponse();
+                //var request = (HttpWebRequest)WebRequest.Create(AppConfig.CalendarByPinUrl + postData);
+                //request.PreAuthenticate = true;
+                //request.Headers.Add("Authorization", "Bearer " + OTPAuthenticator.BEARER_TOKEN);
+                //request.Method = "GET";
+                //var response = (HttpWebResponse)request.GetResponse();
 
-                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                //var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
 
-                logger.Info("Response from status API: " + responseString);
+                //logger.Info("Response from status API: " + responseString);
 
-                apiResponse = JsonConvert.DeserializeObject<AvailabilityStatusAPIResponse>(responseString);
+                var client = new RestClient(AppConfig.CalendarByPinUrl + postData);
+                client.Timeout = -1;
+                var request = new RestRequest(Method.GET);
+                request.AddHeader("Authorization", "Bearer " + OTPAuthenticator.BEARER_TOKEN);
+                client.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36";
+
+                IRestResponse response = client.Execute(request);
+                var responseString = response.Content;
+                //Console.WriteLine(responseString);
+                logger.Info("Response from BookSlot API: " + responseString);
+                if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                {
+                    apiResponse = JsonConvert.DeserializeObject<AvailabilityStatusAPIResponse>(responseString);
+                }
+                else if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    ConsoleMethods.PrintProgress($"[WARNING] Session Expired : Regenerating Auth Token");
+                    new OTPAuthenticator().ValidateUser(phone);
+                }
+                else
+                {
+                    stInfo = string.Format("Unable to Fetch slots availability");
+                    logger.Info(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
+                }
+
                 return apiResponse;
             }
 
             catch (Exception ex)
             {
-                var stInfo = "Error in CheckCalendarByPin:\n" + ex;
+                stInfo = "Error in CheckCalendarByPin:\n" + ex;
                 ConsoleMethods.PrintError("Please check your Internet Connection\n" + stInfo);
                 logger.Error(stInfo);
                 return apiResponse;
@@ -293,7 +322,7 @@ namespace VaccineFinder
         //    }
         //}
 
-        public static SlotBookingResponse BookSlot(string accessToken, List<string> beneficiaryIds, string sessionId, string slot, int dose, DateTime date)
+        public static SlotBookingResponse BookSlot(List<string> beneficiaryIds, string sessionId, string slot, int dose, DateTime date, string phone)
         {
             logger.Info("BookSlot API call started.");
             string stInfo = string.Format("Trying to book Vaccination slot for Date: {0}, Slot: {1}, Session Id: {2}.", date.ToString("dd-MM-yyyy"), slot, sessionId);
@@ -306,7 +335,7 @@ namespace VaccineFinder
                 var client = new RestClient(AppConfig.ScheduleAppointmentUrl);
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
-                request.AddHeader("Authorization", "Bearer " + accessToken);
+                request.AddHeader("Authorization", "Bearer " + OTPAuthenticator.BEARER_TOKEN);
                 client.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36";
 
                 var requestObj = new SlotBookingRequest() { dose = dose, beneficiaries = beneficiaryIds.ToList(), session_id = sessionId, slot = slot };
@@ -323,11 +352,14 @@ namespace VaccineFinder
                     logger.Info(stInfo);
                     ConsoleMethods.PrintSuccess(stInfo);
                 }
+                else if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    ConsoleMethods.PrintProgress($"[WARNING] Session Expired : Regenerating Auth Token");
+                    new OTPAuthenticator().ValidateUser(phone);
+                }
                 else
                 {
                     stInfo = string.Format("Unable to book Vaccination slot for Date: {0}, Slot: {1}, Session Id: {2}.", date.ToString("dd-MM-yyyy"), slot, sessionId);
-                    if (response.StatusCode == HttpStatusCode.Unauthorized)
-                        stInfo += responseString;
                     logger.Info(stInfo);
                     ConsoleMethods.PrintProgress(stInfo);
                 }

@@ -3,10 +3,11 @@ Vaccine Finder: based on Pincode and Age Limit Criteria.
 Send notification on Mail, if slots are available.
 Book Slots and Send notification on Mail, if Booked successfully.
 
+Platforms Supported: Windows, macOS, Linux.
 
 Installation instructions:
 	1) Unzip folder.
-	2) Install Setup.
+	2) Install Setup / Run EXE file.
 	3) Fill in the basic details.
 Note: Details once filled, will be retained to use for next time. It will be picked automatically. You can also check VaccineFinder.exe.config for more details.
 
@@ -42,7 +43,7 @@ Process:
 	4) Verify Beneficiaries.
 	5) Check Available slots.
 	Case 1) Vaccine slots available: Program will Display Available Centres, make a beep sound to notify, and Users will get E-Mails on defined Email Ids. Proceed to Booking (next step).			
-	Case 2) Vaccine slots not available: Program will retry at user defined Retry Frequency.
+	Case 2) Vaccine slots not available: Program will retry at user defined Retry Frequency. Automatically re-generate OTP, if session is expired.
 	6) Start Booking:
 			1) AutoBookCenter:
 				case a) If AutoBookCenter is False ("0"), get preferred center input (number) from user, and only try to book slots of specific center. 

@@ -21,7 +21,6 @@ namespace VaccineFinder
         }
         private UserDetails UserDetails;
         private DateTime Date;
-        private string AccessToken;
 
         public void StartFindingVaccine()
         {
@@ -29,26 +28,11 @@ namespace VaccineFinder
             string inputMessage = string.Empty;
 
             #region Mobile Otp Validation
-            var GenerateMobileOTPResponse = GenerateMobileOTP();
-            if (GenerateMobileOTPResponse == null)
-                return;
+            
+            var otpAuth = new OTPAuthenticator();
+            otpAuth.ValidateUser(UserDetails.Phone);
 
-            inputMessage = "Please Enter OTP:";
-            Console.WriteLine(inputMessage);
-            var otp = Console.ReadLine();
-            var ValidateMobileOTPResponse = ValidateMobileOTP(otp, GenerateMobileOTPResponse.txnId);
-            while (ValidateMobileOTPResponse == null)
-            {
-                stInfo = "Invalid OTP. Please Retry.";
-                logger.Info(stInfo + ": " + otp);
-                //Console.WriteLine(stInfo);
-                Console.WriteLine(inputMessage);
-                otp = Console.ReadLine();
-                ValidateMobileOTPResponse = ValidateMobileOTP(otp, GenerateMobileOTPResponse.txnId);
-            }
             #endregion
-
-            AccessToken = ValidateMobileOTPResponse.token;
 
             #region Verify Beneficiaries
             if (AppConfig.VerifyBeneficiaries)
@@ -88,75 +72,6 @@ namespace VaccineFinder
             #endregion
         }
 
-        public GenerateMobileOTPResponse GenerateMobileOTP()
-        {
-            string stInfo = "GenerateMobileOTP Call Started for Phone: " + UserDetails.Phone;
-            GenerateMobileOTPResponse response = null;
-            try
-            {
-                logger.Info(stInfo);
-                Console.WriteLine(stInfo);
-
-                response = APIs.GenerateMobileOTP(UserDetails.Phone);
-
-                if (response != null)
-                {
-                    stInfo = "OTP Sent Successfully to Phone: " + UserDetails.Phone;
-                    //Console.WriteLine(stInfo);
-                    logger.Info(stInfo);
-                }
-                else
-                {
-                    stInfo = "Not able to send OTP";
-                    logger.Info(stInfo);
-                    //Console.WriteLine(stInfo);
-                }
-                return response;
-            }
-            catch (Exception ex)
-            {
-                stInfo = "Error in GenerateMobileOTP:\n" + ex;
-                logger.Error(stInfo);
-                ConsoleMethods.PrintError(stInfo);
-                return response;
-            }
-        }
-
-        public ValidateMobileOTPResponse ValidateMobileOTP(string otp, string txnId)
-        {
-            string stInfo = "ValidateMobileOTP Call Started for otp: " + otp;
-            logger.Info(stInfo);
-            Console.WriteLine(stInfo);
-
-            ValidateMobileOTPResponse response = null;
-            try
-            {
-                var hasedOtp = Hash.ComputeSha256Hash(otp);
-                response = APIs.ValidateMobileOTP(hasedOtp, txnId);
-
-                if (response != null)
-                {
-                    stInfo = "OTP Verified. Bearer Token Generated Successfully.";
-                    //Console.WriteLine(stInfo);
-                    logger.Info(stInfo);
-                }
-                else
-                {
-                    stInfo = "Unable to verifiy OTP: " + otp;
-                    logger.Info(stInfo);
-                    ConsoleMethods.PrintError(stInfo);
-                }
-                return response;
-            }
-            catch (Exception ex)
-            {
-                stInfo = "Error in GenerateMobileOTP:\n" + ex;
-                logger.Error(stInfo);
-                ConsoleMethods.PrintError(stInfo);
-                return response;
-            }
-        }
-
         public bool VerifyBeneficiaries()
         {
             bool areBeneficiariesVerified = false;
@@ -167,7 +82,7 @@ namespace VaccineFinder
             GetBeneficiariesResponse response = null;
             try
             {
-                response = APIs.GetBeneficiaries(AccessToken);
+                response = APIs.GetBeneficiaries(UserDetails.Phone);
 
                 if (response != null)
                 {
@@ -341,7 +256,7 @@ namespace VaccineFinder
             try
             {
                 bool vaccineSlotFound = false;
-                AvailabilityStatusAPIResponse response = APIs.CheckCalendarByPin(pinCode, Date, AccessToken);
+                AvailabilityStatusAPIResponse response = APIs.CheckCalendarByPin(pinCode, Date, UserDetails.Phone);
 
                 if (response == null)
                     return null;
@@ -500,7 +415,7 @@ namespace VaccineFinder
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                response = APIs.BookSlot(AccessToken, UserDetails.UserPreference.BeneficiaryIds, sessionId, slot, UserDetails.UserPreference.Dose, date);
+                response = APIs.BookSlot(UserDetails.UserPreference.BeneficiaryIds, sessionId, slot, UserDetails.UserPreference.Dose, date, UserDetails.Phone);
 
                 if (response != null)
                 {

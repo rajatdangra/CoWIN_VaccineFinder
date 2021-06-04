@@ -13,7 +13,7 @@
   <PropertyGroup>
     <EnableSecurityDebugging>false</EnableSecurityDebugging>
     <ActiveDebugProfile>VaccineFinder</ActiveDebugProfile>
-    <_LastSelectedProfileId>C:\Users\Rajat.Maheshwari\Downloads\Old Downloads\Code\Co-WIN\VaccineFinder\VaccineFinder\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
+    <_LastSelectedProfileId>C:\Users\Rajat.Maheshwari\Downloads\Old Downloads\Code\Co-WIN\VaccineFinder\VaccineFinder\Properties\PublishProfiles\RajatFolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
