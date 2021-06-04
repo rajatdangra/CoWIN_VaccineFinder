@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using NLog;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace VaccineFinder
 {
@@ -12,109 +14,149 @@ namespace VaccineFinder
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        internal static string Phone => Convert.ToString(ConfigurationManager.AppSettings["Phone"]);
-        internal static string PinCodes => Convert.ToString(ConfigurationManager.AppSettings["PinCodes"]);
-        internal static string BeneficiaryIDs => Convert.ToString(ConfigurationManager.AppSettings["BeneficiaryIDs"]);
-        internal static int SlotPreference => Convert.ToInt32(ConfigurationManager.AppSettings["SlotPreference"]);
-        internal static bool AutoPickCenter => String.Equals(ConfigurationManager.AppSettings["AutoPickCenter"], "1");
-        internal static bool IncludePaidService => String.Equals(ConfigurationManager.AppSettings["IncludePaidService"], "1");
-        internal static bool VerifyBeneficiaries => String.Equals(ConfigurationManager.AppSettings["VerifyBeneficiaries"], "1");
-        internal static string EmailIDs => Convert.ToString(ConfigurationManager.AppSettings["EmailIDs"]);
-        internal static int MinAgeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["MinAgeLimit"]);
-        internal static int Dose => Convert.ToInt32(ConfigurationManager.AppSettings["Dose"]);
-        internal static string Vaccine => Convert.ToString(ConfigurationManager.AppSettings["Vaccine"]);
-        internal static string FirstName => Convert.ToString(ConfigurationManager.AppSettings["FirstName"]);
-        internal static string LastName => Convert.ToString(ConfigurationManager.AppSettings["LastName"]);
-        internal static string FullName => FirstName + (string.IsNullOrWhiteSpace(FirstName) ? "" : " ") + LastName;
-        internal static int PollingTime => Convert.ToInt32(ConfigurationManager.AppSettings["PollingTime"]);
+        private static IConfiguration _configuration;
+        public static void UpdateConfig()
+        {
+            if (_configuration == null)
+            {
+                _configuration = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.json", false, true)
+                        .Build();
+            }
+        }
 
-        internal static bool SaveUserDetails => String.Equals(ConfigurationManager.AppSettings["SaveUserDetails"], "1");
-        internal static bool SendEmail => String.Equals(ConfigurationManager.AppSettings["SendEmail"], "1");
+        internal static string Phone => Convert.ToString(_configuration["UserDetails:Phone"]);
+        internal static string PinCodes => Convert.ToString(_configuration["UserDetails:UserPreference:PinCodes"]);
+        internal static string BeneficiaryIDs => Convert.ToString(_configuration["UserDetails:UserPreference:BeneficiaryIDs"]);
+        internal static int SlotPreference => Convert.ToInt32(_configuration["UserDetails:UserPreference:SlotPreference"]);
+        internal static bool AutoPickCenter => String.Equals(_configuration["UserDetails:UserPreference:AutoPickCenter"], "1");
+        internal static bool IncludePaidService => String.Equals(_configuration["UserDetails:UserPreference:IncludePaidService"], "1");
+        internal static bool VerifyBeneficiaries => String.Equals(_configuration["UserDetails:UserPreference:VerifyBeneficiaries"], "1");
+        internal static string EmailIDs => Convert.ToString(_configuration["UserDetails:EmailIDs"]);
+        internal static int MinAgeLimit => Convert.ToInt32(_configuration["UserDetails:UserPreference:MinAgeLimit"]);
+        internal static int Dose => Convert.ToInt32(_configuration["UserDetails:UserPreference:Dose"]);
+        internal static string Vaccine => Convert.ToString(_configuration["UserDetails:UserPreference:Vaccine"]);
+        internal static string FirstName => Convert.ToString(_configuration["UserDetails:FirstName"]);
+        internal static string LastName => Convert.ToString(_configuration["UserDetails:LastName"]);
+        internal static string FullName => FirstName + (string.IsNullOrWhiteSpace(FirstName) ? "" : " ") + LastName;
+        internal static int PollingTime => Convert.ToInt32(_configuration["UserDetails:UserPreference:PollingTime"]);
+
+        internal static bool SaveUserDetails => String.Equals(_configuration["UserDetails:UserPreference:SaveUserDetails"], "1");
+        #region Mail Settings
+        internal static bool SendEmail => String.Equals(_configuration["MailSettings:SendEmail"], "1");
+        internal static string Availablity_MailSubject => Convert.ToString(_configuration["MailSettings:Availablity_MailSubject"]);
+        internal static string Booking_MailSubject => Convert.ToString(_configuration["MailSettings:Booking_MailSubject"]);
+        #endregion
 
         #region Co-WIN APIs
-        internal static string Secret => Convert.ToString(ConfigurationManager.AppSettings["Secret"]);
-        internal static string Cowin_BaseUrl => Convert.ToString(ConfigurationManager.AppSettings["Cowin_BaseUrl"]);
-        internal static string GenerateOTPUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["GenerateOTPUrl"]);
-        internal static string ConfirmOTPUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["ConfirmOTPUrl"]);
-        internal static string GetBeneficiariesUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["GetBeneficiariesUrl"]);
-        internal static string CalendarByPinUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["CalendarByPinUrl"]);
-        internal static string CalendarByDistrictUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["CalendarByDistrictUrl"]);
-        internal static string ScheduleAppointmentUrl => Cowin_BaseUrl + Convert.ToString(ConfigurationManager.AppSettings["ScheduleAppointmentUrl"]);
-        internal static string CoWIN_RegistrationURL => Convert.ToString(ConfigurationManager.AppSettings["CoWIN_RegistrationURL"]);
-        internal static string Availablity_MailSubject => Convert.ToString(ConfigurationManager.AppSettings["Availablity_MailSubject"]);
-        internal static string Booking_MailSubject => Convert.ToString(ConfigurationManager.AppSettings["Booking_MailSubject"]);
-        internal static int OtpExpiryTimeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["OtpExpiryTimeLimit"]);
-        internal static int TokenExpiryTimeLimit => Convert.ToInt32(ConfigurationManager.AppSettings["TokenExpiryTimeLimit"]);
+        internal static string Cowin_BaseUrl => Convert.ToString(_configuration["CoWinAPI:BaseURL"]);
+        internal static string CoWIN_RegistrationURL => Convert.ToString(_configuration["CoWinAPI:RegistrationURL"]);
+        internal static string GenerateOTPUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:Authentication:GenerateOTPUrl"]);
+        internal static string ConfirmOTPUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:Authentication:ConfirmOTPUrl"]);
+        internal static string Secret => Convert.ToString(_configuration["CoWinAPI:Authentication:Secret"]);
+        internal static string GetBeneficiariesUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:GetBeneficiariesUrl"]);
+        internal static string CalendarByPinUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:CalendarByPinUrl"]);
+        internal static string CalendarByDistrictUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:CalendarByDistrictUrl"]);
+        internal static string ScheduleAppointmentUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:ScheduleAppointmentUrl"]);
+        //internal static int OtpExpiryTimeLimit => Convert.ToInt32(_configuration["OtpExpiryTimeLimit"]);
+        //internal static int TokenExpiryTimeLimit => Convert.ToInt32(_configuration["TokenExpiryTimeLimit"]);
         #endregion
-        //internal static int Retry_Count => Convert.ToInt32(ConfigurationManager.AppSettings["Retry_Count"]);
+        //internal static int Retry_Count => Convert.ToInt32(_configuration["Retry_Count"]);
 
         public static void UpdateConfig(UserDetails defaultDetails)
         {
             logger.Info("UpdateConfig started");
             try
             {
-                System.Configuration.Configuration configFile = null;
-                //if (System.Web.HttpContext.Current != null)
-                //{
-                //    configFile =
-                //        System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
-                //}
-                //else
-                {
-                    configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                }
-                var settings = configFile.AppSettings.Settings;
+                var filePath = Path.Combine(AppContext.BaseDirectory, "appSettings.json");
+                string json = File.ReadAllText(filePath);
+                dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
 
                 Dictionary<string, string> appSettings = new Dictionary<string, string>();
-                appSettings.Add("Phone", defaultDetails.Phone);
-                appSettings.Add("EmailIDs", defaultDetails.EmailIdsString);
-                appSettings.Add("BeneficiaryIDs", defaultDetails.UserPreference.BeneficiaryIdsString);
-                appSettings.Add("SlotPreference", Convert.ToString(defaultDetails.UserPreference.SlotPreference));
-                appSettings.Add("PinCodes", defaultDetails.UserPreference.PinCodeString);
-                appSettings.Add("MinAgeLimit", Convert.ToString(defaultDetails.UserPreference.AgeCriteria));
-                appSettings.Add("Dose", Convert.ToString(defaultDetails.UserPreference.Dose));
-                appSettings.Add("AutoPickCenter", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.AutoPickCenter)));
-                appSettings.Add("IncludePaidService", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.IncludePaidService)));
-                appSettings.Add("FirstName", defaultDetails.FirstName);
-                appSettings.Add("LastName", defaultDetails.LastName);
-                appSettings.Add("Vaccine", defaultDetails.UserPreference.Vaccine);
-                appSettings.Add("PollingTime", Convert.ToString(defaultDetails.UserPreference.PollingTime));
+                appSettings.Add("UserDetails:Phone", defaultDetails.Phone);
+                appSettings.Add("UserDetails:EmailIDs", defaultDetails.EmailIdsString);
+                appSettings.Add("UserDetails:UserPreference:BeneficiaryIDs", defaultDetails.UserPreference.BeneficiaryIdsString);
+                appSettings.Add("UserDetails:UserPreference:SlotPreference", Convert.ToString(defaultDetails.UserPreference.SlotPreference));
+                appSettings.Add("UserDetails:UserPreference:PinCodes", defaultDetails.UserPreference.PinCodeString);
+                appSettings.Add("UserDetails:UserPreference:MinAgeLimit", Convert.ToString(defaultDetails.UserPreference.AgeCriteria));
+                appSettings.Add("UserDetails:UserPreference:Dose", Convert.ToString(defaultDetails.UserPreference.Dose));
+                appSettings.Add("UserDetails:UserPreference:AutoPickCenter", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.AutoPickCenter)));
+                appSettings.Add("UserDetails:UserPreference:IncludePaidService", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.IncludePaidService)));
+                appSettings.Add("UserDetails:FirstName", defaultDetails.FirstName);
+                appSettings.Add("UserDetails:LastName", defaultDetails.LastName);
+                appSettings.Add("UserDetails:UserPreference:Vaccine", defaultDetails.UserPreference.Vaccine);
+                appSettings.Add("UserDetails:UserPreference:PollingTime", Convert.ToString(defaultDetails.UserPreference.PollingTime));
 
                 bool change = false;
                 foreach (var kv in appSettings)
                 {
                     var key = kv.Key;
                     var value = kv.Value;
-                    if (settings[key] == null)
-                    {
-                        logger.Warn("While reading the App.config, this line had no key/value attributes modify: " + key);
-                        //settings.Add(key, value);
-                    }
-                    else if (settings[key].Value != value)
+                    bool isUpdated = SetValueRecursively(key, jsonObj, value);
+                    if (isUpdated)
                     {
                         change = true;
-                        settings[key].Value = value;
                     }
                 }
                 if (change)
                 {
-                    configFile.Save(ConfigurationSaveMode.Modified);
-                    ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-                    logger.Info("Updated App.config file");
+                    string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+                    File.WriteAllText(filePath, output);
+                    logger.Info("Updated appsettings.json file");
                 }
                 else
                 {
-                    logger.Info("No need to update App.config file because appsetting are accurate in App.config file");
+                    logger.Info("No need to update appsettings.json file because appsetting are accurate in appsettings.json file");
                 }
             }
             catch (Exception ex)
             {
-                logger.Info("Unable to update App.config file" + "\n" + ex);
+                logger.Info("Unable to update appsettings.json file" + "\n" + ex);
             }
             finally
             {
                 logger.Info("UpdateConfig end");
             }
+        }
+
+        private static bool SetValueRecursively<T>(string sectionPathKey, dynamic jsonObj, T value)
+        {
+            bool isSettingUpdated = false;
+            // split the string at the first ':' character
+            var remainingSections = sectionPathKey.Split(":", 2);
+
+            var currentSection = remainingSections[0];
+
+            if (jsonObj[currentSection] == null)
+            {
+                logger.Warn("While reading the appsettings.json, this line had no key/value attributes modify: " + sectionPathKey, value);
+                isSettingUpdated = false;
+            }
+            else
+            {
+                if (remainingSections.Length > 1)
+                {
+                    // continue with the procress, moving down the tree
+                    var nextSection = remainingSections[1];
+                    isSettingUpdated = SetValueRecursively(nextSection, jsonObj[currentSection], value);
+                }
+                else
+                {
+                    // we've got to the end of the tree, set the value
+                    if (jsonObj[currentSection].Value != value)
+                    {
+                        isSettingUpdated = true;
+                        jsonObj[currentSection] = value;
+                    }
+                    else
+                    {
+                        isSettingUpdated = false;
+                        //Same Value, no need to update
+                    }
+                }
+            }
+            return isSettingUpdated;
         }
     }
 }

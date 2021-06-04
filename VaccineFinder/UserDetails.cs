@@ -21,7 +21,7 @@ namespace VaccineFinder
         public string LastName { get; set; }
         public string FullName { get { return FirstName + (string.IsNullOrWhiteSpace(FirstName) ? "" : " ") + LastName; } }
         public List<string> EmailIDs { get; set; }
-        public string EmailIdsString { get { return string.Join(",", EmailIDs); } }
+        public string EmailIdsString { get { return string.Join(", ", EmailIDs); } }
         public string Phone { get; set; }
 
         public bool IsValidEmailIds(List<string> emailList)
@@ -70,9 +70,9 @@ namespace VaccineFinder
             Vaccine = vaccine;
         }
         public List<string> BeneficiaryIds { get; set; }
-        public string BeneficiaryIdsString { get { return string.Join(",", BeneficiaryIds); } }
+        public string BeneficiaryIdsString { get { return string.Join(", ", BeneficiaryIds); } }
         public List<string> PinCodes { get; set; }
-        public string PinCodeString { get { return string.Join(",", PinCodes); } }
+        public string PinCodeString { get { return string.Join(", ", PinCodes); } }
         //public string District { get; set; }
         public int AgeCriteria { get; set; }
         public int Dose { get; set; }
