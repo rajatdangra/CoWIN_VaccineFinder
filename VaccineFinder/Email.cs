@@ -48,14 +48,14 @@ namespace VaccineFinder
                     smtpClient.Disconnect(true);
                 }
                 stInfo = "Mail Sent Successfully!";
-                Console.WriteLine(stInfo);
+                ConsoleMethods.PrintSuccess(stInfo);
                 logger.Info(stInfo);
             }
             catch (Exception ex)
             {
                 // Write o the event log.
                 stInfo = "Unable to send email.";
-                Console.WriteLine(stInfo);
+                ConsoleMethods.PrintError(stInfo);
                 logger.Error(stInfo + "\nException details: " + ex + "\nInner Exception: " + ex.InnerException);
             }
         }

@@ -17,7 +17,7 @@ namespace VaccineFinder
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionTrapper);
             string stInfo = "Vaccine Finder Program Started.";
             logger.Info(stInfo);
-            Console.WriteLine(stInfo);
+            ConsoleMethods.PrintSuccess(stInfo);
 
             AppConfig.UpdateConfig();
 
@@ -73,7 +73,7 @@ namespace VaccineFinder
                         {
                             stInfo = "Invalid Input. Please Retry.";
                             logger.Info(stInfo + ": " + pinCodesString);
-                            Console.WriteLine(stInfo);
+                            ConsoleMethods.PrintError(stInfo);
                             Console.WriteLine(inputMessage);
                             pinCodesString = Console.ReadLine();
                             PinCodes = UserPreference.GetPincodes(pinCodesString);
@@ -97,7 +97,7 @@ namespace VaccineFinder
                         {
                             stInfo = "Invalid Input. Please Retry.";
                             logger.Info(stInfo + ": " + MinAgeCriteria);
-                            Console.WriteLine(stInfo);
+                            ConsoleMethods.PrintError(stInfo);
                             Console.WriteLine(inputMessage);
                             MinAgeCriteria = Console.ReadLine();
                         }
@@ -120,7 +120,7 @@ namespace VaccineFinder
                         {
                             stInfo = "Invalid Input. Please Retry.";
                             logger.Info(stInfo + ": " + doseString);
-                            Console.WriteLine(stInfo);
+                            ConsoleMethods.PrintError(stInfo);
                             Console.WriteLine(inputMessage);
                             doseString = Console.ReadLine();
                         }
@@ -142,7 +142,7 @@ namespace VaccineFinder
                         {
                             stInfo = "Invalid Input. Please Retry.";
                             logger.Info(stInfo + ": " + Phone);
-                            Console.WriteLine(stInfo);
+                            ConsoleMethods.PrintError(stInfo);
                             Console.WriteLine(inputMessage);
                             Phone = Console.ReadLine();
                         }
@@ -165,7 +165,7 @@ namespace VaccineFinder
                         {
                             stInfo = "Invalid Input. Please Retry.";
                             logger.Info(stInfo + ": " + slotPreference);
-                            Console.WriteLine(stInfo);
+                            ConsoleMethods.PrintError(stInfo);
                             Console.WriteLine(inputMessage);
                             slotPreference = Console.ReadLine();
                         }
@@ -187,7 +187,7 @@ namespace VaccineFinder
                         {
                             stInfo = "Invalid Input. Please Retry.";
                             logger.Info(stInfo + ": " + vaccine);
-                            Console.WriteLine(stInfo);
+                            ConsoleMethods.PrintError(stInfo);
                             Console.WriteLine(inputMessage);
                             vaccine = Console.ReadLine();
                         }
@@ -210,7 +210,7 @@ namespace VaccineFinder
                         {
                             stInfo = "Invalid Input. Please Retry.";
                             logger.Info(stInfo + ": " + retryFrequency);
-                            Console.WriteLine(stInfo);
+                            ConsoleMethods.PrintError(stInfo);
                             Console.WriteLine(inputMessage);
                             retryFrequency = Console.ReadLine();
                         }
@@ -241,7 +241,7 @@ namespace VaccineFinder
                         {
                             stInfo = "Invalid Input. Please Retry.";
                             logger.Info(stInfo + ": " + dateString);
-                            Console.WriteLine(stInfo);
+                            ConsoleMethods.PrintError(stInfo);
                             Console.WriteLine(inputMessage);
                             dateString = Console.ReadLine();
                         }
@@ -263,7 +263,7 @@ namespace VaccineFinder
                         {
                             stInfo = "Invalid Input. Please Retry.";
                             logger.Info(stInfo + ": " + emailIdsString);
-                            Console.WriteLine(stInfo);
+                            ConsoleMethods.PrintError(stInfo);
                             Console.WriteLine(inputMessage);
                             emailIdsString = Console.ReadLine();
                             EmailIDs = Email.GetEmailIDs(emailIdsString);
@@ -310,7 +310,7 @@ namespace VaccineFinder
                 {
                     stInfo = "Invalid Phone. Please Retry.";
                     logger.Info(stInfo + ": " + Phone);
-                    Console.WriteLine(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
                     Console.WriteLine("Please Enter your Phone Number: ");
                     Phone = Console.ReadLine();
                 }
@@ -323,7 +323,7 @@ namespace VaccineFinder
                 {
                     stInfo = "Invalid Pin Codes. Please Retry.";
                     logger.Info(stInfo + ": " + pinCodesString);
-                    Console.WriteLine(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
                     Console.WriteLine("Please Enter your Pin Codes: ");
                     pinCodesString = Console.ReadLine();
                     PinCodes = UserPreference.GetPincodes(pinCodesString);
@@ -337,7 +337,7 @@ namespace VaccineFinder
                 {
                     stInfo = "Invalid Email. Please Retry.";
                     logger.Info(stInfo + ": " + emailIdsString);
-                    Console.WriteLine(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
                     Console.WriteLine("Please Enter your Email Ids (Comma separated): ");
                     emailIdsString = Console.ReadLine();
                     EmailIDs = Email.GetEmailIDs(emailIdsString);
@@ -369,7 +369,7 @@ namespace VaccineFinder
             {
                 stInfo = "Invalid Input. Please Retry.";
                 logger.Info(stInfo + ": " + confirmation);
-                Console.WriteLine(stInfo);
+                ConsoleMethods.PrintError(stInfo);
                 Console.WriteLine(message);
                 confirmation = Console.ReadLine();
             }

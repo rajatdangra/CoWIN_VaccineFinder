@@ -39,14 +39,14 @@ namespace VaccineFinder
                     apiResponse = JsonConvert.DeserializeObject<GenerateMobileOTPResponse>(responseString);
 
                     stInfo = string.Format("OTP Sent Successfully to Phone: {0} at {1}", phone, DateTime.Now.ToDetailString());
-                    Console.WriteLine(stInfo);
                     logger.Info(stInfo);
+                    ConsoleMethods.PrintSuccess(stInfo);
                 }
                 else
                 {
                     stInfo = "Could not generate Otp";
-                    Console.WriteLine(stInfo);
                     logger.Info(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
                 }
                 #endregion
 
@@ -139,21 +139,21 @@ namespace VaccineFinder
                     apiResponse = JsonConvert.DeserializeObject<ValidateMobileOTPResponse>(responseString);
 
                     stInfo = "OTP Verified. Bearer Token Generated Successfully at " + DateTime.Now.ToDetailString();
-                    Console.WriteLine(stInfo);
                     logger.Info(stInfo);
+                    ConsoleMethods.PrintSuccess(stInfo);
                 }
                 else
                 {
                     stInfo = "Invalid Otp";
-                    Console.WriteLine(stInfo);
                     logger.Info(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
                 }
                 return apiResponse;
             }
             catch (Exception ex)
             {
                 stInfo = "Error in ValidateMobileOTP:\n" + ex;
-                Console.WriteLine("Please check your Internet Connection\n" + stInfo);
+                ConsoleMethods.PrintError("Please check your Internet Connection\n" + stInfo);
                 logger.Error(stInfo);
                 return null;
             }
@@ -183,23 +183,23 @@ namespace VaccineFinder
                 {
                     apiResponse = JsonConvert.DeserializeObject<GetBeneficiariesResponse>(responseString);
                     stInfo = "Beneficiaries fetched Successfully!";
-                    Console.WriteLine(stInfo);
                     logger.Info(stInfo);
+                    ConsoleMethods.PrintSuccess(stInfo);
                 }
                 else
                 {
                     stInfo = "Unable to Fetch Beneficiaries.";
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                         stInfo += responseString;
-                    Console.WriteLine(stInfo);
                     logger.Info(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
                 }
                 return apiResponse;
             }
             catch (Exception ex)
             {
                 stInfo = "Error in GetBeneficiaries:\n" + ex;
-                Console.WriteLine("Please check your Internet Connection\n" + stInfo);
+                ConsoleMethods.PrintError("Please check your Internet Connection\n" + stInfo);
                 logger.Error(stInfo);
                 return null;
             }
@@ -241,7 +241,7 @@ namespace VaccineFinder
             catch (Exception ex)
             {
                 var stInfo = "Error in CheckCalendarByPin:\n" + ex;
-                Console.WriteLine("Please check your Internet Connection\n" + stInfo);
+                ConsoleMethods.PrintError("Please check your Internet Connection\n" + stInfo);
                 logger.Error(stInfo);
                 return apiResponse;
             }
@@ -320,23 +320,23 @@ namespace VaccineFinder
                 {
                     apiResponse = JsonConvert.DeserializeObject<SlotBookingResponse>(responseString);
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + apiResponse.appointment_confirmation_no;
-                    Console.WriteLine(stInfo);
                     logger.Info(stInfo);
+                    ConsoleMethods.PrintSuccess(stInfo);
                 }
                 else
                 {
                     stInfo = string.Format("Unable to book Vaccination slot for Date: {0}, Slot: {1}, Session Id: {2}.", date.ToString("dd-MM-yyyy"), slot, sessionId);
                     if (response.StatusCode == HttpStatusCode.Unauthorized)
                         stInfo += responseString;
-                    Console.WriteLine(stInfo);
                     logger.Info(stInfo);
+                    ConsoleMethods.PrintProgress(stInfo);
                 }
                 return apiResponse;
             }
             catch (Exception ex)
             {
                 stInfo = "Error in BookSlot:\n" + ex;
-                Console.WriteLine("Please check your Internet Connection\n" + stInfo);
+                ConsoleMethods.PrintError("Please check your Internet Connection\n" + stInfo);
                 logger.Error(stInfo);
                 return null;
             }
