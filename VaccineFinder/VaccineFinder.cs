@@ -382,9 +382,11 @@ namespace VaccineFinder
             bool slotBooked = false;
             var session = sessionIds[sessionPreference - 1];
             slotBooked = BookSlotActual(session, slotPreference);
+
+            #region Try to Book Other Slots
             int retryCount = 1;
             int slot = 1;
-            while (!slotBooked && retryCount <= 3) //Check if other slots are available
+            while (!slotBooked && retryCount < session.slots.Count) //Check if other slots are available
             {
                 if (slot == slotPreference)
                     slot++;
@@ -392,6 +394,8 @@ namespace VaccineFinder
                 retryCount++;
                 slot++;
             }
+            #endregion
+
             return slotBooked;
         }
 
