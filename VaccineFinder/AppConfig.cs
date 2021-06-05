@@ -63,6 +63,7 @@ namespace VaccineFinder
         //internal static int TokenExpiryTimeLimit => Convert.ToInt32(_configuration["TokenExpiryTimeLimit"]);
         internal static bool IsThrottlingToBeUsed => String.Equals(_configuration["CoWinAPI:IsThrottlingToBeUsed"], "1");
         internal static int ThrottlingRefreshTime => Convert.ToInt32(_configuration["CoWinAPI:ThrottlingRefreshTime"]);
+        internal static bool TryToBookOtherSlots => String.Equals(_configuration["CoWinAPI:TryToBookOtherSlots"], "1");
 
         #endregion
         //internal static int Retry_Count => Convert.ToInt32(_configuration["Retry_Count"]);

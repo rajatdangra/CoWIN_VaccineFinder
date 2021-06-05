@@ -384,15 +384,18 @@ namespace VaccineFinder
             slotBooked = BookSlotActual(session, slotPreference);
 
             #region Try to Book Other Slots
-            int retryCount = 1;
-            int slot = 1;
-            while (!slotBooked && retryCount < session.slots.Count) //Check if other slots are available
+            if (AppConfig.TryToBookOtherSlots)
             {
-                if (slot == slotPreference)
+                int retryCount = 1;
+                int slot = 1;
+                while (!slotBooked && retryCount < session.slots.Count) //Check if other slots are available
+                {
+                    if (slot == slotPreference)
+                        slot++;
+                    slotBooked = BookSlotActual(session, slot);
+                    retryCount++;
                     slot++;
-                slotBooked = BookSlotActual(session, slot);
-                retryCount++;
-                slot++;
+                }
             }
             #endregion
 
