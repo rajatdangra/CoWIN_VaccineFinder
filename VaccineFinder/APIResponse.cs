@@ -52,6 +52,7 @@ namespace VaccineFinder
     class AvailabilityStatusAPIResponse
     {
         public List<Center> centers { get; set; }
+        public bool SessionRelatedError { get; set; }
     }
     public class Center
     {

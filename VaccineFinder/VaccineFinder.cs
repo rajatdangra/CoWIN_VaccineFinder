@@ -28,7 +28,7 @@ namespace VaccineFinder
             string inputMessage = string.Empty;
 
             #region Mobile Otp Validation
-            
+
             var otpAuth = new OTPAuthenticator();
             otpAuth.ValidateUser(UserDetails.Phone);
 
@@ -148,7 +148,7 @@ namespace VaccineFinder
                     if (benDetails != null)
                     {
                         stInfo = string.Format("Beneficiary Id {0} is valid, User Name: {1}", benId, benDetails.name);
-                        ConsoleMethods.PrintProgress(stInfo);
+                        ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkCyan);
                         logger.Info(stInfo);
                     }
                     else
@@ -260,6 +260,8 @@ namespace VaccineFinder
 
                 if (response == null)
                     return null;
+                else if (response.SessionRelatedError)
+                    return sessions;//Empty sessions, to retry again.
 
                 int counter = 0;
                 counter += foundedCount;
@@ -341,7 +343,7 @@ namespace VaccineFinder
                 {
                     stInfo = "No Slots Found for Pin Code: " + pinCode + ". Last status checked: " + DateTime.Now.ToDetailString();
                     logger.Info(stInfo);
-                    Console.WriteLine(stInfo);
+                    ConsoleMethods.PrintProgress(stInfo);
                     //Thread.Sleep(TimeSpan.FromSeconds(UserDetails.UserPreference.PollingTime));
                 }
                 return sessions;
@@ -422,16 +424,16 @@ namespace VaccineFinder
                     stopwatch.Stop();
                     TimeSpan ts = stopwatch.Elapsed;
                     var timeTakenToBook = ts.TotalSeconds;
-                    
+
                     slotBooked = true;
-                    
+
                     var bookingDetails = string.Format("Hi{0},\n\nYour Vaccine Slot has been booked Successfully!\n\nBelow are the details:\n\tConfirmation number: {1}\n\tBeneficiary Ids: {2}\n\tDate: {3}\n\tSlot: {4}\n\nRegards,\nYour Vaccine Finder :)", (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : ""), response.appointment_confirmation_no, UserDetails.UserPreference.BeneficiaryIdsString, (session.date.IsDefault() ? "" : session.date.ToString("dd-MM-yyyy")), slot);
 
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + response.appointment_confirmation_no;
                     //Console.WriteLine(stInfo);
                     logger.Info(stInfo);
 
-                    stInfo = string.Format( "Time taken to book slot: {0} seconds.", timeTakenToBook);
+                    stInfo = string.Format("Time taken to book slot: {0} seconds.", timeTakenToBook);
                     Console.WriteLine(stInfo);
                     logger.Info(stInfo);
 
@@ -452,7 +454,7 @@ namespace VaccineFinder
                     //Console.WriteLine(stInfo);
                 }
                 stopwatch.Stop();
-                
+
                 return slotBooked;
             }
             catch (Exception ex)

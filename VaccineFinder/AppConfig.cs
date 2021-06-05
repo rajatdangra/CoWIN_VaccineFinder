@@ -61,6 +61,7 @@ namespace VaccineFinder
         internal static string ScheduleAppointmentUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:ScheduleAppointmentUrl"]);
         //internal static int OtpExpiryTimeLimit => Convert.ToInt32(_configuration["OtpExpiryTimeLimit"]);
         //internal static int TokenExpiryTimeLimit => Convert.ToInt32(_configuration["TokenExpiryTimeLimit"]);
+        internal static int ThrottlingRefreshTime => Convert.ToInt32(_configuration["CoWinAPI:ThrottlingRefreshTime"]);
         #endregion
         //internal static int Retry_Count => Convert.ToInt32(_configuration["Retry_Count"]);
         internal static int AutomaticCloseProgramWaitTime => Convert.ToInt32(_configuration["App:AutomaticCloseProgramWaitTime"]);

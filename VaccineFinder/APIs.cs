@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace VaccineFinder
@@ -14,6 +15,7 @@ namespace VaccineFinder
     class APIs
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static bool isIPThrottled = false;
 
         public static GenerateMobileOTPResponse GenerateMobileOTP(string phone)
         {
@@ -193,6 +195,17 @@ namespace VaccineFinder
                     ConsoleMethods.PrintProgress(stInfo);
                     new OTPAuthenticator().ValidateUser(phone);
                 }
+                else if (response.StatusCode == HttpStatusCode.Forbidden || response.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    isIPThrottled = false;
+                    new Thread(new ThreadStart(IPThrolledNotifier)).Start();
+                    stInfo = $"[FATAL] Response From Server: {responseString}\nToo many hits from your IP address, hence request has been blocked. You can try following options:\n1.(By Default) Wait for {AppConfig.ThrottlingRefreshTime} seconds, the Application will Automatically resume working.\n2.Switch to a different network which will change your current IP address.\n3.Close the application and try again after sometime.";
+                    logger.Warn(stInfo);
+                    ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
+                    Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000);
+                    isIPThrottled = true;
+                    //new OTPAuthenticator().ValidateUser(phone);
+                }
                 else
                 {
                     stInfo = "Unable to Fetch Beneficiaries.\nResponse Code: " + response.StatusCode + ", Response: " + responseString;
@@ -256,14 +269,31 @@ namespace VaccineFinder
                 }
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
+                    apiResponse = new AvailabilityStatusAPIResponse();
+                    apiResponse.SessionRelatedError = true;
+
                     stInfo = $"[WARNING] Session Expired : Regenerating Auth Token";
                     logger.Warn(stInfo);
                     ConsoleMethods.PrintProgress(stInfo);
                     new OTPAuthenticator().ValidateUser(phone);
                 }
+                else if (response.StatusCode == HttpStatusCode.Forbidden || response.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    apiResponse = new AvailabilityStatusAPIResponse();
+                    apiResponse.SessionRelatedError = true;
+
+                    isIPThrottled = false;
+                    new Thread(new ThreadStart(IPThrolledNotifier)).Start();
+                    stInfo = $"[FATAL] Response From Server: {responseString}\nToo many hits from your IP address, hence request has been blocked. You can try following options:\n1.(By Default) Wait for {AppConfig.ThrottlingRefreshTime} seconds, the Application will Automatically resume working.\n2.Switch to a different network which will change your current IP address.\n3.Close the application and try again after sometime.";
+                    logger.Warn(stInfo);
+                    ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
+                    Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000);
+                    isIPThrottled = true;
+                    //new OTPAuthenticator().ValidateUser(phone);
+                }
                 else
                 {
-                    stInfo = string.Format("Unable to Fetch slots availability.\nResponse Code: " + response.StatusCode + ", Response: " + responseString);
+                    stInfo = $"Unable to Fetch slots availability.\nResponse Code: {response.StatusCode}, Response: {responseString}";
                     logger.Info(stInfo);
                     ConsoleMethods.PrintError(stInfo);
                 }
@@ -363,6 +393,17 @@ namespace VaccineFinder
                     ConsoleMethods.PrintProgress(stInfo);
                     new OTPAuthenticator().ValidateUser(phone);
                 }
+                else if (response.StatusCode == HttpStatusCode.Forbidden || response.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    isIPThrottled = false;
+                    new Thread(new ThreadStart(IPThrolledNotifier)).Start();
+                    stInfo = $"[FATAL] Response From Server: {responseString}\nToo many hits from your IP address, hence request has been blocked. You can try following options:\n1.(By Default) Wait for {AppConfig.ThrottlingRefreshTime} seconds, the Application will Automatically resume working.\n2.Switch to a different network which will change your current IP address.\n3.Close the application and try again after sometime.";
+                    logger.Warn(stInfo);
+                    ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
+                    Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000);
+                    isIPThrottled = true;
+                    //new OTPAuthenticator().ValidateUser(phone);
+                }
                 else
                 {
                     stInfo = string.Format("Unable to book Vaccination slot for Date: {0}, Slot: {1}, Session Id: {2}.\nResponse Code: {3}, Response: {4}", date.ToString("dd-MM-yyyy"), slot, sessionId, response.StatusCode, responseString);
@@ -381,6 +422,15 @@ namespace VaccineFinder
             finally
             {
                 logger.Info("BookSlot API call end.");
+            }
+        }
+
+        private static void IPThrolledNotifier()
+        {
+            while (!isIPThrottled)
+            {
+                Console.Beep(); // Default Frequency: 800 Hz, Default Duration of Beep: 300 ms
+                Thread.Sleep(300);
             }
         }
     }
