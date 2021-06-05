@@ -35,6 +35,7 @@ Optional:
 In appsettings.json: (Highly Recommended not to update these settings)
 	1) VerifyBeneficiaries - To verify beneficiaries, before slot booking (highly recommended: True)
 	2) SendEmail - True or False to enable/disable mail.
+	3) AutomaticCloseProgramWaitTime (in Seconds)- At the point of termination, program will wait for seconds before closing Automatically.
 
 Process:
 	1) Confirm inputs from user.
@@ -50,7 +51,7 @@ Process:
 				case b) If AutoBookCenter is True ("1"), it will sort available center based on availability, then tries to book slot, it will hit all the centers until slot is successfully booked.
 			2) Try to book slots, with Slot preference, then book other slots (whichever is available).
 			3) Confirmation mail on User email ids.
-	7) Automatically close in 15 seconds.
+	7) Automatically close in 30 seconds (depends on AutomaticCloseProgramWaitTime setting in appsettings.json).
 	
 	
 Note: This is a Personal Project, I do NOT endorse this for Public use. Developed for Educational Purpose only; USE AT YOUR OWN RISK. I SHOULD NOT BE DEEMED RESPONSIBLE FOR ANY LEGAL CONCERNS. DO NOT SHARE THIS.

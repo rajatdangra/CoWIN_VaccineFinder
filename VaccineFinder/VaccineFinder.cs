@@ -209,7 +209,7 @@ namespace VaccineFinder
                         stInfo = string.Format("\nSlots Found at {0}", DateTime.Now.ToDetailString());
                         ConsoleMethods.PrintSuccess(stInfo);
                         logger.Info(stInfo);
-                        Console.WriteLine(slots.ToString());
+                        ConsoleMethods.PrintInfo(slots.ToString());
                         Thread soundThread = new Thread(() => Sound.PlayBeep(4, 1500, 500));
                         soundThread.Start();
 

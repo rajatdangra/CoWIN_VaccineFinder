@@ -349,8 +349,11 @@ namespace VaccineFinder
             VaccineFinder vf = new VaccineFinder(userDetails, date);
             vf.StartFindingVaccine();
 
-            int waitTime = 15;
-            Console.WriteLine("Program will be Automatically closed in " + waitTime + " Seconds");
+            Thread soundThread = new Thread(() => Sound.PlayAsterisk(1));
+            soundThread.Start();
+
+            int waitTime = AppConfig.AutomaticCloseProgramWaitTime;
+            ConsoleMethods.PrintInfo("Program will be Automatically closed in " + waitTime + " Seconds", color: ConsoleColor.Cyan);
             Thread.Sleep(waitTime * 1000);
         }
 

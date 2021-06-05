@@ -63,6 +63,7 @@ namespace VaccineFinder
         //internal static int TokenExpiryTimeLimit => Convert.ToInt32(_configuration["TokenExpiryTimeLimit"]);
         #endregion
         //internal static int Retry_Count => Convert.ToInt32(_configuration["Retry_Count"]);
+        internal static int AutomaticCloseProgramWaitTime => Convert.ToInt32(_configuration["App:AutomaticCloseProgramWaitTime"]);
 
         public static void UpdateConfig(UserDetails defaultDetails)
         {
