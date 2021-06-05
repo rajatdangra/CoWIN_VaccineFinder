@@ -18,7 +18,7 @@ namespace VaccineFinder
         {
         }
 
-        public void ValidateUser(string phone)
+        public void ValidateUser(string phone, bool forceGenerateToken = false)
         {
             string stInfo = string.Empty;
             if (!string.IsNullOrEmpty(BEARER_TOKEN))
@@ -26,10 +26,16 @@ namespace VaccineFinder
                 // Check if user already has a valid bearer token, if yes use it.
                 if (IsValidBearerToken(BEARER_TOKEN))
                 {
-                    stInfo = string.Format("Token is valid. Resuming Session for phone: {0} at {1}", phone, DateTime.Now.ToDetailString());
+                    stInfo = "Token is valid. ";
+                    if (forceGenerateToken)
+                        stInfo += "Force Re-generating OTP to continue!";
+                    else
+                        stInfo += string.Format("Resuming Session for phone: {0} at {1}", phone, DateTime.Now.ToDetailString());
                     ConsoleMethods.PrintSuccess(stInfo);
                     logger.Info(stInfo);
-                    return;
+                    
+                    if (!forceGenerateToken)
+                        return;
                 }
                 else
                 {
@@ -96,7 +102,7 @@ namespace VaccineFinder
 
         public ValidateMobileOTPResponse ValidateMobileOTP(string otp, string txnId)
         {
-            string stInfo = "ValidateMobileOTP Call Started for otp: " + otp;
+            string stInfo = "ValidateMobileOTP Call Started for OTP: " + otp;
             logger.Info(stInfo);
             Console.WriteLine(stInfo);
 

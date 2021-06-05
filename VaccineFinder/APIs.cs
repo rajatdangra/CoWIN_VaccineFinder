@@ -146,7 +146,7 @@ namespace VaccineFinder
                 }
                 else
                 {
-                    stInfo = "Invalid Otp";
+                    stInfo = "Invalid OTP.";
                     logger.Info(stInfo);
                     ConsoleMethods.PrintError(stInfo);
                 }
@@ -190,7 +190,7 @@ namespace VaccineFinder
                 }
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    stInfo = $"[WARNING] Session Expired : Regenerating Auth Token";
+                    stInfo = $"[WARNING] Session Expired : Regenerating Auth Token.";
                     logger.Warn(stInfo);
                     ConsoleMethods.PrintProgress(stInfo);
                     new OTPAuthenticator().ValidateUser(phone);
@@ -212,10 +212,10 @@ namespace VaccineFinder
                     }
                     else
                     {
-                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token";
+                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token.";
                         logger.Warn(stInfo);
                         ConsoleMethods.PrintProgress(stInfo);
-                        new OTPAuthenticator().ValidateUser(phone);
+                        new OTPAuthenticator().ValidateUser(phone, forceGenerateToken: true);
                     }
                 }
                 else
@@ -284,7 +284,7 @@ namespace VaccineFinder
                     apiResponse = new AvailabilityStatusAPIResponse();
                     apiResponse.SessionRelatedError = true;
 
-                    stInfo = $"[WARNING] Session Expired : Regenerating Auth Token";
+                    stInfo = $"[WARNING] Session Expired : Regenerating Auth Token.";
                     logger.Warn(stInfo);
                     ConsoleMethods.PrintProgress(stInfo);
                     new OTPAuthenticator().ValidateUser(phone);
@@ -309,10 +309,10 @@ namespace VaccineFinder
                     }
                     else
                     {
-                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token";
+                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token.";
                         logger.Warn(stInfo);
                         ConsoleMethods.PrintProgress(stInfo);
-                        new OTPAuthenticator().ValidateUser(phone);
+                        new OTPAuthenticator().ValidateUser(phone, forceGenerateToken: true);
                     }
                 }
                 else
@@ -412,7 +412,7 @@ namespace VaccineFinder
                 }
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    stInfo = $"[WARNING] Session Expired : Regenerating Auth Token";
+                    stInfo = $"[WARNING] Session Expired : Regenerating Auth Token.";
                     logger.Warn(stInfo);
                     ConsoleMethods.PrintProgress(stInfo);
                     new OTPAuthenticator().ValidateUser(phone);
@@ -434,10 +434,10 @@ namespace VaccineFinder
                     }
                     else
                     {
-                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token";
+                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token.";
                         logger.Warn(stInfo);
                         ConsoleMethods.PrintProgress(stInfo);
-                        new OTPAuthenticator().ValidateUser(phone);
+                        new OTPAuthenticator().ValidateUser(phone, forceGenerateToken: true);
                     }
                 }
                 else
