@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VaccineFinder.Private;
 
 namespace VaccineFinder
 {
@@ -13,10 +14,11 @@ namespace VaccineFinder
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        internal static string DeveloperEmail = "abc@gmail.com";
-        internal static string DeveloperName = "xyz";
-        private static string FromEmail = "def@gmail.com";
+        internal static string DeveloperEmail = PrivateData.DeveloperEmail;
+        internal static string DeveloperName = PrivateData.DeveloperName;
+        private static string FromEmail = PrivateData.FromEmail;
         private static string FromName = "Vaccine Finder";
+        private static string Password = PrivateData.Pass;
 
         public static void SendEmail(string message, string subject, string mailIdsTo, string fullNameTo)
         {
@@ -43,7 +45,7 @@ namespace VaccineFinder
                 {
                     //config settings should be picked from web.config
                     smtpClient.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                    smtpClient.Authenticate(FromEmail, "password");
+                    smtpClient.Authenticate(FromEmail, Password);
                     smtpClient.Send(mailMessage);
                     smtpClient.Disconnect(true);
                 }

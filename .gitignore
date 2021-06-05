@@ -54,9 +54,9 @@ Thumbs.db
 *.azurePubxml
 *.pubxml
 *.publishproj
-/PublishProfiles
 
 *.metaproj*
 
 #Ignore private folder
 /Private/
+**/Private
