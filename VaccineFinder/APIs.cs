@@ -188,12 +188,14 @@ namespace VaccineFinder
                 }
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    ConsoleMethods.PrintProgress($"[WARNING] Session Expired : Regenerating Auth Token");
+                    stInfo = $"[WARNING] Session Expired : Regenerating Auth Token";
+                    logger.Warn(stInfo);
+                    ConsoleMethods.PrintProgress(stInfo);
                     new OTPAuthenticator().ValidateUser(phone);
                 }
                 else
                 {
-                    stInfo = "Unable to Fetch Beneficiaries.";
+                    stInfo = "Unable to Fetch Beneficiaries.\nResponse Code: " + response.StatusCode + ", Response: " + responseString;
                     logger.Info(stInfo);
                     ConsoleMethods.PrintError(stInfo);
                 }
@@ -254,12 +256,14 @@ namespace VaccineFinder
                 }
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    ConsoleMethods.PrintProgress($"[WARNING] Session Expired : Regenerating Auth Token");
+                    stInfo = $"[WARNING] Session Expired : Regenerating Auth Token";
+                    logger.Warn(stInfo);
+                    ConsoleMethods.PrintProgress(stInfo);
                     new OTPAuthenticator().ValidateUser(phone);
                 }
                 else
                 {
-                    stInfo = string.Format("Unable to Fetch slots availability");
+                    stInfo = string.Format("Unable to Fetch slots availability.\nResponse Code: " + response.StatusCode + ", Response: " + responseString);
                     logger.Info(stInfo);
                     ConsoleMethods.PrintError(stInfo);
                 }
@@ -354,12 +358,14 @@ namespace VaccineFinder
                 }
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    ConsoleMethods.PrintProgress($"[WARNING] Session Expired : Regenerating Auth Token");
+                    stInfo = $"[WARNING] Session Expired : Regenerating Auth Token";
+                    logger.Warn(stInfo);
+                    ConsoleMethods.PrintProgress(stInfo);
                     new OTPAuthenticator().ValidateUser(phone);
                 }
                 else
                 {
-                    stInfo = string.Format("Unable to book Vaccination slot for Date: {0}, Slot: {1}, Session Id: {2}.", date.ToString("dd-MM-yyyy"), slot, sessionId);
+                    stInfo = string.Format("Unable to book Vaccination slot for Date: {0}, Slot: {1}, Session Id: {2}.\nResponse Code: {3}, Response: {4}", date.ToString("dd-MM-yyyy"), slot, sessionId, response.StatusCode, responseString);
                     logger.Info(stInfo);
                     ConsoleMethods.PrintProgress(stInfo);
                 }
