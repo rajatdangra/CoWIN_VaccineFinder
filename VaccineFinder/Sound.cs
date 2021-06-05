@@ -9,8 +9,9 @@ namespace VaccineFinder
 {
     class Sound
     {
-        public static void PlayBeep(int count, int freq, int dur)
+        public static void PlayBeep(int count, int freq = 800, int dur = 200)
         {
+            // Default Frequency: 800 Hz, Default Duration of Beep: 200 ms
             //Play Beep sound
             for (int i = 0; i < count; i++)
             {

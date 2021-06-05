@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace VaccineFinder
@@ -19,19 +20,22 @@ namespace VaccineFinder
 
         public void ValidateUser(string phone)
         {
+            string stInfo = string.Empty;
             if (!string.IsNullOrEmpty(BEARER_TOKEN))
             {
                 // Check if user already has a valid bearer token, if yes use it.
                 if (IsValidBearerToken(BEARER_TOKEN))
                 {
-                    ConsoleMethods.PrintSuccess(string.Format("Token is valid. Resuming Session for phone: {0} at {1}", phone, DateTime.Now.ToDetailString()));
+                    stInfo = string.Format("Token is valid. Resuming Session for phone: {0} at {1}", phone, DateTime.Now.ToDetailString());
+                    ConsoleMethods.PrintSuccess(stInfo);
+                    logger.Info(stInfo);
                     return;
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"[WARNING] Invalid/Expired Bearer Token provided in config file. Re-generating OTP to establish session!");
-                    Console.ResetColor();
+                    stInfo = $"[WARNING] Invalid/Expired Bearer Token. Re-generating OTP to establish session!";
+                    ConsoleMethods.PrintSuccess(stInfo);
+                    logger.Info(stInfo);
                 }
             }
 
@@ -45,7 +49,7 @@ namespace VaccineFinder
             var ValidateMobileOTPResponse = ValidateMobileOTP(otp, GenerateMobileOTPResponse.txnId);
             while (ValidateMobileOTPResponse == null)
             {
-                string stInfo = "Invalid OTP. Please Retry.";
+                stInfo = "Invalid OTP. Please Retry.";
                 logger.Info(stInfo + ": " + otp);
                 //Console.WriteLine(stInfo);
                 Console.WriteLine(inputMessage);
@@ -70,6 +74,8 @@ namespace VaccineFinder
                     stInfo = "OTP Sent Successfully to Phone: " + phone;
                     //Console.WriteLine(stInfo);
                     logger.Info(stInfo);
+                    Thread soundThread = new Thread(() => Sound.PlayBeep(1)/*Sound.PlayAsterisk(1)*/);
+                    soundThread.Start();
                 }
                 else
                 {

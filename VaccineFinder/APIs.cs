@@ -197,14 +197,26 @@ namespace VaccineFinder
                 }
                 else if (response.StatusCode == HttpStatusCode.Forbidden || response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    isIPThrottled = false;
-                    new Thread(new ThreadStart(IPThrolledNotifier)).Start();
-                    stInfo = $"[FATAL] Response From Server: {responseString}\nToo many hits from your IP address, hence request has been blocked. You can try following options:\n1.(By Default) Wait for {AppConfig.ThrottlingRefreshTime} seconds, the Application will Automatically resume working.\n2.Switch to a different network which will change your current IP address.\n3.Close the application and try again after sometime.";
+                    stInfo = $"[FATAL] Response From Server: {responseString}\nToo many hits from your IP address from the same Session, hence request has been blocked.";
                     logger.Warn(stInfo);
                     ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
-                    Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000);
-                    isIPThrottled = true;
-                    //new OTPAuthenticator().ValidateUser(phone);
+                    if (AppConfig.IsThrottlingToBeUsed)
+                    {
+                        isIPThrottled = false;
+                        new Thread(new ThreadStart(IPThrottledNotifier)).Start();
+                        stInfo = $"[FATAL] You can try following options:\n1.(By Default) Wait for {AppConfig.ThrottlingRefreshTime} seconds, the Application will Automatically resume working.\n2.Switch to a different network which will change your current IP address.\n3.Close the application and try again with IP Throttling Disabled.";
+                        logger.Warn(stInfo);
+                        ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
+                        Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000);
+                        isIPThrottled = true;
+                    }
+                    else
+                    {
+                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token";
+                        logger.Warn(stInfo);
+                        ConsoleMethods.PrintProgress(stInfo);
+                        new OTPAuthenticator().ValidateUser(phone);
+                    }
                 }
                 else
                 {
@@ -262,7 +274,7 @@ namespace VaccineFinder
                 IRestResponse response = client.Execute(request);
                 var responseString = response.Content;
                 //Console.WriteLine(responseString);
-                logger.Info("Response from BookSlot API: " + responseString);
+                logger.Info("Response from CheckCalendarByPin API: " + responseString);
                 if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
                 {
                     apiResponse = JsonConvert.DeserializeObject<AvailabilityStatusAPIResponse>(responseString);
@@ -282,14 +294,26 @@ namespace VaccineFinder
                     apiResponse = new AvailabilityStatusAPIResponse();
                     apiResponse.SessionRelatedError = true;
 
-                    isIPThrottled = false;
-                    new Thread(new ThreadStart(IPThrolledNotifier)).Start();
-                    stInfo = $"[FATAL] Response From Server: {responseString}\nToo many hits from your IP address, hence request has been blocked. You can try following options:\n1.(By Default) Wait for {AppConfig.ThrottlingRefreshTime} seconds, the Application will Automatically resume working.\n2.Switch to a different network which will change your current IP address.\n3.Close the application and try again after sometime.";
+                    stInfo = $"[FATAL] Response From Server: {responseString}\nToo many hits from your IP address from the same Session, hence request has been blocked.";
                     logger.Warn(stInfo);
                     ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
-                    Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000);
-                    isIPThrottled = true;
-                    //new OTPAuthenticator().ValidateUser(phone);
+                    if (AppConfig.IsThrottlingToBeUsed)
+                    {
+                        isIPThrottled = false;
+                        new Thread(new ThreadStart(IPThrottledNotifier)).Start();
+                        stInfo = $"[FATAL] You can try following options:\n1.(By Default) Wait for {AppConfig.ThrottlingRefreshTime} seconds, the Application will Automatically resume working.\n2.Switch to a different network which will change your current IP address.\n3.Close the application and try again with IP Throttling Disabled.";
+                        logger.Warn(stInfo);
+                        ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
+                        Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000);
+                        isIPThrottled = true;
+                    }
+                    else
+                    {
+                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token";
+                        logger.Warn(stInfo);
+                        ConsoleMethods.PrintProgress(stInfo);
+                        new OTPAuthenticator().ValidateUser(phone);
+                    }
                 }
                 else
                 {
@@ -395,14 +419,26 @@ namespace VaccineFinder
                 }
                 else if (response.StatusCode == HttpStatusCode.Forbidden || response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    isIPThrottled = false;
-                    new Thread(new ThreadStart(IPThrolledNotifier)).Start();
-                    stInfo = $"[FATAL] Response From Server: {responseString}\nToo many hits from your IP address, hence request has been blocked. You can try following options:\n1.(By Default) Wait for {AppConfig.ThrottlingRefreshTime} seconds, the Application will Automatically resume working.\n2.Switch to a different network which will change your current IP address.\n3.Close the application and try again after sometime.";
+                    stInfo = $"[FATAL] Response From Server: {responseString}\nToo many hits from your IP address from the same Session, hence request has been blocked.";
                     logger.Warn(stInfo);
                     ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
-                    Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000);
-                    isIPThrottled = true;
-                    //new OTPAuthenticator().ValidateUser(phone);
+                    if (AppConfig.IsThrottlingToBeUsed)
+                    {
+                        isIPThrottled = false;
+                        new Thread(new ThreadStart(IPThrottledNotifier)).Start();
+                        stInfo = $"[FATAL] You can try following options:\n1.(By Default) Wait for {AppConfig.ThrottlingRefreshTime} seconds, the Application will Automatically resume working.\n2.Switch to a different network which will change your current IP address.\n3.Close the application and try again with IP Throttling Disabled.";
+                        logger.Warn(stInfo);
+                        ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
+                        Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000);
+                        isIPThrottled = true;
+                    }
+                    else
+                    {
+                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token";
+                        logger.Warn(stInfo);
+                        ConsoleMethods.PrintProgress(stInfo);
+                        new OTPAuthenticator().ValidateUser(phone);
+                    }
                 }
                 else
                 {
@@ -425,12 +461,12 @@ namespace VaccineFinder
             }
         }
 
-        private static void IPThrolledNotifier()
+        private static void IPThrottledNotifier()
         {
             while (!isIPThrottled)
             {
-                Console.Beep(); // Default Frequency: 800 Hz, Default Duration of Beep: 300 ms
-                Thread.Sleep(300);
+                Sound.PlayBeep(1, 800, 100); // Default Frequency: 800 Hz, Default Duration of Beep: 200 ms
+                Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000 / 5);
             }
         }
     }
