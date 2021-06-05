@@ -7,9 +7,9 @@ Platforms Supported: Windows, macOS, Linux.
 
 Installation instructions:
 	1) Unzip folder.
-	2) Install Setup / Run EXE file.
+	2) Run VaccineFinder.exe
 	3) Fill in the basic details.
-Note: Details once filled, will be retained to use for next time. It will be picked automatically. You can also check VaccineFinder.exe.config for more details.
+Note: Details once filled, will be retained to use for next time. It will be picked automatically. You can also check appsettings.json for more details.
 
 
 User Inputs:
@@ -32,9 +32,9 @@ Optional:
 	1) First Name - will be used in E-Mail.
 	2) Last Name - will be used in E-Mail.
 	
-In App.Config: (Highly Recommended not to update these settings)
+In appsettings.json: (Highly Recommended not to update these settings)
 	1) VerifyBeneficiaries - To verify beneficiaries, before slot booking (highly recommended: True)
-	2) SendEmail - True or False to enable mail.
+	2) SendEmail - True or False to enable/disable mail.
 
 Process:
 	1) Confirm inputs from user.
