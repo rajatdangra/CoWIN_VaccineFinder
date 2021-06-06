@@ -1,6 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <PackageIcon>Banner.png</PackageIcon>
+    <RepositoryType>Github Public Repository</RepositoryType>
+    <RepositoryUrl>https://github.com/rajatdangra/CoWIN_VaccineFinder</RepositoryUrl>
+    <Company>Open Source</Company>
+    <Product>Vaccine Finder</Product>
+    <Description>Cross-Platform Application to Fetch the Available Slots &amp; Booking the Appointment Schedule for COVID-19 Vaccination India using the Publicly available APISetu APIs</Description>
+    <Authors>rajatdangra</Authors>
+    <Copyright>Rajat Maheshwari</Copyright>
+    <Version>2.0.0</Version>
+    <PackageProjectUrl>https://rajatdangra.github.io/CoWIN_VaccineFinder/</PackageProjectUrl>
+    <NeutralLanguage></NeutralLanguage>
+    <PackageId>VaccineFinder</PackageId>
+    <SignAssembly>true</SignAssembly>
+    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <AssemblyName>Vaccine Finder</AssemblyName>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>D:\Personal Projects\VaccineFinder\</PublishUrl>
     <Install>true</Install>
@@ -36,9 +53,17 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <StartupObject>VaccineFinder.Program</StartupObject>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageReleaseNotes>1) Added more information in Slot Booking Email.
+2) Added additional validation to check if users HaveSameVaccine (mostly important to avoid multiple combination of dose (1,2) and vaccine. If same vaccines are found, also updating specified vaccine if it is not same as previous vaccine.
+3) Added Validation of IsDoseSpecifiedValid, Update if wrong dose.</PackageReleaseNotes>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Include="..\data\Banner.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Configuration" />
