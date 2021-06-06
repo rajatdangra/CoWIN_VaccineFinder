@@ -242,9 +242,17 @@ namespace VaccineFinder
 
         public static AvailabilityStatusAPIResponse CheckCalendarByPin(string pinCode, DateTime date, string phone)
         {
-            logger.Info("CheckCalendarByPin API call started.");
-            AvailabilityStatusAPIResponse apiResponse = null;
             string stInfo = string.Empty;
+            logger.Info("CheckCalendarByPin API call started.");
+
+            if (!AppConfig.ProtectedAPIToBeUsed)
+            {
+                stInfo = $"[WARNING] Using Public API (Data could be OUTDATED), since ProtectedAPIToBeUsed is Disabled in appsettings.json";
+                logger.Info(stInfo);
+                ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
+            }
+
+            AvailabilityStatusAPIResponse apiResponse = null;
             try
             {
                 #region Generate Random String to ignore Caching
@@ -473,7 +481,7 @@ namespace VaccineFinder
 
         public static VersionModel FetchLatestAppVersion()
         {
-            string stInfo = "FetchLatestAppVersion from GITHUB API call started.";
+            string stInfo = "FetchLatestAppVersion API call started.";
             logger.Info(stInfo);
             ConsoleMethods.PrintProgress(stInfo);
             try
@@ -496,7 +504,7 @@ namespace VaccineFinder
                 }
                 else
                 {
-                    stInfo = $"Unable to Fetch Latest Version from GITHUB.\nResponse Code: {response.StatusCode}, Response: {responseString}";
+                    stInfo = $"Unable to Fetch Latest Version.\nResponse Code: {response.StatusCode}, Response: {responseString}";
                     logger.Info(stInfo);
                     ConsoleMethods.PrintError(stInfo);
                 }

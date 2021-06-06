@@ -56,8 +56,9 @@ namespace VaccineFinder
         internal static string ConfirmOTPUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:Authentication:ConfirmOTPUrl"]);
         internal static string Secret => Convert.ToString(_configuration["CoWinAPI:Authentication:Secret"]);
         internal static string GetBeneficiariesUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:GetBeneficiariesUrl"]);
-        internal static string CalendarByPinUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:CalendarByPinUrl"]);
-        internal static string CalendarByDistrictUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:CalendarByDistrictUrl"]);
+        internal static bool ProtectedAPIToBeUsed => String.Equals(_configuration["CoWinAPI:ProtectedAPI:IsToBeUsed"], "1");
+        internal static string CalendarByPinUrl => Cowin_BaseUrl + Convert.ToString(ProtectedAPIToBeUsed ? _configuration["CoWinAPI:ProtectedAPI:CalendarByPinUrl"] : _configuration["CoWinAPI:PublicAPI:CalendarByPinUrl"]);
+        internal static string CalendarByDistrictUrl => Cowin_BaseUrl + Convert.ToString(ProtectedAPIToBeUsed ? _configuration["CoWinAPI:ProtectedAPI:CalendarByDistrictUrl"] : _configuration["CoWinAPI:PublicAPI:CalendarByDistrictUrl"]);
         internal static string ScheduleAppointmentUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:ScheduleAppointmentUrl"]);
         //internal static int OtpExpiryTimeLimit => Convert.ToInt32(_configuration["OtpExpiryTimeLimit"]);
         //internal static int TokenExpiryTimeLimit => Convert.ToInt32(_configuration["TokenExpiryTimeLimit"]);

@@ -286,6 +286,7 @@ namespace VaccineFinder
             string stInfo = "Status Call Started for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
             logger.Info(stInfo);
             Console.WriteLine("\n" + stInfo);
+
             List<SessionProxy> sessions = new List<SessionProxy>();
             try
             {
