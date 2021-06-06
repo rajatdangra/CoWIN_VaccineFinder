@@ -173,6 +173,7 @@ namespace VaccineFinder
             {
                 bool vaccineSlotFound = false;
                 bool errorOccured = false;
+                int retryCount = 0;
                 while (!vaccineSlotFound && !errorOccured)
                 {
                     stInfo = "Status Call End for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
@@ -183,7 +184,7 @@ namespace VaccineFinder
                     StringBuilder slots = new StringBuilder();
                     foreach (var pinCode in UserDetails.UserPreference.PinCodes)
                     {
-                        var sessionsByPin = CheckVaccineAvailabilityStatusByPin(pinCode, counter, ref slots);
+                        var sessionsByPin = CheckVaccineAvailabilityStatusByPin(pinCode, counter, ref slots, ref retryCount);
                         if (sessionsByPin == null)
                         {
                             errorOccured = true;
@@ -246,9 +247,10 @@ namespace VaccineFinder
             }
         }
 
-        public List<SessionProxy> CheckVaccineAvailabilityStatusByPin(string pinCode, int foundedCount, ref StringBuilder slots)
+        public List<SessionProxy> CheckVaccineAvailabilityStatusByPin(string pinCode, int foundedCount, ref StringBuilder slots, ref int retryCount)
         {
-            string stInfo = "Status Call Started for Pin Code: " + pinCode;
+            retryCount++;
+            string stInfo = $"Status Call Started for Pin Code: {pinCode}, Retry Count: {retryCount}";
             logger.Info(stInfo);
             Console.WriteLine(stInfo);
             List<SessionProxy> sessions = new List<SessionProxy>();
@@ -437,7 +439,7 @@ namespace VaccineFinder
 
                     slotBooked = true;
 
-                    var bookingDetails = $"Hi{(!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : "")},\n\nYour Vaccine Slot has been booked Successfully!\n\nBelow are the details:\n\tConfirmation number: {response.appointment_confirmation_no}\n\tPhone: {UserDetails.Phone}\n\tBeneficiary Ids: {UserDetails.UserPreference.BeneficiaryIdsString}\n\tDate: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\tSlot: {slot}\n\tDose: {UserDetails.UserPreference.Dose}\n\tVaccine: {session.Vaccine}\n\tCenter: {session.CenterName}\n\tAddress: {session.Address}\n\nRegards,\nYour Vaccine Finder :)";
+                    var bookingDetails = $"Hi{(!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : "")},\n\nYour Vaccine Slot has been booked Successfully!\n\nBelow are the details:\n\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary Ids: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}\n\nRegards,\nYour Vaccine Finder :)";
 
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + response.appointment_confirmation_no;
                     //Console.WriteLine(stInfo);
