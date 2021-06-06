@@ -60,7 +60,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="appsettings.json" />
-    <None Include="..\data\Banner.png">
+    <None Include="..\data\Banner.png" Link="Icons\Banner.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
