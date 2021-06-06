@@ -9,6 +9,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using VaccineFinder.Models;
 
 namespace VaccineFinder
 {
@@ -467,6 +468,50 @@ namespace VaccineFinder
             {
                 Sound.PlayBeep(1, 800, 100); // Default Frequency: 800 Hz, Default Duration of Beep: 200 ms
                 Thread.Sleep(AppConfig.ThrottlingRefreshTime * 1000 / 5);
+            }
+        }
+
+        public static VersionModel FetchLatestAppVersion()
+        {
+            string stInfo = "FetchLatestAppVersion from GITHUB API call started.";
+            logger.Info(stInfo);
+            ConsoleMethods.PrintProgress(stInfo);
+            try
+            {
+                VersionModel apiResponse = null;
+                var client = new RestClient(AppConfig.FetchVersionUrl);
+                client.Timeout = -1;
+                var request = new RestRequest(Method.GET);
+
+                IRestResponse response = client.Execute(request);
+                var responseString = response.Content;
+                //Console.WriteLine(responseString);
+                logger.Info("Response from FetchLatestAppVersion API: " + responseString);
+                if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                {
+                    apiResponse = JsonConvert.DeserializeObject<VersionModel>(responseString);
+                    stInfo = "Version fetched Successfully!";
+                    logger.Info(stInfo);
+                    ConsoleMethods.PrintSuccess(stInfo);
+                }
+                else
+                {
+                    stInfo = $"Unable to Fetch Latest Version from GITHUB.\nResponse Code: {response.StatusCode}, Response: {responseString}";
+                    logger.Info(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
+                }
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                stInfo = "Error in FetchLatestAppVersion:\n" + ex;
+                ConsoleMethods.PrintError("Please check your Internet Connection\n" + stInfo);
+                logger.Error(stInfo);
+                return null;
+            }
+            finally
+            {
+                logger.Info("FetchLatestAppVersion API call end.");
             }
         }
     }

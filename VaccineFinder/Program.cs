@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using NLog;
+using VaccineFinder.Models;
 
 namespace VaccineFinder
 {
@@ -20,6 +21,8 @@ namespace VaccineFinder
             ConsoleMethods.PrintSuccess(stInfo);
 
             AppConfig.UpdateConfig();
+
+            CheckSoftwareVersion();
 
             string Phone = AppConfig.Phone;
             string emailIdsString = AppConfig.EmailIDs;
@@ -369,6 +372,13 @@ namespace VaccineFinder
             int waitTime = AppConfig.AutomaticCloseProgramWaitTime;
             ConsoleMethods.PrintInfo("Program will be Automatically closed in " + waitTime + " Seconds", color: ConsoleColor.Cyan);
             Thread.Sleep(waitTime * 1000);
+        }
+
+        private static void CheckSoftwareVersion()
+        {
+            var shouldAppBeAllowedToRun = new VersionChecker().EvaluateCurrentSoftwareVersion();
+            if (!shouldAppBeAllowedToRun)
+                Environment.Exit(0);
         }
 
         public static string CreateCustomMessage(string propertyName)

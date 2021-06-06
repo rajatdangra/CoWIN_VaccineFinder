@@ -39,20 +39,21 @@ In appsettings.json: (Highly Recommended not to update these settings)
 	4) TryToBookOtherSlots - True or False. Try to Book Slots other than Slot Preference specified in UserPreference if enabled ("1"), By default disabled ("0") as we think availability is for the entire day, it is not segregated in individual slots
 
 Process:
-	1) Confirm inputs from user.
-	2) Generate OTP.
-	3) Verify OTP.
-	4) Verify Beneficiaries. Verify Vaccine and Dose specified, Update valid Vaccine and Dose in settings automatically.
-	5) Check Available slots.
+	1) Check Latest Version of the Application.
+	2) Confirm inputs from user.
+	3) Generate OTP.
+	4) Verify OTP.
+	5) Verify Beneficiaries. Verify Vaccine and Dose specified, Update valid Vaccine and Dose in settings automatically.
+	6) Check Available slots.
 	Case 1) Vaccine slots available: Program will Display Available Centres, make a beep sound to notify, and Users will get E-Mails on defined Email Ids. Proceed to Booking (next step).			
 	Case 2) Vaccine slots not available: Program will retry at user defined Retry Frequency. Automatically re-generate OTP, if session is expired.
-	6) Start Booking:
+	7) Start Booking:
 			1) AutoBookCenter:
 				case a) If AutoBookCenter is False ("0"), get preferred center input (number) from user, and only try to book slots of specific center. 
 				case b) If AutoBookCenter is True ("1"), it will sort available center based on availability, then tries to book slot, it will hit all the centers until slot is successfully booked.
 			2) Try to book slots, with Slot preference, then book other slots (depending on TryToBookOtherSlots) whichever is available.
 			3) Confirmation mail on User email ids.
-	7) Automatically close in 30 seconds (depends on AutomaticCloseProgramWaitTime setting in appsettings.json).
+	8) Automatically close in 30 seconds (depends on AutomaticCloseProgramWaitTime setting in appsettings.json).
 	
 	
 Note: This is a Personal Project, I do NOT endorse this for Public use. Developed for Educational Purpose only; USE AT YOUR OWN RISK. I SHOULD NOT BE DEEMED RESPONSIBLE FOR ANY LEGAL CONCERNS. DO NOT SHARE THIS.
