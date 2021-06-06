@@ -52,18 +52,28 @@ namespace VaccineFinder
                     ////Sort based on More Available Capacity
                     //sessions = sessions.OrderByDescending(a => a.availableCapacity).ToList();
                     sessionNumber = 1;
+                    stInfo = "Proceeding to Book Slot Automatically (Auto-Pick Center is True)";
+                    ConsoleMethods.PrintProgress(stInfo);
+                    logger.Info(stInfo);
                 }
                 else
                 {
-                    inputMessage = "Please enter your preference Center Number.";
-                    Console.WriteLine(inputMessage);
+                    stInfo = "Proceeding to Book Slot Manually (Auto-Pick Center is False)";
+                    ConsoleMethods.PrintProgress(stInfo);
+                    logger.Info(stInfo);
+
+                    Thread soundThread = new Thread(() => Sound.PlayBeep(1));
+                    soundThread.Start();
+
+                    inputMessage = "Please enter your preferred Center Number:";
+                    ConsoleMethods.PrintProgress(inputMessage);
                     var sessionNumberString = Console.ReadLine();
                     while (!int.TryParse(sessionNumberString, out sessionNumber) || sessionNumber > sessions.Count)
                     {
                         stInfo = "Invalid Input. Please Retry.";
                         logger.Info(stInfo + ": " + sessionNumberString);
                         ConsoleMethods.PrintError(stInfo);
-                        Console.WriteLine(inputMessage);
+                        ConsoleMethods.PrintProgress(inputMessage);
                         sessionNumberString = Console.ReadLine();
                     }
                 }
@@ -109,28 +119,28 @@ namespace VaccineFinder
                             UserDetails.UserPreference.BeneficiaryIds = UserPreference.GetBeneficiaryIds(benInput);
                         }
                         string vaccine;
-                        if (!HaveSameVaccine(response, out vaccine))
+                        if (!HaveSameDoseAndVaccine(response, out vaccine))
                         {
-                            Console.WriteLine("\nPlease enter comma separated beneficiary Ids with Same Dose:");
+                            Console.WriteLine("\nPlease enter comma separated beneficiary Ids with Same 'Dose and Vaccine':");
                             var benInput = Console.ReadLine();
                             UserDetails.UserPreference.BeneficiaryIds = UserPreference.GetBeneficiaryIds(benInput);
                         }
                         else
                         {
-                            if (!string.IsNullOrEmpty(vaccine))
+                            if (!string.IsNullOrEmpty(vaccine)) //Scenario for Dose:2
                             {
-                                stInfo = "Checking if vaccine specied is same";
+                                stInfo = "Checking if vaccine specified is same";
                                 ConsoleMethods.PrintProgress(stInfo);
                                 logger.Info(stInfo);
                                 if (vaccine.ToUpper().Equals(UserDetails.UserPreference.Vaccine.ToUpper()))
                                 {
-                                    stInfo = "Vaccine specied is same as previous vaccine";
+                                    stInfo = "Vaccine specified is same as previous vaccine";
                                     ConsoleMethods.PrintSuccess(stInfo);
                                     logger.Info(stInfo);
                                 }
                                 else
                                 {
-                                    stInfo = $"Vaccine specied: {UserDetails.UserPreference.Vaccine.ToUpper()}, is not same as Previous Vaccine: {vaccine}";
+                                    stInfo = $"Vaccine specified: {UserDetails.UserPreference.Vaccine.ToUpper()}, is not same as Previous Vaccine: {vaccine}";
                                     ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkYellow);
                                     logger.Info(stInfo);
                                     stInfo = $"Updating Vaccine: {vaccine}";
@@ -139,6 +149,14 @@ namespace VaccineFinder
                                     UserDetails.UserPreference.Vaccine = vaccine;
                                     updateRequired = true;
                                 }
+
+                                if (!IsDoseSpecifiedValid(dose: 2))
+                                    updateRequired = true;
+                            }
+                            else //Scenario for Dose:1
+                            {
+                                if (!IsDoseSpecifiedValid(dose: 1))
+                                    updateRequired = true;
                             }
                             break;
                         }
@@ -147,9 +165,9 @@ namespace VaccineFinder
 
                     if (updateRequired && AppConfig.SaveUserDetails)
                     {
-                        Console.WriteLine("Updating Default Settings");
+                        ConsoleMethods.PrintProgress("Updating Default Settings");
                         AppConfig.UpdateConfig(UserDetails);
-                        Console.WriteLine("Updated Default Settings");
+                        ConsoleMethods.PrintSuccess("Updated Default Settings");
                     }
                 }
                 else
@@ -204,18 +222,18 @@ namespace VaccineFinder
             return areBeneficiariesVerified;
         }
 
-        public bool HaveSameVaccine(GetBeneficiariesResponse response, out string vaccineName)
+        public bool HaveSameDoseAndVaccine(GetBeneficiariesResponse response, out string vaccineName)
         {
             vaccineName = string.Empty;
-            bool areDoseVerified = false;
-            string stInfo = "Verifying if beneficiaries have same Vaccine";
+            bool areDoseAndVaccineVerified = false;
+            string stInfo = "Verifying if beneficiaries have same(valid) Dose and Vaccine";
             Console.WriteLine("\n" + stInfo);
             logger.Info(stInfo);
 
             List<string> vaccines = response.beneficiaries.Where(a => UserDetails.UserPreference.BeneficiaryIds.Contains(a.beneficiary_reference_id)).Select(a => a.vaccine).ToList();
             if (vaccines.Distinct().Count() > 1)
             {
-                areDoseVerified = false;
+                areDoseAndVaccineVerified = false;
                 stInfo = $"Multiple vaccines found: {string.Join(", ", vaccines.Distinct())}";
                 ConsoleMethods.PrintError(stInfo);
                 logger.Info(stInfo);
@@ -223,7 +241,7 @@ namespace VaccineFinder
             else
             {
                 vaccineName = vaccines.First();
-                areDoseVerified = true;
+                areDoseAndVaccineVerified = true;
                 if (!string.IsNullOrWhiteSpace(vaccineName))
                 {
                     stInfo = $"Vaccine: {string.Join(", ", vaccines.Distinct())}";
@@ -232,7 +250,35 @@ namespace VaccineFinder
                 }
             }
 
-            return areDoseVerified;
+            return areDoseAndVaccineVerified;
+        }
+
+        public bool IsDoseSpecifiedValid(int dose)
+        {
+            bool isDoseSpecifiedValid = false;
+            string stInfo = "Checking if Dose specified is valid";
+            ConsoleMethods.PrintProgress(stInfo);
+            logger.Info(stInfo);
+            if (UserDetails.UserPreference.Dose == dose)
+            {
+                isDoseSpecifiedValid = true;
+                stInfo = $"Dose specified {UserDetails.UserPreference.Dose} is valid";
+                ConsoleMethods.PrintSuccess(stInfo);
+                logger.Info(stInfo);
+            }
+            else
+            {
+                isDoseSpecifiedValid = false;
+                stInfo = $"Dose specified {UserDetails.UserPreference.Dose} is invalid";
+                ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkYellow);
+                logger.Info(stInfo);
+
+                stInfo = $"Updating Dose: {dose}";
+                ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkCyan);
+                logger.Info(stInfo);
+                UserDetails.UserPreference.Dose = dose;
+            }
+            return isDoseSpecifiedValid;
         }
 
         public List<SessionProxy> CheckVaccineAvailabilityStatus()

@@ -311,9 +311,9 @@ namespace VaccineFinder
 
                 if (AppConfig.SaveUserDetails)
                 {
-                    Console.WriteLine("Updating Default Settings");
+                    ConsoleMethods.PrintProgress("Updating Default Settings");
                     AppConfig.UpdateConfig(userDetails);
-                    Console.WriteLine("Updated Default Settings");
+                    ConsoleMethods.PrintSuccess("Updated Default Settings");
                 }
             }
 
