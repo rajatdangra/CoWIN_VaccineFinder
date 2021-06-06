@@ -212,7 +212,7 @@ namespace VaccineFinder
                     }
                     else
                     {
-                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token.";
+                        stInfo = "IP Throttling is Disabled in 'appsettings.json'. Regenerating Auth Token.";
                         logger.Warn(stInfo);
                         ConsoleMethods.PrintProgress(stInfo);
                         new OTPAuthenticator().ValidateUser(phone, forceGenerateToken: true);
@@ -309,7 +309,7 @@ namespace VaccineFinder
                     }
                     else
                     {
-                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token.";
+                        stInfo = "IP Throttling is Disabled in 'appsettings.json'. Regenerating Auth Token.";
                         logger.Warn(stInfo);
                         ConsoleMethods.PrintProgress(stInfo);
                         new OTPAuthenticator().ValidateUser(phone, forceGenerateToken: true);
@@ -434,7 +434,7 @@ namespace VaccineFinder
                     }
                     else
                     {
-                        stInfo = "IP Throttling is Disabled. Regenerating Auth Token.";
+                        stInfo = "IP Throttling is Disabled in 'appsettings.json'. Regenerating Auth Token.";
                         logger.Warn(stInfo);
                         ConsoleMethods.PrintProgress(stInfo);
                         new OTPAuthenticator().ValidateUser(phone, forceGenerateToken: true);

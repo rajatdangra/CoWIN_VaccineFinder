@@ -10,11 +10,14 @@ namespace VaccineFinder
     {
         public SessionProxy()
         {
-            slots = new List<string>();
+            Slots = new List<string>();
         }
-        public string session_id { get; set; }
-        public int availableCapacity { get; set; }
-        public DateTime date { get; set; }
-        public List<string> slots { get; set; }
+        public string SessionID { get; set; }
+        public int AvailableCapacity { get; set; }
+        public DateTime Date { get; set; }
+        public List<string> Slots { get; set; }
+        public string Vaccine { get; set; }
+        public string CenterName { get; set; }
+        public string Address { get; set; }
     }
 }

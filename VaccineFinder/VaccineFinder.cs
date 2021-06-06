@@ -196,7 +196,7 @@ namespace VaccineFinder
                             if (UserDetails.UserPreference.AutoPickCenter)
                             {
                                 //Sort based on More Available Capacity
-                                sessionsByPin = sessionsByPin.OrderByDescending(a => a.availableCapacity).ToList();
+                                sessionsByPin = sessionsByPin.OrderByDescending(a => a.AvailableCapacity).ToList();
                             }
                             sessions.AddRange(sessionsByPin);
                         }
@@ -294,7 +294,7 @@ namespace VaccineFinder
                                 {
                                     vaccineSlotFound = true;
                                     counter++;
-                                    var details = string.Format(counter + ") Date: {0}, Name: {1}, Pin Code: {2}, Vaccine: {3}, Min Age: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}", session.date, center.name, pinCode, session.vaccine, session.min_age_limit, session.available_capacity_dose1, session.available_capacity_dose2, center.address);
+                                    var details = $"{counter}) Date: {session.date}, Name: {center.name}, Pin Code: {pinCode}, Vaccine: {session.vaccine}, Min Age: {session.min_age_limit}, Available Capacity Dose1: {session.available_capacity_dose1}, Available Capacity Dose2: {session.available_capacity_dose2}, Address: {center.address}";
                                     slots.Append(details + "\n");
                                     logger.Info(details);
 
@@ -303,13 +303,16 @@ namespace VaccineFinder
 
                                     if (currSession == null)
                                         currSession = new SessionProxy();
-                                    currSession.session_id = session.session_id;
+                                    currSession.SessionID = session.session_id;
                                     CultureInfo provider = CultureInfo.InvariantCulture;
                                     DateTime date = new DateTime();
                                     if (DateTime.TryParseExact(session.date, "dd-MM-yyyy", provider, DateTimeStyles.None, out date))
-                                        currSession.date = date;
-                                    currSession.availableCapacity = chosenDoseAvailability;
-                                    currSession.slots.AddRange(session.slots);
+                                        currSession.Date = date;
+                                    currSession.AvailableCapacity = chosenDoseAvailability;
+                                    currSession.Vaccine = session.vaccine;
+                                    currSession.CenterName = center.name;
+                                    currSession.Address = center.address;
+                                    currSession.Slots.AddRange(session.slots);
 
                                     sessions.Add(currSession);
                                     currSession = null;
@@ -388,7 +391,7 @@ namespace VaccineFinder
             {
                 int retryCount = 1;
                 int slot = 1;
-                while (!slotBooked && retryCount < session.slots.Count) //Check if other slots are available
+                while (!slotBooked && retryCount < session.Slots.Count) //Check if other slots are available
                 {
                     if (slot == slotPreference)
                         slot++;
@@ -410,9 +413,9 @@ namespace VaccineFinder
             DateTime date = default(DateTime);
             if (session != null)
             {
-                sessionId = session.session_id;
-                slot = session.slots[slotNumber - 1];
-                date = session.date;
+                sessionId = session.SessionID;
+                slot = session.Slots[slotNumber - 1];
+                date = session.Date;
             }
             string stInfo = string.Format("BookSlot Call Started for Date: {0}, Slot: {1}, Session Id: {2}.", date.ToString("dd-MM-yyyy"), slot, sessionId);
             logger.Info(stInfo);
@@ -434,7 +437,7 @@ namespace VaccineFinder
 
                     slotBooked = true;
 
-                    var bookingDetails = string.Format("Hi{0},\n\nYour Vaccine Slot has been booked Successfully!\n\nBelow are the details:\n\tConfirmation number: {1}\n\tBeneficiary Ids: {2}\n\tDate: {3}\n\tSlot: {4}\n\nRegards,\nYour Vaccine Finder :)", (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : ""), response.appointment_confirmation_no, UserDetails.UserPreference.BeneficiaryIdsString, (session.date.IsDefault() ? "" : session.date.ToString("dd-MM-yyyy")), slot);
+                    var bookingDetails = $"Hi{(!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : "")},\n\nYour Vaccine Slot has been booked Successfully!\n\nBelow are the details:\n\tConfirmation number: {response.appointment_confirmation_no}\n\tPhone: {UserDetails.Phone}\n\tBeneficiary Ids: {UserDetails.UserPreference.BeneficiaryIdsString}\n\tDate: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\tSlot: {slot}\n\tDose: {UserDetails.UserPreference.Dose}\n\tVaccine: {session.Vaccine}\n\tCenter: {session.CenterName}\n\tAddress: {session.Address}\n\nRegards,\nYour Vaccine Finder :)";
 
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + response.appointment_confirmation_no;
                     //Console.WriteLine(stInfo);
