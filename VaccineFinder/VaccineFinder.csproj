@@ -10,13 +10,10 @@
     <Description>Cross-Platform Application to Fetch the Available Slots &amp; Booking the Appointment Schedule for COVID-19 Vaccination India using the Publicly available APISetu APIs</Description>
     <Authors>rajatdangra</Authors>
     <Copyright>Rajat Maheshwari</Copyright>
-    <Version>2.0.0</Version>
     <PackageProjectUrl>https://rajatdangra.github.io/CoWIN_VaccineFinder/</PackageProjectUrl>
     <NeutralLanguage></NeutralLanguage>
     <PackageId>VaccineFinder</PackageId>
     <SignAssembly>true</SignAssembly>
-    <FileVersion>2.0.0.0</FileVersion>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <AssemblyName>Vaccine Finder</AssemblyName>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>D:\Personal Projects\VaccineFinder\</PublishUrl>
@@ -30,7 +27,6 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>16</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -55,7 +51,8 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageReleaseNotes>1) Added more information in Slot Booking Email.
 2) Added additional validation to check if users HaveSameVaccine (mostly important to avoid multiple combination of dose (1,2) and vaccine. If same vaccines are found, also updating specified vaccine if it is not same as previous vaccine.
-3) Added Validation of IsDoseSpecifiedValid, Update if wrong dose.</PackageReleaseNotes>
+3) Added Validation of IsDoseSpecifiedValid, Update if wrong dose.
+4) Added Support to use Public API, configurable, with warning for cache.</PackageReleaseNotes>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
   </PropertyGroup>
   <ItemGroup>

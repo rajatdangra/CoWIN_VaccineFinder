@@ -38,7 +38,7 @@ namespace VaccineFinder.Models
                     logger.Info(stInfo);
                     if (IsVersionUpdateMandatory(serverVersion.Major, localVersion.Major, serverVersion.Minor, localVersion.Minor))
                     {
-                        stInfo = $"[FATAL] Your Software Version is outdated. You MUST update the software, your current version is {localVersion}";
+                        stInfo = $"[FATAL] Your Application Version is outdated. You MUST update the Application, your current version is {localVersion}";
                         ConsoleMethods.PrintError(stInfo);
                         logger.Info(stInfo);
                         ShowLatestVersionFeatureInfo(latestVersionDto, serverVersion);
@@ -56,7 +56,7 @@ namespace VaccineFinder.Models
                     }
                     else
                     {
-                        stInfo = $"[INFO] New Version of the Software is Available, your current version is {localVersion}";
+                        stInfo = $"[INFO] New Version of the Application is Available, your current version is {localVersion}";
                         ConsoleMethods.PrintError(stInfo);
                         logger.Info(stInfo);
 
@@ -76,7 +76,7 @@ namespace VaccineFinder.Models
                 }
                 else
                 {
-                    stInfo = "You have the latest Update";
+                    stInfo = $"You have the Latest Version {localVersion} of the Application";
                     logger.Info(stInfo);
                     ConsoleMethods.PrintSuccess(stInfo);
                 }
@@ -139,7 +139,7 @@ namespace VaccineFinder.Models
 
         private void ShowLatestVersionFeatureInfo(VersionModel latestVersionDto, Version serverVersion)
         {
-            string stInfo = $"Latest Version of the Software { latestVersionDto.Name} is { serverVersion }, Downloaded #{latestVersionDto.Assets[0].DownloadCount} times, Released on { latestVersionDto.PublishedAt.LocalDateTime} \n\nFeatures of the Updated Version:\n{latestVersionDto.Body}";
+            string stInfo = $"Latest Version of the Application { latestVersionDto.Name} is { serverVersion }, Downloaded #{latestVersionDto.Assets[0].DownloadCount} times, Released on { latestVersionDto.PublishedAt.LocalDateTime} \n\nFeatures of the Updated Version:\n{latestVersionDto.Body}";
             Console.WriteLine($"*************************************************************************************************************************************************************");
             ConsoleMethods.PrintInfo(stInfo);
             logger.Info(stInfo);
