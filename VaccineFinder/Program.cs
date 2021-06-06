@@ -152,6 +152,20 @@ namespace VaccineFinder
                 }
                 if (finalConfirmation.ToLower() == "n")
                 {
+                    updateConfirmationMessage = CreateCustomMessage("Beneficiary IDs");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
+                    {
+                        inputMessage = "Clearing Beneficiary IDs, it will be updated in run time";
+                        Console.WriteLine(inputMessage);
+
+                        userDetails.UserPreference.BeneficiaryIds = new List<string>();
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
+                    }
+                }
+                if (finalConfirmation.ToLower() == "n")
+                {
                     updateConfirmationMessage = CreateCustomMessage("Slot Preference");
                     updateConfirmation = TakeConfirmation(updateConfirmationMessage);
 

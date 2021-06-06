@@ -91,20 +91,57 @@ namespace VaccineFinder
                     logger.Info(stInfo);
 
                     bool updateRequired = false;
-                    while (!AreBeneficiariesVerified(response))
+                    while (true)
                     {
-                        updateRequired = true;
-                        Console.WriteLine("\nBelow are the beneficiaries registered in your account:");
-                        int counter = 0;
-                        foreach (var ben in response.beneficiaries)
+                        while (!AreBeneficiariesVerified(response))
                         {
-                            counter++;
-                            var st = counter + ")" + " " + ben.Description;
-                            Console.WriteLine(st);
+                            updateRequired = true;
+                            Console.WriteLine("\nBelow are the beneficiaries registered in your account:");
+                            int counter = 0;
+                            foreach (var ben in response.beneficiaries)
+                            {
+                                counter++;
+                                var st = counter + ")" + " " + ben.Description;
+                                Console.WriteLine(st);
+                            }
+                            Console.WriteLine("\nPlease enter comma separated beneficiary Ids:");
+                            var benInput = Console.ReadLine();
+                            UserDetails.UserPreference.BeneficiaryIds = UserPreference.GetBeneficiaryIds(benInput);
                         }
-                        Console.WriteLine("\nPlease enter comma separted beneficiary Ids");
-                        var benInput = Console.ReadLine();
-                        UserDetails.UserPreference.BeneficiaryIds = UserPreference.GetBeneficiaryIds(benInput);
+                        string vaccine;
+                        if (!HaveSameVaccine(response, out vaccine))
+                        {
+                            Console.WriteLine("\nPlease enter comma separated beneficiary Ids with Same Dose:");
+                            var benInput = Console.ReadLine();
+                            UserDetails.UserPreference.BeneficiaryIds = UserPreference.GetBeneficiaryIds(benInput);
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(vaccine))
+                            {
+                                stInfo = "Checking if vaccine specied is same";
+                                ConsoleMethods.PrintProgress(stInfo);
+                                logger.Info(stInfo);
+                                if (vaccine.ToUpper().Equals(UserDetails.UserPreference.Vaccine.ToUpper()))
+                                {
+                                    stInfo = "Vaccine specied is same as previous vaccine";
+                                    ConsoleMethods.PrintSuccess(stInfo);
+                                    logger.Info(stInfo);
+                                }
+                                else
+                                {
+                                    stInfo = $"Vaccine specied: {UserDetails.UserPreference.Vaccine.ToUpper()}, is not same as Previous Vaccine: {vaccine}";
+                                    ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkYellow);
+                                    logger.Info(stInfo);
+                                    stInfo = $"Updating Vaccine: {vaccine}";
+                                    ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkCyan);
+                                    logger.Info(stInfo);
+                                    UserDetails.UserPreference.Vaccine = vaccine;
+                                    updateRequired = true;
+                                }
+                            }
+                            break;
+                        }
                     }
                     areBeneficiariesVerified = true;
 
@@ -147,7 +184,7 @@ namespace VaccineFinder
                     var benDetails = response.beneficiaries.FirstOrDefault(a => a.beneficiary_reference_id == benId);
                     if (benDetails != null)
                     {
-                        stInfo = string.Format("Beneficiary Id {0} is valid, User Name: {1}", benId, benDetails.name);
+                        stInfo = $"Beneficiary Id {benId} is valid, User Name: {benDetails.name}, Status: {benDetails.vaccination_status}, Vaccine: {benDetails.vaccine}";
                         ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkCyan);
                         logger.Info(stInfo);
                     }
@@ -160,7 +197,42 @@ namespace VaccineFinder
                     }
                 }
             }
+            else //In case Beneficiary IDs are not specified
+            {
+                areBeneficiariesVerified = false;
+            }
             return areBeneficiariesVerified;
+        }
+
+        public bool HaveSameVaccine(GetBeneficiariesResponse response, out string vaccineName)
+        {
+            vaccineName = string.Empty;
+            bool areDoseVerified = false;
+            string stInfo = "Verifying if beneficiaries have same Vaccine";
+            Console.WriteLine("\n" + stInfo);
+            logger.Info(stInfo);
+
+            List<string> vaccines = response.beneficiaries.Where(a => UserDetails.UserPreference.BeneficiaryIds.Contains(a.beneficiary_reference_id)).Select(a => a.vaccine).ToList();
+            if (vaccines.Distinct().Count() > 1)
+            {
+                areDoseVerified = false;
+                stInfo = $"Multiple vaccines found: {string.Join(", ", vaccines.Distinct())}";
+                ConsoleMethods.PrintError(stInfo);
+                logger.Info(stInfo);
+            }
+            else
+            {
+                vaccineName = vaccines.First();
+                areDoseVerified = true;
+                if (!string.IsNullOrWhiteSpace(vaccineName))
+                {
+                    stInfo = $"Vaccine: {string.Join(", ", vaccines.Distinct())}";
+                    ConsoleMethods.PrintProgress(stInfo);
+                    logger.Info(stInfo);
+                }
+            }
+
+            return areDoseVerified;
         }
 
         public List<SessionProxy> CheckVaccineAvailabilityStatus()
