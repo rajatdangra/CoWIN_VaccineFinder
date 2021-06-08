@@ -3,13 +3,16 @@ using NLog;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using VaccineFinder.Models;
+using VaccineFinder.Providers;
 
 namespace VaccineFinder
 {
@@ -17,6 +20,17 @@ namespace VaccineFinder
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private static bool isIPThrottled = false;
+
+        private static IRestResponse GetRequest(string endpoint, bool cowinRelatedHeadersToBeUsed = true)
+        {
+            IRestResponse response = new APIFacade().Get(endpoint, cowinRelatedHeadersToBeUsed);
+            return response;
+        }
+        private static IRestResponse PostRequest(string endpoint, string requestBody, bool cowinRelatedHeadersToBeUsed = true)
+        {
+            IRestResponse response = new APIFacade().Post(endpoint, requestBody, cowinRelatedHeadersToBeUsed);
+            return response;
+        }
 
         public static GenerateMobileOTPResponse GenerateMobileOTP(string phone)
         {
@@ -26,14 +40,16 @@ namespace VaccineFinder
             try
             {
                 #region RestClient
-                var client = new RestClient(AppConfig.GenerateOTPUrl);
-                client.Timeout = -1;
-                var request = new RestRequest(Method.POST);
-                //var jsonBody = "{\r\n    \"mobile\": \"" + phone + "\",\r\n    \"secret\": \"" + AppConfig.Secret + "\"\r\n}";
+                //var client = new RestClient(AppConfig.GenerateOTPUrl);
+                //client.Timeout = -1;
+                //var request = new RestRequest(Method.POST);
+                ////var jsonBody = "{\r\n    \"mobile\": \"" + phone + "\",\r\n    \"secret\": \"" + AppConfig.Secret + "\"\r\n}";
                 var requestObj = new GenerateMobileOTPRequest() { secret = AppConfig.Secret, mobile = phone };
                 var serRequestObj = JsonConvert.SerializeObject(requestObj);
-                request.AddParameter("application/json", serRequestObj /*jsonBody*/, ParameterType.RequestBody);
-                IRestResponse response = client.Execute(request);
+                //request.AddParameter("application/json", serRequestObj /*jsonBody*/, ParameterType.RequestBody);
+                //IRestResponse response = client.Execute(request);
+
+                IRestResponse response = PostRequest(AppConfig.GenerateOTPUrl, serRequestObj);
                 var responseString = response.Content;
                 //Console.WriteLine(responseString);
                 logger.Info("Response from GenerateMobileOTP API: " + responseString);
@@ -126,14 +142,10 @@ namespace VaccineFinder
             try
             {
                 ValidateMobileOTPResponse apiResponse = null;
-                var client = new RestClient(AppConfig.ConfirmOTPUrl);
-                client.Timeout = -1;
-                var request = new RestRequest(Method.POST);
                 var requestObj = new ValidateMobileOTPRequest() { otp = otp, txnId = txnId };
                 var serRequestObj = JsonConvert.SerializeObject(requestObj);
-                request.AddParameter("application/json", serRequestObj, ParameterType.RequestBody);
-                request.AddHeader("Origin", AppConfig.CoWIN_RegistrationURL);
-                IRestResponse response = client.Execute(request);
+
+                IRestResponse response = PostRequest(AppConfig.ConfirmOTPUrl, serRequestObj);
                 var responseString = response.Content;
                 //Console.WriteLine(responseString);
                 logger.Info("Response from ValidateMobileOTP API: " + responseString);
@@ -173,12 +185,8 @@ namespace VaccineFinder
             try
             {
                 GetBeneficiariesResponse apiResponse = null;
-                var client = new RestClient(AppConfig.GetBeneficiariesUrl);
-                client.Timeout = -1;
-                var request = new RestRequest(Method.GET);
-                request.AddHeader("Authorization", "Bearer " + OTPAuthenticator.BEARER_TOKEN);
-                client.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36";
-                IRestResponse response = client.Execute(request);
+
+                IRestResponse response = GetRequest(AppConfig.GetBeneficiariesUrl);
                 var responseString = response.Content;
                 //Console.WriteLine(responseString);
                 logger.Info("Response from GetBeneficiaries API: " + responseString);
@@ -245,42 +253,10 @@ namespace VaccineFinder
             string stInfo = string.Empty;
             logger.Info("CheckCalendarByPin API call started.");
 
-            if (!AppConfig.ProtectedAPIToBeUsed)
-            {
-                stInfo = $"[WARNING] Using Public API (Data could be OUTDATED), since ProtectedAPIToBeUsed is Disabled in appsettings.json";
-                logger.Info(stInfo);
-                ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
-            }
-
             AvailabilityStatusAPIResponse apiResponse = null;
             try
             {
-                #region Generate Random String to ignore Caching
-                string randomString = StringMethods.GenerateRandomString();
-                #endregion
-
-                var postData = "?";
-                postData += "pincode=" + pinCode;
-                postData += "&date=" + date.ToString("dd-MM-yyyy");
-                postData += "&random=" + randomString;
-
-                //var request = (HttpWebRequest)WebRequest.Create(AppConfig.CalendarByPinUrl + postData);
-                //request.PreAuthenticate = true;
-                //request.Headers.Add("Authorization", "Bearer " + OTPAuthenticator.BEARER_TOKEN);
-                //request.Method = "GET";
-                //var response = (HttpWebResponse)request.GetResponse();
-
-                //var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-
-                //logger.Info("Response from status API: " + responseString);
-
-                var client = new RestClient(AppConfig.CalendarByPinUrl + postData);
-                client.Timeout = -1;
-                var request = new RestRequest(Method.GET);
-                request.AddHeader("Authorization", "Bearer " + OTPAuthenticator.BEARER_TOKEN);
-                client.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36";
-
-                IRestResponse response = client.Execute(request);
+                IRestResponse response = FetchSlotsByPINCode(pinCode, date.ToString("dd-MM-yyyy"), string.Empty, generateRandomString: false);
                 var responseString = response.Content;
                 //Console.WriteLine(responseString);
                 logger.Info("Response from CheckCalendarByPin API: " + responseString);
@@ -347,6 +323,41 @@ namespace VaccineFinder
             }
         }
 
+        private static IRestResponse FetchSlotsByPINCode(string pinCode, string searchDate, string vaccineType, bool generateRandomString = false)
+        {
+            UriBuilder builder;
+            builder = new UriBuilder(AppConfig.CalendarByPinUrl);
+            NameValueCollection queryString = HttpUtility.ParseQueryString(builder.Query);
+            if (AppConfig.ProtectedAPIToBeUsed)
+            {
+                if (!string.IsNullOrEmpty(vaccineType))
+                {
+                    queryString["vaccine"] = vaccineType;
+                }
+            }
+            else
+            {
+                string stInfo = $"[WARNING] Using Public API (Data could be OUTDATED), since ProtectedAPIToBeUsed is Disabled in appsettings.json";
+                logger.Info(stInfo);
+                ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkYellow);
+            }
+
+            queryString["pincode"] = pinCode;
+            queryString["date"] = searchDate;
+            if (generateRandomString)
+            {
+                #region Generate Random String to ignore Caching
+                string randomString = StringMethods.GenerateRandomString();
+                #endregion
+                queryString["random"] = randomString;
+            }
+            builder.Query = queryString.ToString();
+            string endpoint = builder.ToString();
+
+            IRestResponse response = GetRequest(endpoint);
+            return response;
+        }
+
         //public static APIResponse CheckCalendarByDistrict(UserDetails details, DateTime date)
         //{
         //    try
@@ -399,16 +410,9 @@ namespace VaccineFinder
             {
                 SlotBookingResponse apiResponse = null;
 
-                var client = new RestClient(AppConfig.ScheduleAppointmentUrl);
-                client.Timeout = -1;
-                var request = new RestRequest(Method.POST);
-                request.AddHeader("Authorization", "Bearer " + OTPAuthenticator.BEARER_TOKEN);
-                client.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36";
-
                 var requestObj = new SlotBookingRequest() { dose = dose, beneficiaries = beneficiaryIds.ToList(), session_id = sessionId, slot = slot };
                 var serRequestObj = JsonConvert.SerializeObject(requestObj);
-                request.AddParameter("application/json", serRequestObj, ParameterType.RequestBody);
-                IRestResponse response = client.Execute(request);
+                IRestResponse response = PostRequest(AppConfig.ScheduleAppointmentUrl, serRequestObj);
                 var responseString = response.Content;
                 //Console.WriteLine(responseString);
                 logger.Info("Response from BookSlot API: " + responseString);
@@ -487,11 +491,8 @@ namespace VaccineFinder
             try
             {
                 VersionModel apiResponse = null;
-                var client = new RestClient(AppConfig.FetchVersionUrl);
-                client.Timeout = -1;
-                var request = new RestRequest(Method.GET);
 
-                IRestResponse response = client.Execute(request);
+                IRestResponse response = GetRequest(AppConfig.FetchVersionUrl, cowinRelatedHeadersToBeUsed: false);
                 var responseString = response.Content;
                 //Console.WriteLine(responseString);
                 logger.Info("Response from FetchLatestAppVersion API: " + responseString);
