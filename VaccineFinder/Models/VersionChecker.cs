@@ -42,7 +42,7 @@ namespace VaccineFinder.Models
                         ConsoleMethods.PrintError(stInfo);
                         logger.Info(stInfo);
                         ShowLatestVersionFeatureInfo(latestVersionDto, serverVersion);
-                        Console.WriteLine($"Please press Y for Downloading the Latest Version {serverVersion}, any other key to exit the app");
+                        Console.WriteLine($"Press 'Y' to Download the Latest Version {serverVersion}, any other key to exit the app");
                         var input = Console.ReadLine();
                         if (input.ToLower() == "y")
                         {
@@ -61,7 +61,7 @@ namespace VaccineFinder.Models
                         logger.Info(stInfo);
 
                         ShowLatestVersionFeatureInfo(latestVersionDto, serverVersion);
-                        Console.WriteLine($"Please press Y for Downloading the Latest Version {serverVersion}, any other key to continue using the current version the app");
+                        Console.WriteLine($"Press 'Y' to Download the Latest Version {serverVersion}, any other key to continue using the current version the app");
                         var input = Console.ReadLine();
                         if (input.ToLower() == "y")
                         {

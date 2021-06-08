@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <ApplicationIcon>vaccine-icon_1.1.ico</ApplicationIcon>
     <PackageIcon>Banner.png</PackageIcon>
     <RepositoryType>Github Public Repository</RepositoryType>
     <RepositoryUrl>https://github.com/rajatdangra/CoWIN_VaccineFinder</RepositoryUrl>
     <Company>Open Source</Company>
     <Product>Vaccine Finder</Product>
-    <Description>Cross-Platform Application to Fetch the Available Slots &amp; Booking the Appointment Schedule for COVID-19 Vaccination India using the Publicly available APISetu APIs</Description>
+    <Description>Cross-Platform Application to Fetch the Available Slots &amp; Booking the Appointment Schedule for COVID-19 Vaccination using the Publicly available APISetu APIs</Description>
     <Authors>rajatdangra</Authors>
     <Copyright>Rajat Maheshwari</Copyright>
     <PackageProjectUrl>https://rajatdangra.github.io/CoWIN_VaccineFinder/</PackageProjectUrl>
@@ -57,7 +57,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="appsettings.json" />
-    <None Include="..\data\Banner.png" Link="Icons\Banner.png">
+    <None Include="..\data\Icons\Banner.png" Link="Icons\Banner.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
