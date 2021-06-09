@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using VaccineFinder.EmailTemplates;
 
 namespace VaccineFinder
 {
@@ -324,8 +326,7 @@ namespace VaccineFinder
 
                     if (vaccineSlotFound)
                     {
-                        var slotDetails = string.Format("Hi{0},\n\nVaccine Slots are available for Pin Codes: {1}\n\n{2}\nPlease book your slots ASAP on {3}\n\nRegards,\nYour Vaccine Finder :)", (!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : ""), UserDetails.UserPreference.PinCodeString, slots.ToString(), AppConfig.CoWIN_RegistrationURL);
-
+                        var slotDetails = slots.ToString();
                         stInfo = string.Format("\nSlots Found at {0}", DateTime.Now.ToDetailString());
                         ConsoleMethods.PrintSuccess(stInfo);
                         logger.Info(stInfo);
@@ -335,8 +336,12 @@ namespace VaccineFinder
 
                         if (AppConfig.SendEmail)
                         {
+                            var templatePath = Path.GetFullPath("EmailTemplates/SlotsAvailable.html");
+                            slotDetails = slotDetails.Replace("\n", "<br />"); //For New Line Breaks
+                            var mailBody = EmailBody.CreateSlotsAvailableEmailBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetails, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+
                             var subject = AppConfig.Availablity_MailSubject + " for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
-                            Thread mailThread = new Thread(() => Email.SendEmail(slotDetails, subject, UserDetails.EmailIdsString, UserDetails.FullName));
+                            Thread mailThread = new Thread(() => Email.SendEmail(mailBody, subject, UserDetails.EmailIdsString, UserDetails.FullName, isHTML: true));
                             mailThread.Start();
                         }
                         break;
@@ -416,7 +421,7 @@ namespace VaccineFinder
                                     vaccineSlotFound = true;
                                     counter++;
                                     var details = $"{counter}) Date: {session.date}, Name: {center.name}, Pin Code: {pinCode}, Vaccine: {session.vaccine}, Min Age: {session.min_age_limit}, Available Capacity Dose1: {session.available_capacity_dose1}, Available Capacity Dose2: {session.available_capacity_dose2}, Address: {center.address}";
-                                    slots.Append(details + "\n");
+                                    slots.AppendLine(details);
                                     logger.Info(details);
 
                                     stInfo = string.Format("Vaccine {0} is available in Center: {1}", session.vaccine, center.name);
@@ -558,7 +563,7 @@ namespace VaccineFinder
 
                     slotBooked = true;
 
-                    var bookingDetails = $"Hi{(!string.IsNullOrWhiteSpace(UserDetails.FullName) ? " " + UserDetails.FullName : "")},\n\nYour Vaccine Slot has been booked Successfully!\n\nBelow are the details:\n\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary Ids: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}\n\nRegards,\nYour Vaccine Finder :)";
+                    var bookingDetails = $"\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary Ids: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}";
 
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + response.appointment_confirmation_no;
                     //Console.WriteLine(stInfo);
@@ -573,7 +578,12 @@ namespace VaccineFinder
 
                     if (AppConfig.SendEmail)
                     {
-                        Thread mailThread = new Thread(() => Email.SendEmail(bookingDetails, AppConfig.Booking_MailSubject, UserDetails.EmailIdsString, UserDetails.FullName));
+                        var templatePath = Path.GetFullPath("EmailTemplates/SlotBooked.html");
+                        bookingDetails = bookingDetails.Replace("\n", "<br />"); //For New Line Breaks
+                        bookingDetails = bookingDetails.Replace("\t", "&#9;"); //For Tab Character
+                        var mailBody = EmailBody.CreateSlotsBookedEmailBody(templatePath, UserDetails.FullName, bookingDetails, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+
+                        Thread mailThread = new Thread(() => Email.SendEmail(mailBody, AppConfig.Booking_MailSubject, UserDetails.EmailIdsString, UserDetails.FullName, isHTML: true));
                         mailThread.Start();
                     }
                 }

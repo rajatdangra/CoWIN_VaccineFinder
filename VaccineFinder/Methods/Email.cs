@@ -20,7 +20,7 @@ namespace VaccineFinder
         private static string FromName = "Vaccine Finder";
         private static string Password = PrivateData.Pass;
 
-        public static void SendEmail(string message, string subject, string mailIdsTo, string fullNameTo)
+        public static void SendEmail(string message, string subject, string mailIdsTo, string fullNameTo, bool isHTML = false)
         {
             string stInfo = string.Empty;
             try
@@ -36,7 +36,7 @@ namespace VaccineFinder
                 mailMessage.Bcc.Add(new MailboxAddress(DeveloperName, FromEmail));
 
                 mailMessage.Subject = subject;
-                mailMessage.Body = new TextPart("plain")
+                mailMessage.Body = new TextPart(!isHTML ? "plain" : "html")
                 {
                     Text = message
                 };
@@ -61,6 +61,7 @@ namespace VaccineFinder
                 logger.Error(stInfo + "\nException details: " + ex + "\nInner Exception: " + ex.InnerException);
             }
         }
+
         public static List<string> GetEmailIDs(string emailIds)
         {
             return emailIds.Trim().Replace(" ", "").Split(',').ToList();
