@@ -193,7 +193,7 @@ namespace VaccineFinder
         public bool AreBeneficiariesVerified(GetBeneficiariesResponse response)
         {
             bool areBeneficiariesVerified = true;
-            string stInfo = "Veryfying Beneficiaries";
+            string stInfo = "Verifying Beneficiaries";
             Console.WriteLine("\n" + stInfo);
             logger.Info(stInfo);
             bool benInputStEmpty = string.IsNullOrWhiteSpace(UserDetails.UserPreference.BeneficiaryIdsString);
@@ -563,7 +563,7 @@ namespace VaccineFinder
 
                     slotBooked = true;
 
-                    var bookingDetails = $"\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary Ids: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}";
+                    var bookingDetails = $"\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary IDs: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}";
 
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + response.appointment_confirmation_no;
                     //Console.WriteLine(stInfo);
