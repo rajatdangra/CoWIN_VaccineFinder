@@ -1,7 +1,7 @@
 # Co-WIN: Vaccine Finder
 Vaccine Finder: based on Pincode and Age Limit Criteria.
 Send notification on Mail, if slots are available.
-Book Slots and Send notification on Mail, if Booked successfully.
+Book Slots and Send notification on Mail and Telegram, if Booked successfully.
 
 Platforms Supported: Windows, macOS, Linux.
 
@@ -27,6 +27,7 @@ Mandatory:
 	10) Retry Frequency (in Seconds): Frequency at which retry call should happen (in case of no slots found), (eg. 10). Value less than 3 Seconds is not recommended due to rate limiting imposed by the Government.
 	11) AutoPickCenter - If True ("1"), it auto picks center with the combination of 'Pin-code priority and the center with most available slots'. If false, it asks user to input preferred center.
 	12) IncludePaidService - If True ("1"), it will also include centers with as 'Paid' Service (Fee Type). If false, it will only pick centers with 'Free' service.
+	13) Telegram Chat ID: Chat ID with @Covid19VaccineSlotFinderBot, will not send Notification if this field is left Empty in appsettings.json
 
 Optional:
 	1) First Name - will be used in E-Mail.

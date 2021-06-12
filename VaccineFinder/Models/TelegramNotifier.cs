@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace VaccineFinder.Models
 {
     public class TelegramNotifier : INotifier
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         public TelegramNotifier(string channelOrChatID)
         {
             ChannelOrChatID = channelOrChatID;
@@ -19,17 +21,36 @@ namespace VaccineFinder.Models
 
         public void Notify(string message)
         {
+            string stInfo = string.Empty;
             try
             {
-                var botClient = new TelegramBotClient(PrivateData.TelegramBotToken);
+                logger.Info("SendTelegramNotification start.");
 
-                var output = botClient.SendTextMessageAsync(ChannelOrChatID, message, Telegram.Bot.Types.Enums.ParseMode.Html).Result;
+                int max_size = 4096;
+                var partitions = message.Length / max_size;
+                var start = 0;
+
+                List<string> messagesList = new List<string>();
+                for (int i = 0; i < partitions; i++)
+                {
+                    var end = Math.Min(max_size, message.Length - start);
+                    messagesList.Add(message.Substring(start, end));
+                    start = start + max_size;
+                }
+                var botClient = new TelegramBotClient(PrivateData.TelegramBotToken);
+                foreach (var msg in messagesList) //Push one by one
+                {
+                    var output = botClient.SendTextMessageAsync(ChannelOrChatID, msg, Telegram.Bot.Types.Enums.ParseMode.MarkdownV2).Result;
+                }
+                stInfo = "Telegram Notification Sent Successfully!";
+                ConsoleMethods.PrintSuccess(stInfo);
+                logger.Info(stInfo);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"[ERROR] Issue faced in Telegram API {e}");
-                Console.ResetColor();
+                stInfo = $"[ERROR] Issue faced in Telegram API: Unable to Send Notification.";
+                ConsoleMethods.PrintError(stInfo);
+                logger.Error(stInfo + "\nException details: " + ex + "\nInner Exception: " + ex.InnerException);
             }
         }
     }

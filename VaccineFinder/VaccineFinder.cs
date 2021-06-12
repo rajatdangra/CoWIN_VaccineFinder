@@ -8,8 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using VaccineFinder.EmailTemplates;
 using VaccineFinder.Models;
+using VaccineFinder.Templates.EmailTemplates;
+using VaccineFinder.Templates.MessageTemplates;
 
 namespace VaccineFinder
 {
@@ -328,6 +329,7 @@ namespace VaccineFinder
                     if (vaccineSlotFound)
                     {
                         var slotDetails = slots.ToString();
+                        var slotDetailsCopy = string.Empty;
                         stInfo = string.Format("\nSlots Found at {0}", DateTime.Now.ToDetailString());
                         ConsoleMethods.PrintSuccess(stInfo);
                         logger.Info(stInfo);
@@ -337,9 +339,10 @@ namespace VaccineFinder
 
                         if (AppConfig.SendEmail)
                         {
-                            var templatePath = Path.GetFullPath("EmailTemplates/SlotsAvailable.html");
-                            slotDetails = slotDetails.Replace("\n", "<br />"); //For New Line Breaks
-                            var mailBody = EmailBody.CreateSlotsAvailableEmailBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetails, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+                            slotDetailsCopy = slotDetails;
+                            var templatePath = Path.GetFullPath("Templates/EmailTemplates/SlotsAvailable.html");
+                            slotDetailsCopy = slotDetailsCopy.Replace("\n", "<br />"); //For New Line Breaks
+                            var mailBody = EmailBody.CreateSlotsAvailableEmailBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetailsCopy, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
 
                             var subject = AppConfig.Availablity_MailSubject + " for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
                             INotifier iNotifier = new EmailNotifier(subject, UserDetails.EmailIdsString, UserDetails.FullName, isHTMLBody: true);
@@ -351,13 +354,16 @@ namespace VaccineFinder
                         {
                             if (!string.IsNullOrWhiteSpace(UserDetails.TelegramChatID))
                             {
-                                var templatePath = Path.GetFullPath("EmailTemplates/SlotsAvailable.html");
-                                slotDetails = slotDetails.Replace("\n", "<br />"); //For New Line Breaks
-                                var mailBody = EmailBody.CreateSlotsAvailableEmailBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetails, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+                                slotDetailsCopy = slotDetails;
+                                var templatePath = Path.GetFullPath("Templates/MessageTemplates/SlotsAvailable.md");
+                                var messageBody = MessageBody.CreateSlotsAvailableMessageBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetailsCopy, AppConfig.CoWIN_RegistrationURL);
+
+                                //To Escape Characters//To Escape Characters
+                                messageBody = MessageBody.EscapeCharacters(messageBody);
 
                                 INotifier iNotifier = new TelegramNotifier(UserDetails.TelegramChatID);
                                 NotifierFactory notifier = new NotifierFactory(iNotifier);
-                                Thread notifierThread = new Thread(() => notifier.Notify(mailBody));
+                                Thread notifierThread = new Thread(() => notifier.Notify(messageBody));
                                 notifierThread.Start();
                             }
                         }
@@ -581,6 +587,7 @@ namespace VaccineFinder
                     slotBooked = true;
 
                     var bookingDetails = $"\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary IDs: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}";
+                    var bookingDetailsCopy = string.Empty;
 
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + response.appointment_confirmation_no;
                     //Console.WriteLine(stInfo);
@@ -595,10 +602,11 @@ namespace VaccineFinder
 
                     if (AppConfig.SendEmail)
                     {
-                        var templatePath = Path.GetFullPath("EmailTemplates/SlotBooked.html");
-                        bookingDetails = bookingDetails.Replace("\n", "<br />"); //For New Line Breaks
-                        bookingDetails = bookingDetails.Replace("\t", "&#9;"); //For Tab Character
-                        var mailBody = EmailBody.CreateSlotsBookedEmailBody(templatePath, UserDetails.FullName, bookingDetails, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+                        bookingDetailsCopy = bookingDetails;
+                        var templatePath = Path.GetFullPath("Templates/EmailTemplates/SlotBooked.html");
+                        bookingDetailsCopy = bookingDetailsCopy.Replace("\n", "<br />"); //For New Line Breaks
+                        bookingDetailsCopy = bookingDetailsCopy.Replace("\t", "&#9;"); //For Tab Character
+                        var mailBody = EmailBody.CreateSlotsBookedEmailBody(templatePath, UserDetails.FullName, bookingDetailsCopy, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
 
                         INotifier iNotifier = new EmailNotifier(AppConfig.Booking_MailSubject, UserDetails.EmailIdsString, UserDetails.FullName, isHTMLBody: true);
                         NotifierFactory notifier = new NotifierFactory(iNotifier);
@@ -609,14 +617,16 @@ namespace VaccineFinder
                     {
                         if (!string.IsNullOrWhiteSpace(UserDetails.TelegramChatID))
                         {
-                            var templatePath = Path.GetFullPath("EmailTemplates/SlotBooked.html");
-                            bookingDetails = bookingDetails.Replace("\n", "<br />"); //For New Line Breaks
-                            bookingDetails = bookingDetails.Replace("\t", "&#9;"); //For Tab Character
-                            var mailBody = EmailBody.CreateSlotsBookedEmailBody(templatePath, UserDetails.FullName, bookingDetails, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+                            bookingDetailsCopy = bookingDetails;
+                            var templatePath = Path.GetFullPath("Templates/MessageTemplates/SlotBooked.md");//For Escape Characters
+                            var messageBody = MessageBody.CreateSlotsBookedMessageBody(templatePath, UserDetails.FullName, bookingDetailsCopy, AppConfig.CoWIN_RegistrationURL);
+
+                            //To Escape Characters
+                            messageBody = MessageBody.EscapeCharacters(messageBody);
 
                             INotifier iNotifier = new TelegramNotifier(UserDetails.TelegramChatID);
                             NotifierFactory notifier = new NotifierFactory(iNotifier);
-                            Thread notifierThread = new Thread(() => notifier.Notify(mailBody));
+                            Thread notifierThread = new Thread(() => notifier.Notify(messageBody));
                             notifierThread.Start();
                         }
                     }

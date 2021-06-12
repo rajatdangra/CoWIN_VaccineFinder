@@ -69,14 +69,20 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="EmailTemplates\SlotBooked.html">
+    <None Update="Templates\EmailTemplates\SlotBooked.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="EmailTemplates\SlotsAvailable.html">
+    <None Update="Templates\EmailTemplates\SlotsAvailable.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="NLog.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Update="Templates\MessageTemplates\SlotBooked.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Templates\MessageTemplates\SlotsAvailable.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
