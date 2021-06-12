@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VaccineFinder.EmailTemplates;
+using VaccineFinder.Models;
 
 namespace VaccineFinder
 {
@@ -341,8 +342,24 @@ namespace VaccineFinder
                             var mailBody = EmailBody.CreateSlotsAvailableEmailBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetails, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
 
                             var subject = AppConfig.Availablity_MailSubject + " for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
-                            Thread mailThread = new Thread(() => Email.SendEmail(mailBody, subject, UserDetails.EmailIdsString, UserDetails.FullName, isHTML: true));
-                            mailThread.Start();
+                            INotifier iNotifier = new EmailNotifier(subject, UserDetails.EmailIdsString, UserDetails.FullName, isHTMLBody: true);
+                            NotifierFactory notifier = new NotifierFactory(iNotifier);
+                            Thread notifierThread = new Thread(() => notifier.Notify(mailBody));
+                            notifierThread.Start();
+                        }
+                        if (AppConfig.SendTelegramNotification)
+                        {
+                            if (!string.IsNullOrWhiteSpace(UserDetails.TelegramChatID))
+                            {
+                                var templatePath = Path.GetFullPath("EmailTemplates/SlotsAvailable.html");
+                                slotDetails = slotDetails.Replace("\n", "<br />"); //For New Line Breaks
+                                var mailBody = EmailBody.CreateSlotsAvailableEmailBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetails, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+
+                                INotifier iNotifier = new TelegramNotifier(UserDetails.TelegramChatID);
+                                NotifierFactory notifier = new NotifierFactory(iNotifier);
+                                Thread notifierThread = new Thread(() => notifier.Notify(mailBody));
+                                notifierThread.Start();
+                            }
                         }
                         break;
                     }
@@ -583,8 +600,25 @@ namespace VaccineFinder
                         bookingDetails = bookingDetails.Replace("\t", "&#9;"); //For Tab Character
                         var mailBody = EmailBody.CreateSlotsBookedEmailBody(templatePath, UserDetails.FullName, bookingDetails, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
 
-                        Thread mailThread = new Thread(() => Email.SendEmail(mailBody, AppConfig.Booking_MailSubject, UserDetails.EmailIdsString, UserDetails.FullName, isHTML: true));
-                        mailThread.Start();
+                        INotifier iNotifier = new EmailNotifier(AppConfig.Booking_MailSubject, UserDetails.EmailIdsString, UserDetails.FullName, isHTMLBody: true);
+                        NotifierFactory notifier = new NotifierFactory(iNotifier);
+                        Thread notifierThread = new Thread(() => notifier.Notify(mailBody));
+                        notifierThread.Start();
+                    }
+                    if (AppConfig.SendTelegramNotification)
+                    {
+                        if (!string.IsNullOrWhiteSpace(UserDetails.TelegramChatID))
+                        {
+                            var templatePath = Path.GetFullPath("EmailTemplates/SlotBooked.html");
+                            bookingDetails = bookingDetails.Replace("\n", "<br />"); //For New Line Breaks
+                            bookingDetails = bookingDetails.Replace("\t", "&#9;"); //For Tab Character
+                            var mailBody = EmailBody.CreateSlotsBookedEmailBody(templatePath, UserDetails.FullName, bookingDetails, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+
+                            INotifier iNotifier = new TelegramNotifier(UserDetails.TelegramChatID);
+                            NotifierFactory notifier = new NotifierFactory(iNotifier);
+                            Thread notifierThread = new Thread(() => notifier.Notify(mailBody));
+                            notifierThread.Start();
+                        }
                     }
                 }
                 else

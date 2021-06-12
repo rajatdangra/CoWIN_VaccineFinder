@@ -26,14 +26,14 @@ namespace VaccineFinder
 
             string Phone = AppConfig.Phone;
             string emailIdsString = AppConfig.EmailIDs;
-            List<string> EmailIDs = Email.GetEmailIDs(emailIdsString);
+            List<string> EmailIDs = EmailNotifier.GetEmailIDs(emailIdsString);
             string beneficiaryIdsString = AppConfig.BeneficiaryIDs;
             List<string> BeneficiaryIds = UserPreference.GetBeneficiaryIds(beneficiaryIdsString);
             string pinCodesString = AppConfig.PinCodes;
             List<string> PinCodes = UserPreference.GetBeneficiaryIds(pinCodesString);
             DateTime date = DateTime.Now;
 
-            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoPickCenter, AppConfig.IncludePaidService, AppConfig.Vaccine)
+            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoPickCenter, AppConfig.IncludePaidService, AppConfig.Vaccine, AppConfig.TelegramChatID)
             {
                 FirstName = AppConfig.FirstName,
                 LastName = AppConfig.LastName,
@@ -275,7 +275,7 @@ namespace VaccineFinder
                         inputMessage = "Please Enter your Email Ids (Comma separated): ";
                         Console.WriteLine(inputMessage);
                         emailIdsString = Console.ReadLine();
-                        EmailIDs = Email.GetEmailIDs(emailIdsString);
+                        EmailIDs = EmailNotifier.GetEmailIDs(emailIdsString);
                         while (!userDetails.IsValidEmailIds(EmailIDs))
                         {
                             stInfo = "Invalid Input. Please Retry.";
@@ -283,7 +283,7 @@ namespace VaccineFinder
                             ConsoleMethods.PrintError(stInfo);
                             Console.WriteLine(inputMessage);
                             emailIdsString = Console.ReadLine();
-                            EmailIDs = Email.GetEmailIDs(emailIdsString);
+                            EmailIDs = EmailNotifier.GetEmailIDs(emailIdsString);
                         }
                         userDetails.EmailIDs = EmailIDs.ToList();
                         finalConfirmation = TakeConfirmation(finalConfirmationMessage);
@@ -357,7 +357,7 @@ namespace VaccineFinder
                     ConsoleMethods.PrintError(stInfo);
                     Console.WriteLine("Please Enter your Email Ids (Comma separated): ");
                     emailIdsString = Console.ReadLine();
-                    EmailIDs = Email.GetEmailIDs(emailIdsString);
+                    EmailIDs = EmailNotifier.GetEmailIDs(emailIdsString);
                 }
                 userDetails.EmailIDs = EmailIDs.ToList();
             }
@@ -410,7 +410,11 @@ namespace VaccineFinder
             logger.Error(detailedErrorInfo);
             Console.WriteLine(detailedErrorInfo);
             if (AppConfig.SendEmail)
-                Email.SendEmail(detailedErrorInfo, "Vaccine Finder - Error Occured", Email.DeveloperEmail, Email.DeveloperName);
+            {
+                INotifier iNotifier = new EmailNotifier("Vaccine Finder - Error Occured", EmailNotifier.DeveloperEmail, EmailNotifier.DeveloperName, isHTMLBody: false);
+                NotifierFactory notifier = new NotifierFactory(iNotifier);
+                notifier.Notify(detailedErrorInfo);
+            }
             Console.WriteLine("Press Enter to continue");
             Console.ReadLine();
             Environment.Exit(1);

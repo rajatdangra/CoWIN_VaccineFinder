@@ -9,11 +9,12 @@ namespace VaccineFinder
 {
     public class UserDetails
     {
-        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService, string vaccine)
+        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService, string vaccine, string telegramChatID)
         {
             EmailIDs = new List<string>();
             EmailIDs.AddRange(emailIds);
             Phone = phone;
+            TelegramChatID = telegramChatID;
             UserPreference = new UserPreference(pinCodes, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoPickCenter, includePaidService, vaccine);
         }
         public UserPreference UserPreference { get; set; }
@@ -23,6 +24,7 @@ namespace VaccineFinder
         public List<string> EmailIDs { get; set; }
         public string EmailIdsString { get { return string.Join(", ", EmailIDs); } }
         public string Phone { get; set; }
+        public string TelegramChatID { get; set; }
 
         public bool IsValidEmailIds(List<string> emailList)
         {

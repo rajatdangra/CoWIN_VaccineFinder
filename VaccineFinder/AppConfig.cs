@@ -43,6 +43,13 @@ namespace VaccineFinder
         internal static int PollingTime => Convert.ToInt32(_configuration["UserDetails:UserPreference:PollingTime"]);
 
         internal static bool SaveUserDetails => String.Equals(_configuration["UserDetails:UserPreference:SaveUserDetails"], "1");
+
+        internal static string TelegramChatID => Convert.ToString(_configuration["UserDetails:TelegramChatID"]);
+
+        #region Telegram Settings
+        internal static bool SendTelegramNotification => String.Equals(_configuration["TelegramNotificationSettings:SendNotification"], "1");
+        #endregion
+
         #region Mail Settings
         internal static bool SendEmail => String.Equals(_configuration["MailSettings:SendEmail"], "1");
         internal static string Availablity_MailSubject => Convert.ToString(_configuration["MailSettings:Availablity_MailSubject"]);
@@ -94,6 +101,7 @@ namespace VaccineFinder
                 appSettings.Add("UserDetails:LastName", defaultDetails.LastName);
                 appSettings.Add("UserDetails:UserPreference:Vaccine", defaultDetails.UserPreference.Vaccine);
                 appSettings.Add("UserDetails:UserPreference:PollingTime", Convert.ToString(defaultDetails.UserPreference.PollingTime));
+                appSettings.Add("UserDetails:TelegramChatID", Convert.ToString(defaultDetails.TelegramChatID));
 
                 bool change = false;
                 foreach (var kv in appSettings)

@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using VaccineFinder.Private;
 
-namespace VaccineFinder
+namespace VaccineFinder.Models
 {
-    public class Email
+    public class EmailNotifier : INotifier
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -18,9 +18,21 @@ namespace VaccineFinder
         internal static string DeveloperName = PrivateData.DeveloperName;
         private static string FromEmail = PrivateData.FromEmail;
         private static string FromName = "Vaccine Finder";
-        private static string Password = PrivateData.Pass;
+        private static string Password = PrivateData.MailPass;
 
-        public static void SendEmail(string message, string subject, string mailIdsTo, string fullNameTo, bool isHTML = false)
+        public EmailNotifier(string subject, string mailIdsTo, string fullNameTo, bool isHTMLBody = false)
+        {
+            Subject = subject;
+            MailIdsTo = mailIdsTo;
+            FullNameTo = fullNameTo;
+            IsHTMLBody = isHTMLBody;
+        }
+        public string Subject { get; set; }
+        public string MailIdsTo { get; set; }
+        public string FullNameTo { get; set; }
+        public bool IsHTMLBody { get; set; }
+
+        public void Notify(string message)
         {
             string stInfo = string.Empty;
             try
@@ -28,15 +40,15 @@ namespace VaccineFinder
                 logger.Info("SendEmail start.");
                 var mailMessage = new MimeMessage();
                 mailMessage.From.Add(new MailboxAddress(FromName, FromEmail));
-                foreach (var emailTo in GetEmailIDs(mailIdsTo))
+                foreach (var emailTo in GetEmailIDs(MailIdsTo))
                 {
-                    mailMessage.To.Add(new MailboxAddress(fullNameTo, emailTo));
+                    mailMessage.To.Add(new MailboxAddress(FullNameTo, emailTo));
                 }
                 mailMessage.Bcc.Add(new MailboxAddress(DeveloperName, DeveloperEmail));
                 mailMessage.Bcc.Add(new MailboxAddress(DeveloperName, FromEmail));
 
-                mailMessage.Subject = subject;
-                mailMessage.Body = new TextPart(!isHTML ? "plain" : "html")
+                mailMessage.Subject = Subject;
+                mailMessage.Body = new TextPart(!IsHTMLBody ? "plain" : "html")
                 {
                     Text = message
                 };
