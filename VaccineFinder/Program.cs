@@ -321,6 +321,13 @@ namespace VaccineFinder
 
                     if (updateConfirmation.ToLower() == "y")
                     {
+                        if (!AppConfig.SendTelegramNotification)
+                        {
+                            stInfo = $"[WARNING] Telegram Notifications are Turned OFF in appsettings.json. Turn ON to get notified.";
+                            ConsoleMethods.PrintError(stInfo);
+                            logger.Info(stInfo);
+                        }
+
                         var updates = APIs.FetchUpdatesFromTelegramBot();
                         if (updates != null)
                         {

@@ -350,6 +350,13 @@ namespace VaccineFinder
                             Thread notifierThread = new Thread(() => notifier.Notify(mailBody));
                             notifierThread.Start();
                         }
+                        else
+                        {
+                            stInfo = $"[WARNING] Email Settings are Turned OFF in appsettings.json";
+                            ConsoleMethods.PrintError(stInfo);
+                            logger.Info(stInfo);
+                        }
+
                         if (AppConfig.SendTelegramNotification)
                         {
                             if (!string.IsNullOrWhiteSpace(UserDetails.TelegramChatID))
@@ -366,6 +373,12 @@ namespace VaccineFinder
                                 Thread notifierThread = new Thread(() => notifier.Notify(messageBody));
                                 notifierThread.Start();
                             }
+                        }
+                        else
+                        {
+                            stInfo = $"[WARNING] Telegram Notifications are Turned OFF in appsettings.json";
+                            ConsoleMethods.PrintError(stInfo);
+                            logger.Info(stInfo);
                         }
                         break;
                     }
@@ -613,6 +626,13 @@ namespace VaccineFinder
                         Thread notifierThread = new Thread(() => notifier.Notify(mailBody));
                         notifierThread.Start();
                     }
+                    else
+                    {
+                        stInfo = $"[WARNING] Email Settings are Turned OFF in appsettings.json";
+                        ConsoleMethods.PrintError(stInfo);
+                        logger.Info(stInfo);
+                    }
+
                     if (AppConfig.SendTelegramNotification)
                     {
                         if (!string.IsNullOrWhiteSpace(UserDetails.TelegramChatID))
@@ -629,6 +649,12 @@ namespace VaccineFinder
                             Thread notifierThread = new Thread(() => notifier.Notify(messageBody));
                             notifierThread.Start();
                         }
+                    }
+                    else
+                    {
+                        stInfo = $"[WARNING] Telegram Notifications are Turned OFF in appsettings.json";
+                        ConsoleMethods.PrintError(stInfo);
+                        logger.Info(stInfo);
                     }
                 }
                 else
