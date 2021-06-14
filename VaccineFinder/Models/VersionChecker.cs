@@ -139,7 +139,7 @@ namespace VaccineFinder.Models
 
         private void ShowLatestVersionFeatureInfo(VersionModel latestVersionDto, Version serverVersion)
         {
-            string stInfo = $"Latest Version of the Application { latestVersionDto.Name} is { serverVersion }, Downloaded #{latestVersionDto.Assets[0].DownloadCount} times, Released on { latestVersionDto.PublishedAt.LocalDateTime} \n\nWhat's new:\n{latestVersionDto.Body}";
+            string stInfo = $"Latest Release Title: { latestVersionDto.Name}, Version: { serverVersion }, Downloaded #{latestVersionDto.Assets[0].DownloadCount} times, Released on { latestVersionDto.PublishedAt.LocalDateTime} \n\nWhat's new:\n{latestVersionDto.Body}";
             Console.WriteLine($"*************************************************************************************************************************************************************");
             ConsoleMethods.PrintInfo(stInfo);
             logger.Info(stInfo);
