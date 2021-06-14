@@ -72,7 +72,7 @@ namespace VaccineFinder
                     inputMessage = "Please enter your preferred Center Number:";
                     ConsoleMethods.PrintProgress(inputMessage);
                     var sessionNumberString = Console.ReadLine();
-                    while (!int.TryParse(sessionNumberString, out sessionNumber) || sessionNumber > sessions.Count)
+                    while (!int.TryParse(sessionNumberString, out sessionNumber) || sessionNumber > sessions.Count || sessionNumber < 1)
                     {
                         stInfo = "Invalid Input. Please Retry.";
                         logger.Info(stInfo + ": " + sessionNumberString);

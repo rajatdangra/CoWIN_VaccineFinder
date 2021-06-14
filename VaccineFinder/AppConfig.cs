@@ -48,6 +48,7 @@ namespace VaccineFinder
 
         #region Telegram Settings
         internal static bool SendTelegramNotification => String.Equals(_configuration["TelegramNotificationSettings:SendNotification"], "1");
+        internal static string TelegramFetchBotUpdatesUrl => Convert.ToString(_configuration["TelegramNotificationSettings:FetchBotUpdatesURL"]);
         #endregion
 
         #region Mail Settings

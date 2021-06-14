@@ -22,6 +22,7 @@ namespace VaccineFinder.Models
         public void Notify(string message)
         {
             string stInfo = string.Empty;
+            var botClient = new TelegramBotClient(PrivateData.TelegramBotToken);
             try
             {
                 logger.Info("SendTelegramNotification start.");
@@ -31,13 +32,12 @@ namespace VaccineFinder.Models
                 var start = 0;
 
                 List<string> messagesList = new List<string>();
-                for (int i = 0; i < partitions; i++)
+                for (int i = 0; i <= partitions; i++)
                 {
                     var end = Math.Min(max_size, message.Length - start);
                     messagesList.Add(message.Substring(start, end));
                     start = start + max_size;
                 }
-                var botClient = new TelegramBotClient(PrivateData.TelegramBotToken);
                 foreach (var msg in messagesList) //Push one by one
                 {
                     var output = botClient.SendTextMessageAsync(ChannelOrChatID, msg, Telegram.Bot.Types.Enums.ParseMode.MarkdownV2).Result;

@@ -49,6 +49,7 @@ namespace VaccineFinder
             Console.WriteLine("Auto-Pick Center: " + userDetails.UserPreference.AutoPickCenter);
             Console.WriteLine("Include Paid Service: " + userDetails.UserPreference.IncludePaidService);
             Console.WriteLine("Email Ids: " + emailIdsString);
+            Console.WriteLine("Telegram Chat ID: " + userDetails.TelegramChatID);
             Console.WriteLine("From Date: " + date.ToString("dd-MM-yyyy"));
             Console.WriteLine("Retry Frequency (Seconds): " + userDetails.UserPreference.PollingTime);
             Console.WriteLine("First Name (optional): " + userDetails.FirstName);
@@ -68,7 +69,7 @@ namespace VaccineFinder
 
                     if (updateConfirmation.ToLower() == "y")
                     {
-                        inputMessage = "Please Enter your Pin Codes (Comma separated): ";
+                        inputMessage = "Please Enter your Pin Codes (Comma separated):";
                         Console.WriteLine(inputMessage);
                         pinCodesString = Console.ReadLine();
                         PinCodes = UserPreference.GetPincodes(pinCodesString);
@@ -92,7 +93,7 @@ namespace VaccineFinder
 
                     if (updateConfirmation.ToLower() == "y")
                     {
-                        inputMessage = "Please Enter your Min Age Criteria: ";
+                        inputMessage = "Please Enter your Min Age Criteria:";
                         Console.WriteLine(inputMessage);
                         var MinAgeCriteria = Console.ReadLine();
                         int age;
@@ -115,7 +116,7 @@ namespace VaccineFinder
 
                     if (updateConfirmation.ToLower() == "y")
                     {
-                        inputMessage = "Please Enter your Dose number: ";
+                        inputMessage = "Please Enter your Dose number:";
                         Console.WriteLine(inputMessage);
                         var doseString = Console.ReadLine();
                         int dose;
@@ -138,7 +139,7 @@ namespace VaccineFinder
 
                     if (updateConfirmation.ToLower() == "y")
                     {
-                        inputMessage = "Please Enter your Phone Number: ";
+                        inputMessage = "Please Enter your Phone Number:";
                         Console.WriteLine(inputMessage);
                         Phone = Console.ReadLine();
                         while (!userDetails.IsValidMobileNumber(Phone))
@@ -219,7 +220,7 @@ namespace VaccineFinder
 
                     if (updateConfirmation.ToLower() == "y")
                     {
-                        inputMessage = "Please Enter Retry Frequency (Seconds): ";
+                        inputMessage = "Please Enter Retry Frequency (Seconds):";
                         Console.WriteLine(inputMessage);
                         var retryFrequency = Console.ReadLine();
                         int pollingTime;
@@ -250,7 +251,7 @@ namespace VaccineFinder
 
                     if (updateConfirmation.ToLower() == "y")
                     {
-                        inputMessage = "Please Enter 'From Date' (dd-MM-yyyy): ";
+                        inputMessage = "Please Enter 'From Date' (dd-MM-yyyy):";
                         Console.WriteLine(inputMessage);
                         var dateString = Console.ReadLine();
                         CultureInfo provider = CultureInfo.InvariantCulture;
@@ -272,7 +273,7 @@ namespace VaccineFinder
 
                     if (updateConfirmation.ToLower() == "y")
                     {
-                        inputMessage = "Please Enter your Email Ids (Comma separated): ";
+                        inputMessage = "Please Enter your Email Ids (Comma separated):";
                         Console.WriteLine(inputMessage);
                         emailIdsString = Console.ReadLine();
                         EmailIDs = EmailNotifier.GetEmailIDs(emailIdsString);
@@ -296,12 +297,13 @@ namespace VaccineFinder
 
                     if (updateConfirmation.ToLower() == "y")
                     {
-                        Console.WriteLine("Please Enter your First Name (optional): ");
+                        Console.WriteLine("Please Enter your First Name (optional):");
                         var FirstName = Console.ReadLine();
                         userDetails.FirstName = FirstName;
-                        Console.WriteLine("Please Enter your Last Name (optional): ");
+                        Console.WriteLine("Please Enter your Last Name (optional):");
                         var LastName = Console.ReadLine();
                         userDetails.LastName = LastName;
+                        finalConfirmation = TakeConfirmation(finalConfirmationMessage);
                     }
                 }
                 if (finalConfirmation.ToLower() == "n")
@@ -309,7 +311,73 @@ namespace VaccineFinder
                     inputMessage = "Include Paid Service: Y/N ?";
                     finalConfirmation = TakeConfirmation(inputMessage);
                     userDetails.UserPreference.IncludePaidService = (finalConfirmation.ToLower() == "y");
-                    //confirmation = TakeConfirmation(confirmationMessage);
+                    finalConfirmation = TakeConfirmation(finalConfirmationMessage);
+                }
+
+                if (finalConfirmation.ToLower() == "n")
+                {
+                    updateConfirmationMessage = CreateCustomMessage("Telegram Chat ID");
+                    updateConfirmation = TakeConfirmation(updateConfirmationMessage);
+
+                    if (updateConfirmation.ToLower() == "y")
+                    {
+                        var updates = APIs.FetchUpdatesFromTelegramBot();
+                        if (updates != null)
+                        {
+                            bool isCorrectUserName = false;
+                            while (!isCorrectUserName)
+                            {
+                                stInfo = "[INFO] Make sure to ping ";
+                                ConsoleMethods.PrintProgress(stInfo, sameLine: true);
+                                stInfo = "@Covid19VaccineFinderBot";
+                                ConsoleMethods.PrintInfo(stInfo, sameLine: true);
+                                stInfo = " on Telegram before proceeding.";
+                                ConsoleMethods.PrintProgress(stInfo);
+
+                                inputMessage = "Please enter your Telegram UserName:";
+                                Console.WriteLine(inputMessage);
+                                var telegramUserName = Console.ReadLine();
+
+                                var messages = updates.result.Where(a => a.message != null).Select(a => a.message);
+                                var filteredChats = messages.Where(a => a.from.username != null && a.from.username.ToLower() == telegramUserName.ToLower());
+                                if (filteredChats.Count() > 0)
+                                {
+                                    isCorrectUserName = true; //break loop condition
+
+                                    var counter = 1;
+                                    HashSet<long> chatIDs = new HashSet<long>();
+                                    foreach (var msg in filteredChats)
+                                    {
+                                        if (chatIDs.Add(msg.chat.id))
+                                        {
+                                            var st = counter + ")" + " " + msg.chat.description;
+                                            Console.WriteLine(st);
+                                            counter++;
+                                        }
+                                    }
+                                    inputMessage = "Please enter your preferred Chat ID (number) to receive notifications:";
+                                    ConsoleMethods.PrintProgress(inputMessage);
+                                    var chatIDString = Console.ReadLine();
+                                    int chatID;
+                                    while (!int.TryParse(chatIDString, out chatID) || chatID > chatIDs.Count || chatID < 1)
+                                    {
+                                        stInfo = "Invalid Input. Please Retry.";
+                                        logger.Info(stInfo + ": " + chatIDString);
+                                        ConsoleMethods.PrintError(stInfo);
+                                        ConsoleMethods.PrintProgress(inputMessage);
+                                        chatIDString = Console.ReadLine();
+                                    }
+                                    userDetails.TelegramChatID = Convert.ToString(chatIDs.ElementAt(chatID - 1));
+                                    //finalConfirmation = TakeConfirmation(finalConfirmationMessage);
+                                }
+                                else
+                                {
+                                    stInfo = $"Couldn't find update with the UserName: {telegramUserName}, in last 24 hours";
+                                    ConsoleMethods.PrintError(stInfo);
+                                }
+                            }
+                        }
+                    }
                 }
 
                 if (AppConfig.SaveUserDetails)
@@ -328,7 +396,7 @@ namespace VaccineFinder
                     stInfo = "Invalid Phone. Please Retry.";
                     logger.Info(stInfo + ": " + Phone);
                     ConsoleMethods.PrintError(stInfo);
-                    Console.WriteLine("Please Enter your Phone Number: ");
+                    Console.WriteLine("Please Enter your Phone Number:");
                     Phone = Console.ReadLine();
                 }
                 userDetails.Phone = Phone;
@@ -341,7 +409,7 @@ namespace VaccineFinder
                     stInfo = "Invalid Pin Codes. Please Retry.";
                     logger.Info(stInfo + ": " + pinCodesString);
                     ConsoleMethods.PrintError(stInfo);
-                    Console.WriteLine("Please Enter your Pin Codes: ");
+                    Console.WriteLine("Please Enter your Pin Codes:");
                     pinCodesString = Console.ReadLine();
                     PinCodes = UserPreference.GetPincodes(pinCodesString);
                 }
@@ -355,7 +423,7 @@ namespace VaccineFinder
                     stInfo = "Invalid Email. Please Retry.";
                     logger.Info(stInfo + ": " + emailIdsString);
                     ConsoleMethods.PrintError(stInfo);
-                    Console.WriteLine("Please Enter your Email Ids (Comma separated): ");
+                    Console.WriteLine("Please Enter your Email Ids (Comma separated):");
                     emailIdsString = Console.ReadLine();
                     EmailIDs = EmailNotifier.GetEmailIDs(emailIdsString);
                 }

@@ -523,5 +523,46 @@ namespace VaccineFinder
                 logger.Info("FetchLatestAppVersion API call end.");
             }
         }
+
+        public static TelegramBotUpdatesModel FetchUpdatesFromTelegramBot()
+        {
+            string stInfo = "FetchUpdatesFromTelegramBot API call started.";
+            logger.Info(stInfo);
+            ConsoleMethods.PrintProgress(stInfo);
+            try
+            {
+                TelegramBotUpdatesModel apiResponse = null;
+                string endPoint = AppConfig.TelegramFetchBotUpdatesUrl.Replace("<token>", Private.PrivateData.TelegramBotToken);
+                IRestResponse response = GetRequest(endPoint, cowinRelatedHeadersToBeUsed: false);
+                var responseString = response.Content;
+                //Console.WriteLine(responseString);
+                logger.Info("Response from FetchUpdatesFromTelegramBot API: " + responseString);
+                if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                {
+                    apiResponse = JsonConvert.DeserializeObject<TelegramBotUpdatesModel>(responseString);
+                    stInfo = "Updates fetched Successfully!";
+                    logger.Info(stInfo);
+                    ConsoleMethods.PrintSuccess(stInfo);
+                }
+                else
+                {
+                    stInfo = $"Unable to Fetch Updates.\nResponse Code: {response.StatusCode}, Response: {responseString}";
+                    logger.Info(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
+                }
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                stInfo = "Error in FetchUpdatesFromTelegramBot:\n" + ex;
+                ConsoleMethods.PrintError("Please check your Internet Connection\n" + stInfo);
+                logger.Error(stInfo);
+                return null;
+            }
+            finally
+            {
+                logger.Info("FetchUpdatesFromTelegramBot API call end.");
+            }
+        }
     }
 }

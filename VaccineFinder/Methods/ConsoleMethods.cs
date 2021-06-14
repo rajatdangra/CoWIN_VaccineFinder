@@ -8,32 +8,40 @@ namespace VaccineFinder
 {
     public static class ConsoleMethods
     {
-        public static void PrintError(string message)
+        public static void PrintError(string message, bool sameLine = false)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
+            Print(message, sameLine);
             Console.ResetColor();
         }
 
-        public static void PrintSuccess(string message)
+        public static void PrintSuccess(string message, bool sameLine = false)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(message);
+            Print(message, sameLine);
             Console.ResetColor();
         }
 
-        public static void PrintProgress(string message)
+        public static void PrintProgress(string message, bool sameLine = false)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(message);
+            Print(message, sameLine);
             Console.ResetColor();
         }
 
-        public static void PrintInfo(string message, ConsoleColor color = ConsoleColor.Cyan)
+        public static void PrintInfo(string message, ConsoleColor color = ConsoleColor.Cyan, bool sameLine = false)
         {
             Console.ForegroundColor = color;
-            Console.WriteLine(message);
+            Print(message, sameLine);
             Console.ResetColor();
+        }
+
+        public static void Print(string message, bool sameLine = false)
+        {
+            if (sameLine)
+                Console.Write(message);
+            else
+                Console.WriteLine(message);
         }
     }
 }
