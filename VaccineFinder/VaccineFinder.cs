@@ -340,9 +340,21 @@ namespace VaccineFinder
                         if (AppConfig.SendEmail)
                         {
                             slotDetailsCopy = slotDetails;
+
                             var templatePath = Path.GetFullPath("Templates/EmailTemplates/SlotsAvailable.html");
-                            slotDetailsCopy = slotDetailsCopy.Replace("\n", "<br />"); //For New Line Breaks
-                            var mailBody = EmailBody.CreateSlotsAvailableEmailBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetailsCopy, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+                            string mailBody = string.Empty;
+                            if (File.Exists(templatePath))
+                            {
+                                slotDetailsCopy = slotDetailsCopy.Replace("\n", "<br />"); //For New Line Breaks
+                                mailBody = EmailBody.CreateSlotsAvailableEmailBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetailsCopy, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+                            }
+                            else
+                            {
+                                stInfo = $"Template not found: {templatePath}, kindly check the original app package.";
+                                logger.Info(stInfo);
+                                ConsoleMethods.PrintError(stInfo);
+                                mailBody = slotDetailsCopy;
+                            }
 
                             var subject = AppConfig.Availablity_MailSubject + " for Pin Codes: " + UserDetails.UserPreference.PinCodeString;
                             INotifier iNotifier = new EmailNotifier(subject, UserDetails.EmailIdsString, UserDetails.FullName, isHTMLBody: true);
@@ -362,10 +374,22 @@ namespace VaccineFinder
                             if (!string.IsNullOrWhiteSpace(UserDetails.TelegramChatID))
                             {
                                 slotDetailsCopy = slotDetails;
-                                var templatePath = Path.GetFullPath("Templates/MessageTemplates/SlotsAvailable.md");
-                                var messageBody = MessageBody.CreateSlotsAvailableMessageBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetailsCopy, AppConfig.CoWIN_RegistrationURL);
 
-                                //To Escape Characters//To Escape Characters
+                                var templatePath = Path.GetFullPath("Templates/MessageTemplates/SlotsAvailable.md");
+                                string messageBody = string.Empty;
+                                if (File.Exists(templatePath))
+                                {
+                                    messageBody = MessageBody.CreateSlotsAvailableMessageBody(templatePath, UserDetails.FullName, UserDetails.UserPreference.PinCodeString, slotDetailsCopy, AppConfig.CoWIN_RegistrationURL);
+                                }
+                                else
+                                {
+                                    stInfo = $"Template not found: {templatePath}, kindly check the original app package.";
+                                    logger.Info(stInfo);
+                                    ConsoleMethods.PrintError(stInfo);
+                                    messageBody = slotDetailsCopy;
+                                }
+
+                                //To Escape Characters (for Telegram MarkDown)
                                 messageBody = MessageBody.EscapeCharacters(messageBody);
 
                                 INotifier iNotifier = new TelegramNotifier(UserDetails.TelegramChatID);
@@ -616,10 +640,22 @@ namespace VaccineFinder
                     if (AppConfig.SendEmail)
                     {
                         bookingDetailsCopy = bookingDetails;
+                        
                         var templatePath = Path.GetFullPath("Templates/EmailTemplates/SlotBooked.html");
-                        bookingDetailsCopy = bookingDetailsCopy.Replace("\n", "<br />"); //For New Line Breaks
-                        bookingDetailsCopy = bookingDetailsCopy.Replace("\t", "&#9;"); //For Tab Character
-                        var mailBody = EmailBody.CreateSlotsBookedEmailBody(templatePath, UserDetails.FullName, bookingDetailsCopy, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+                        string mailBody = string.Empty;
+                        if (File.Exists(templatePath))
+                        {
+                            bookingDetailsCopy = bookingDetailsCopy.Replace("\n", "<br />"); //For New Line Breaks
+                            bookingDetailsCopy = bookingDetailsCopy.Replace("\t", "&#9;"); //For Tab Character
+                            mailBody = EmailBody.CreateSlotsBookedEmailBody(templatePath, UserDetails.FullName, bookingDetailsCopy, AppConfig.CoWIN_RegistrationURL, "Co-WIN: Self Registration");
+                        }
+                        else
+                        {
+                            stInfo = $"Template not found: {templatePath}, kindly check the original app package.";
+                            logger.Info(stInfo);
+                            ConsoleMethods.PrintError(stInfo);
+                            mailBody = bookingDetailsCopy;
+                        }
 
                         INotifier iNotifier = new EmailNotifier(AppConfig.Booking_MailSubject, UserDetails.EmailIdsString, UserDetails.FullName, isHTMLBody: true);
                         NotifierFactory notifier = new NotifierFactory(iNotifier);
@@ -638,10 +674,22 @@ namespace VaccineFinder
                         if (!string.IsNullOrWhiteSpace(UserDetails.TelegramChatID))
                         {
                             bookingDetailsCopy = bookingDetails;
-                            var templatePath = Path.GetFullPath("Templates/MessageTemplates/SlotBooked.md");//For Escape Characters
-                            var messageBody = MessageBody.CreateSlotsBookedMessageBody(templatePath, UserDetails.FullName, bookingDetailsCopy, AppConfig.CoWIN_RegistrationURL);
+                         
+                            var templatePath = Path.GetFullPath("Templates/MessageTemplates/SlotBooked.md");
+                            var messageBody = string.Empty;
+                            if (File.Exists(templatePath))
+                            {
+                                messageBody = MessageBody.CreateSlotsBookedMessageBody(templatePath, UserDetails.FullName, bookingDetailsCopy, AppConfig.CoWIN_RegistrationURL);
+                            }
+                            else
+                            {
+                                stInfo = $"Template not found: {templatePath}, kindly check the original app package.";
+                                logger.Info(stInfo);
+                                ConsoleMethods.PrintError(stInfo);
+                                messageBody = bookingDetailsCopy;
+                            }
 
-                            //To Escape Characters
+                            //To Escape Characters (for Telegram MarkDown)
                             messageBody = MessageBody.EscapeCharacters(messageBody);
 
                             INotifier iNotifier = new TelegramNotifier(UserDetails.TelegramChatID);
