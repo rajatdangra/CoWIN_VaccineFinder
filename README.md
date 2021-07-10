@@ -3,7 +3,10 @@
 Sends notification on Mail and Telegram, if slots are available.
 Book Slots and Send notification on Mail and Telegram, if Booked successfully.
 
-_Platforms Supported_: Windows, macOS, Linux.
+<ins>_Platforms Supported_</ins>: 
+- [x] Windows
+- [x] macOS
+- [x] Linux
 
 <ins>_Installation instructions_</ins>:
 1. Unzip folder.
@@ -17,7 +20,7 @@ _Note_: Details once filled, will be retained to use for next time. It will be p
 _Mandatory_:
 1. Phone number
 2. Pin-Codes : Search is based on Priority order defined (first come basis). Format - Comma separated (eg. 100001, 100002)
-3. Beneficiary Ids: Ids found in Co-Win app against individual user. Format - Comma separated (eg. 123456, 7891011)
+3. Beneficiary IDs: IDs found in Co-Win app against individual user. Don't worry, we will fetch everthing for you. Format - Comma separated (eg. 123456789, 789101134).
 4. Dose (eg. 1 or 2)
 5. Vaccine (eg. ANY, COVISHIELD, COVAXIN, SPUTNIK V)
 6. Email Ids: Email ids where mail will be sent in case of slots availability. Format - Comma separated (eg. abc@gmail.com, def@gmail.com)
@@ -40,7 +43,8 @@ _In **appsettings.json**_: (Highly Recommended not to update these settings)
 4. AutomaticCloseProgramWaitTime (in Seconds)- At the point of termination, program will wait for seconds before closing Automatically.
 5. TryToBookOtherSlots - True or False. Try to Book Slots other than Slot Preference specified in UserPreference if enabled ("1"), By default disabled ("0") as we think availability is for the entire day, it is not segregated in individual slots
 
-<ins>***Process***</ins>:
+### <ins>***Process***</ins>:
+
 1. Check Latest Version of the Application.
 2. Confirm inputs from user.
 3. Generate OTP.
@@ -57,7 +61,20 @@ _In **appsettings.json**_: (Highly Recommended not to update these settings)
    - Sends Confirmation Notification over E-Mail (on defined Email Ids), and Telegram.
 8. Automatically close in 30 seconds (depends on _AutomaticCloseProgramWaitTime_ setting in appsettings.json).
 
-[Click Here To See The Demo](https://www.youtube.com/watch?v=z_5E703sMKY)
+[Click Here To Watch The Demo](https://www.youtube.com/watch?v=z_5E703sMKY)
+
+### <ins>***Application Features***</ins>
+
+Following are some of the main features of the App:
+- [x] Extremely User Friendly Settings: All the preferences can be Customized. User can Control Everthing.
+- [x] One Time Setup: User Preferences will be saved in Settings, so need to set ever again. Just input the OTP and you are good to go anytime.
+- [x] Intelligent App: The App can VALIDATE beneficiaries, IDENTIFY invalid inputs (like beneficiaries combination, Dose, Vaccine etc.), Automatically UPDATES valid values and SAVE Settings.
+- [x] BEEP Notifier for user, in case of any important event - OTP, Availability, Booking, Session Timeout, IP Blocked.
+- [x] Auto-Regenerate OTP in case of Session Timeout, IP Blocked.
+- [x] Integration of Notification Engine with Telegram Bot
+- [x] Verbose Mode so that user can check each and every step as what is going on behind the scenes when slots are being fetched & processed
+- [x] Zero Setup Application, Just Download and Run! Easy to Use!
+- [x] No specialized Software required for modification of Config file, it could be done inside the App.
 
 
-<ins>***Note***</ins>: _This is a Personal Project, I do NOT endorse this for Public use. Developed for Educational Purpose only; USE AT YOUR OWN RISK. I SHOULD NOT BE DEEMED RESPONSIBLE FOR ANY LEGAL CONCERNS. DO NOT SHARE THIS_.
+> <ins>***Note***</ins>: _This is a Personal Project, We do NOT endorse this for Public use. Developed for Educational Purpose only; USE AT YOUR OWN RISK. DEVELOPER SHOULD NOT BE DEEMED RESPONSIBLE FOR ANY LEGAL CONCERNS. DO NOT SHARE THIS. ANY USE OF THE SCRIPT FOR MONETARY, UNETHICAL, OR ILLEGAL PURPOSES IS NOT PERMITTED. - IN CASE, YOU ARE FOUND TO DO THE SAME, YOU SHALL BE SOLELY LIABLE FOR THE CONSEQUENCES. Developer reserves the right to take any legal action as enumerated under the law against any unethical or illegal use of the same._
