@@ -1,6 +1,6 @@
 # Co-WIN: _Vaccine Finder_
-<ins>Vaccine Finder</ins>: based on Pincode and Age Limit Criteria.
-Send notification on Mail, if slots are available.
+<ins>Vaccine Finder</ins>: Based on Pin-Codes, Age Limit Criteria, Dose, Vaccine and other User preferences.
+Sends notification on Mail and Telegram, if slots are available.
 Book Slots and Send notification on Mail and Telegram, if Booked successfully.
 
 _Platforms Supported_: Windows, macOS, Linux.
@@ -47,15 +47,17 @@ _In **appsettings.json**_: (Highly Recommended not to update these settings)
 4. Verify OTP.
 5. Verify Beneficiaries. Verify Vaccine and Dose specified, Update valid Vaccine and Dose in settings automatically.
 6. Check Available slots.
-Case 1. Vaccine slots available: Program will Display Available Centres, make a beep sound to notify, and Users will get E-Mails on defined Email Ids. Proceed to Booking (next step).			
-Case 2. Vaccine slots not available: Program will retry at user defined Retry Frequency. Automatically re-generate OTP, if session is expired.
+   - Case a) Vaccine slots available: Program will Display Available Centres, make a beep sound to notify, sends Notifications over E-Mail (on defined Email Ids), and Telegram. Proceed to Booking (next step).			
+   - Case b) Vaccine slots not available: Program will retry at user defined Retry Frequency. Automatically re-generate OTP, if session is expired, or IP is blocked.
 7. Start Booking:
-   - AutoBookCenter:
-		case a) If AutoBookCenter is False ("0"), get preferred center input (number) from user, and only try to book slots of specific center. 
-		case b) If AutoBookCenter is True ("1"), it will sort available center based on availability, then tries to book slot, it will hit all the centers until slot is successfully booked.
-   - Try to book slots, with Slot preference, then book other slots (depending on TryToBookOtherSlots) whichever is available.
-   - Confirmation mail on User email ids.
-8. Automatically close in 30 seconds (depends on AutomaticCloseProgramWaitTime setting in appsettings.json).
+   - _AutoBookCenter_:
+	 - case a) If AutoBookCenter is False ("0"), get preferred center input (number) from user, and only try to book slots of specific center. 
+	 - case b) If AutoBookCenter is True ("1"), it will sort available centers based on Pin-Code preference, then sort by availability. Then tries to book slot, it will hit all the centers until slot is successfully booked.
+   - Try to Book Slot, with Slot preference. If booking fails, it tries to book other slots (depending on _TryToBookOtherSlots_ setting in appsettings.json) whichever is available.
+   - Sends Confirmation Notification over E-Mail (on defined Email Ids), and Telegram.
+8. Automatically close in 30 seconds (depends on _AutomaticCloseProgramWaitTime_ setting in appsettings.json).
+
+[Click Here To See The Demo](https://www.youtube.com/watch?v=z_5E703sMKY)
 
 
 <ins>***Note***</ins>: _This is a Personal Project, I do NOT endorse this for Public use. Developed for Educational Purpose only; USE AT YOUR OWN RISK. I SHOULD NOT BE DEEMED RESPONSIBLE FOR ANY LEGAL CONCERNS. DO NOT SHARE THIS_.
