@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rajatdangra/CoWIN_VaccineFinder/master/data/Icons/vaccine-logo_1.1.png" alt="CoWIN Vaccine Slot Finder Logo" width="300" height="150"/>
+</p>
+
 # Co-WIN: _Vaccine Finder_
 <ins>Vaccine Finder</ins>: Based on Pin-Codes, Age Limit Criteria, Dose, Vaccine and other User preferences.
 Sends notification on Mail and Telegram, if slots are available.
@@ -67,7 +71,7 @@ _In **appsettings.json**_: (Highly Recommended not to update these settings)
 
 Following are some of the main features of the App:
 - [x] Extremely User Friendly Settings: All the preferences can be Customized. User can Control Everthing.
-- [x] One Time Setup: User Preferences will be saved in Settings, so need to set ever again. Just input the OTP and you are good to go anytime.
+- [x] One Time Setup: User Preferences will be saved in Settings, so need not to set ever again. Just input the OTP and you are good to go anytime.
 - [x] Intelligent App: The App can VALIDATE beneficiaries, IDENTIFY invalid inputs (like beneficiaries combination, Dose, Vaccine etc.), Automatically UPDATES valid values and SAVE Settings.
 - [x] BEEP Notifier for user, in case of any important event - OTP, Availability, Booking, Session Timeout, IP Blocked.
 - [x] Auto-Regenerate OTP in case of Session Timeout, IP Blocked.
@@ -77,4 +81,4 @@ Following are some of the main features of the App:
 - [x] No specialized Software required for modification of Config file, it could be done inside the App.
 
 
-> <ins>***Note***</ins>: _This is a Personal Project, We do NOT endorse this for Public use. Developed for Educational Purpose only; USE AT YOUR OWN RISK. DEVELOPER SHOULD NOT BE DEEMED RESPONSIBLE FOR ANY LEGAL CONCERNS. DO NOT SHARE THIS. ANY USE OF THE SCRIPT FOR MONETARY, UNETHICAL, OR ILLEGAL PURPOSES IS NOT PERMITTED. - IN CASE, YOU ARE FOUND TO DO THE SAME, YOU SHALL BE SOLELY LIABLE FOR THE CONSEQUENCES. Developer reserves the right to take any legal action as enumerated under the law against any unethical or illegal use of the same._
+> <ins>***Note***</ins>: _This is a Personal Project, We do NOT endorse this for Public use. Developed for Educational Purpose only; USE AT YOUR OWN RISK. DEVELOPER SHOULD NOT BE DEEMED RESPONSIBLE FOR ANY LEGAL CONCERNS. DO NOT SHARE THIS. ANY USE OF THE APP FOR MONETARY, UNETHICAL, OR ILLEGAL PURPOSES IS NOT PERMITTED. - IN CASE, YOU ARE FOUND TO DO THE SAME, YOU SHALL BE SOLELY LIABLE FOR THE CONSEQUENCES. Developer reserves the right to take any legal action as enumerated under the law against any unethical or illegal use of the same._
