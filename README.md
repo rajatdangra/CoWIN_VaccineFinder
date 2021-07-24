@@ -14,7 +14,7 @@ Book Slots and Send notification on Mail and Telegram, if Booked successfully.
 
 <ins>_Installation instructions_</ins>:
 1. Unzip folder.
-2. Run VaccineFinder.exe
+2. Run VaccineFinder.exe.
 3. Fill in the basic details.
 _Note_: Details once filled, will be retained to use for next time. It will be picked automatically. You can also check appsettings.json for more details.
 
@@ -22,15 +22,15 @@ _Note_: Details once filled, will be retained to use for next time. It will be p
 <ins>***User Inputs***</ins>:
 
 _Mandatory_:
-1. Phone number
-2. Pin-Codes : Search is based on Priority order defined (first come basis). Format - Comma separated (eg. 100001, 100002)
+1. Phone number.
+2. Pin-Codes : Search is based on Priority order defined (first come basis). Format - Comma separated (eg. 100001, 100002).
 3. Beneficiary IDs: IDs found in Co-Win app against individual user. Don't worry, we will fetch everthing for you. Format - Comma separated (eg. 123456789, 789101134).
-4. Dose (eg. 1 or 2)
-5. Vaccine (eg. ANY, COVISHIELD, COVAXIN, SPUTNIK V)
-6. Email Ids: Email ids where mail will be sent in case of slots availability. Format - Comma separated (eg. abc@gmail.com, def@gmail.com)
-7. Minimum Age Limit: 18 or 45
-8. Slot Preference: (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM)
-9. From Date: Date from which vaccination slots will be searched (for 7 days). Format - "dd-MM-yyyy" (eg. 31-03-2021)
+4. Dose (eg. 1 or 2).
+5. Vaccine (eg. ANY, COVISHIELD, COVAXIN, SPUTNIK V).
+6. Email Ids: Email ids where mail will be sent in case of slots availability. Format - Comma separated (eg. abc@gmail.com, def@gmail.com).
+7. Minimum Age Limit: 18 or 45.
+8. Slot Preference: (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM).
+9. From Date: Date from which vaccination slots will be searched (for 7 days). Format - "dd-MM-yyyy" (eg. 31-03-2021).
 10. Retry Frequency (in Seconds): Frequency at which retry call should happen (in case of no slots found), (eg. 10). Value less than 3 Seconds is not recommended due to rate limiting imposed by the Government.
 11. AutoPickCenter - If True ("1"), it auto picks center with the combination of 'Pin-code priority and the center with most available slots'. If false, it asks user to input preferred center.
 12. IncludePaidService - If True ("1"), it will also include centers with as 'Paid' Service (Fee Type). If false, it will only pick centers with 'Free' service.
@@ -41,11 +41,11 @@ _Optional_:
 2. Last Name - will be used in E-Mail.
 	
 _In **appsettings.json**_: (Highly Recommended not to update these settings)
-1. VerifyBeneficiaries - To verify beneficiaries, before slot booking (highly recommended: True)
+1. VerifyBeneficiaries - To verify beneficiaries, before slot booking (highly recommended: True).
 2. SendEmail - True or False to enable/disable Mail.
 3. SendNotification - True or False to enable/disable Telegram Notifications.
 4. AutomaticCloseProgramWaitTime (in Seconds)- At the point of termination, program will wait for seconds before closing Automatically.
-5. TryToBookOtherSlots - True or False. Try to Book Slots other than Slot Preference specified in UserPreference if enabled ("1"), By default disabled ("0") as we think availability is for the entire day, it is not segregated in individual slots
+5. TryToBookOtherSlots - True or False. Try to Book Slots other than Slot Preference specified in UserPreference if enabled ("1"), By default disabled ("0") as we think availability is for the entire day, it is not segregated in individual slots.
 
 ### <ins>***Process***</ins>:
 
@@ -75,8 +75,8 @@ Following are some of the main features of the App:
 - [x] Intelligent App: The App can VALIDATE beneficiaries, IDENTIFY invalid inputs (like beneficiaries combination, Dose, Vaccine etc.), Automatically UPDATES valid values and SAVE Settings.
 - [x] BEEP Notifier for user, in case of any important event - OTP, Availability, Booking, Session Timeout, IP Blocked.
 - [x] Auto-Regenerate OTP in case of Session Timeout, IP Blocked.
-- [x] Integration of Notification Engine with Telegram Bot
-- [x] Verbose Mode so that user can check each and every step as what is going on behind the scenes when slots are being fetched & processed
+- [x] Integration of Notification Engine with Telegram Bot.
+- [x] Verbose Mode so that user can check each and every step as what is going on behind the scenes when slots are being fetched & processed.
 - [x] Zero Setup Application, Just Download and Run! Easy to Use!
 - [x] No specialized Software required for modification of Config file, it could be done inside the App.
 
