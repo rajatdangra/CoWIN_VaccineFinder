@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using VaccineFinder.Enums;
 using VaccineFinder.Models;
 using VaccineFinder.Providers;
 
@@ -23,12 +24,26 @@ namespace VaccineFinder
 
         private static IRestResponse GetRequest(string endpoint, bool cowinRelatedHeadersToBeUsed = true)
         {
-            IRestResponse response = new APIFacade().Get(endpoint, cowinRelatedHeadersToBeUsed);
+            Authenticator authenticator = new Authenticator()
+            {
+                TokenType = TokenType.Bearer,
+                ApiKey = OTPAuthenticator.BEARER_TOKEN,
+                IsEncode = false
+            };
+
+            IRestResponse response = new APIFacade().Get(endpoint, authenticator, cowinRelatedHeadersToBeUsed);
             return response;
         }
         private static IRestResponse PostRequest(string endpoint, string requestBody, bool cowinRelatedHeadersToBeUsed = true)
         {
-            IRestResponse response = new APIFacade().Post(endpoint, requestBody, cowinRelatedHeadersToBeUsed);
+            Authenticator authenticator = new Authenticator()
+            {
+                TokenType = TokenType.Bearer,
+                ApiKey = OTPAuthenticator.BEARER_TOKEN,
+                IsEncode = false
+            };
+
+            IRestResponse response = new APIFacade().Post(endpoint, authenticator, requestBody, cowinRelatedHeadersToBeUsed);
             return response;
         }
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VaccineFinder
+namespace VaccineFinder.Enums
 {
     public enum VaccineName
     {

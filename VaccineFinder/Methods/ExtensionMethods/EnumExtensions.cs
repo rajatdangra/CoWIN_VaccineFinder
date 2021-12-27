@@ -23,6 +23,5 @@ namespace VaccineFinder
             }
             return GenericEnum.ToString();
         }
-
     }
 }
