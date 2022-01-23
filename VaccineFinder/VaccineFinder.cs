@@ -122,8 +122,8 @@ namespace VaccineFinder
                             var benInput = Console.ReadLine();
                             UserDetails.UserPreference.BeneficiaryIds = UserPreference.GetBeneficiaryIds(benInput);
                         }
-                        string vaccine;
-                        if (!HaveSameDoseAndVaccine(response, out vaccine))
+                        string previousVaccine;
+                        if (!HaveSameDoseAndVaccine(response, out previousVaccine))
                         {
                             Console.WriteLine("\nPlease enter comma separated beneficiary Ids with Same 'Dose and Vaccine':");
                             var benInput = Console.ReadLine();
@@ -131,12 +131,12 @@ namespace VaccineFinder
                         }
                         else
                         {
-                            if (!string.IsNullOrEmpty(vaccine)) //Scenario for Dose:2
+                            if (!string.IsNullOrEmpty(previousVaccine)) //Scenario for Dose > 1
                             {
                                 stInfo = "Checking if vaccine specified is same";
                                 ConsoleMethods.PrintProgress(stInfo);
                                 logger.Info(stInfo);
-                                if (vaccine.ToUpper().Equals(UserDetails.UserPreference.Vaccine.ToUpper()))
+                                if (previousVaccine.ToUpper().Equals(UserDetails.UserPreference.Vaccine.ToUpper()))
                                 {
                                     stInfo = "Vaccine specified is same as previous vaccine";
                                     ConsoleMethods.PrintSuccess(stInfo);
@@ -144,16 +144,16 @@ namespace VaccineFinder
                                 }
                                 else
                                 {
-                                    stInfo = $"Vaccine specified: {UserDetails.UserPreference.Vaccine.ToUpper()}, is not same as Previous Vaccine: {vaccine}";
+                                    stInfo = $"Vaccine specified: {UserDetails.UserPreference.Vaccine.ToUpper()}, is not same as Previous Vaccine: {previousVaccine}";
                                     ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkYellow);
                                     logger.Info(stInfo);
-                                    stInfo = $"Updating Vaccine: {vaccine}";
+                                    stInfo = $"Updating Vaccine: {previousVaccine}";
                                     ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkCyan);
                                     logger.Info(stInfo);
-                                    UserDetails.UserPreference.Vaccine = vaccine;
+                                    UserDetails.UserPreference.Vaccine = previousVaccine;
                                     updateRequired = true;
                                 }
-
+                                //update this code
                                 if (!IsDoseSpecifiedValid(dose: 2))
                                     updateRequired = true;
                             }
@@ -226,29 +226,29 @@ namespace VaccineFinder
             return areBeneficiariesVerified;
         }
 
-        public bool HaveSameDoseAndVaccine(GetBeneficiariesResponse response, out string vaccineName)
+        public bool HaveSameDoseAndVaccine(GetBeneficiariesResponse response, out string previousVaccineName)
         {
-            vaccineName = string.Empty;
+            previousVaccineName = string.Empty;
             bool areDoseAndVaccineVerified = false;
             string stInfo = "Verifying if beneficiaries have same(valid) Dose and Vaccine";
             Console.WriteLine("\n" + stInfo);
             logger.Info(stInfo);
 
-            List<string> vaccines = response.beneficiaries.Where(a => UserDetails.UserPreference.BeneficiaryIds.Contains(a.beneficiary_reference_id)).Select(a => a.vaccine).ToList();
-            if (vaccines.Distinct().Count() > 1)
+            List<string> previousVaccines = response.beneficiaries.Where(a => UserDetails.UserPreference.BeneficiaryIds.Contains(a.beneficiary_reference_id)).Select(a => a.vaccine).ToList();
+            if (previousVaccines.Distinct().Count() > 1)
             {
                 areDoseAndVaccineVerified = false;
-                stInfo = $"Multiple vaccines found: {string.Join(", ", vaccines.Distinct())}";
+                stInfo = $"Multiple vaccines found: {string.Join(", ", previousVaccines.Distinct())}";
                 ConsoleMethods.PrintError(stInfo);
                 logger.Info(stInfo);
             }
             else
             {
-                vaccineName = vaccines.First();
+                previousVaccineName = previousVaccines.First();
                 areDoseAndVaccineVerified = true;
-                if (!string.IsNullOrWhiteSpace(vaccineName))
+                if (!string.IsNullOrWhiteSpace(previousVaccineName))
                 {
-                    stInfo = $"Vaccine: {string.Join(", ", vaccines.Distinct())}";
+                    stInfo = $"Vaccine: {string.Join(", ", previousVaccines.Distinct())}";
                     ConsoleMethods.PrintProgress(stInfo);
                     logger.Info(stInfo);
                 }
@@ -442,7 +442,7 @@ namespace VaccineFinder
             try
             {
                 bool vaccineSlotFound = false;
-                AvailabilityStatusAPIResponse response = APIs.CheckCalendarByPin(pinCode, Date, UserDetails.Phone);
+                AvailabilityStatusAPIResponse response = APIs.CheckCalendarByPin(pinCode, Date, UserDetails.UserPreference.IsPrecautionDose, UserDetails.Phone);
 
                 if (response == null)
                     return null;
@@ -640,7 +640,7 @@ namespace VaccineFinder
                     if (AppConfig.SendEmail)
                     {
                         bookingDetailsCopy = bookingDetails;
-                        
+
                         var templatePath = Path.GetFullPath("Templates/EmailTemplates/SlotBooked.html");
                         string mailBody = string.Empty;
                         if (File.Exists(templatePath))
@@ -674,7 +674,7 @@ namespace VaccineFinder
                         if (!string.IsNullOrWhiteSpace(UserDetails.TelegramChatID))
                         {
                             bookingDetailsCopy = bookingDetails;
-                         
+
                             var templatePath = Path.GetFullPath("Templates/MessageTemplates/SlotBooked.md");
                             var messageBody = string.Empty;
                             if (File.Exists(templatePath))

@@ -36,6 +36,7 @@ namespace VaccineFinder
         internal static string EmailIDs => Convert.ToString(_configuration["UserDetails:EmailIDs"]);
         internal static int MinAgeLimit => Convert.ToInt32(_configuration["UserDetails:UserPreference:MinAgeLimit"]);
         internal static int Dose => Convert.ToInt32(_configuration["UserDetails:UserPreference:Dose"]);
+        internal static bool IsPrecautionDose => String.Equals(_configuration["UserDetails:UserPreference:IsPrecautionDose"], "1");
         internal static string Vaccine => Convert.ToString(_configuration["UserDetails:UserPreference:Vaccine"]);
         internal static string FirstName => Convert.ToString(_configuration["UserDetails:FirstName"]);
         internal static string LastName => Convert.ToString(_configuration["UserDetails:LastName"]);

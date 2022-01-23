@@ -263,7 +263,7 @@ namespace VaccineFinder
             }
         }
 
-        public static AvailabilityStatusAPIResponse CheckCalendarByPin(string pinCode, DateTime date, string phone)
+        public static AvailabilityStatusAPIResponse CheckCalendarByPin(string pinCode, DateTime date, bool isPrecautionDose, string phone)
         {
             string stInfo = string.Empty;
             logger.Info("CheckCalendarByPin API call started.");
@@ -271,7 +271,7 @@ namespace VaccineFinder
             AvailabilityStatusAPIResponse apiResponse = null;
             try
             {
-                IRestResponse response = FetchSlotsByPINCode(pinCode, date.ToString("dd-MM-yyyy"), string.Empty, generateRandomString: false);
+                IRestResponse response = FetchSlotsByPINCode(pinCode, date.ToString("dd-MM-yyyy"), isPrecautionDose, string.Empty, generateRandomString: false);
                 var responseString = response.Content;
                 //Console.WriteLine(responseString);
                 logger.Info("Response from CheckCalendarByPin API: " + responseString);
@@ -338,7 +338,7 @@ namespace VaccineFinder
             }
         }
 
-        private static IRestResponse FetchSlotsByPINCode(string pinCode, string searchDate, string vaccineType, bool generateRandomString = false)
+        private static IRestResponse FetchSlotsByPINCode(string pinCode, string searchDate, bool isPrecautionDose, string vaccineType, bool generateRandomString = false)
         {
             UriBuilder builder;
             builder = new UriBuilder(AppConfig.CalendarByPinUrl);
@@ -358,6 +358,7 @@ namespace VaccineFinder
             }
 
             queryString["pincode"] = pinCode;
+            queryString["precaution_flag"] = isPrecautionDose ? "true" : "false";
             queryString["date"] = searchDate;
             if (generateRandomString)
             {

@@ -33,7 +33,7 @@ namespace VaccineFinder
             List<string> PinCodes = UserPreference.GetBeneficiaryIds(pinCodesString);
             DateTime date = DateTime.Now;
 
-            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoPickCenter, AppConfig.IncludePaidService, AppConfig.Vaccine, AppConfig.TelegramChatID)
+            UserDetails userDetails = new UserDetails(Phone, EmailIDs, PinCodes, AppConfig.MinAgeLimit, BeneficiaryIds, AppConfig.Dose, AppConfig.IsPrecautionDose, AppConfig.SlotPreference, AppConfig.PollingTime, AppConfig.AutoPickCenter, AppConfig.IncludePaidService, AppConfig.Vaccine, AppConfig.TelegramChatID)
             {
                 FirstName = AppConfig.FirstName,
                 LastName = AppConfig.LastName,
@@ -44,6 +44,7 @@ namespace VaccineFinder
             Console.WriteLine("Beneficiary Ids: " + beneficiaryIdsString);
             Console.WriteLine("Minimum Age Limit: " + userDetails.UserPreference.AgeCriteria + "+");
             Console.WriteLine("Dose: " + userDetails.UserPreference.Dose);
+            Console.WriteLine("Is Precaution Dose: " + userDetails.UserPreference.IsPrecautionDose);
             Console.WriteLine("Vaccine: " + userDetails.UserPreference.Vaccine);
             Console.WriteLine("Slot Preference: " + userDetails.UserPreference.SlotPreference);
             Console.WriteLine("Auto-Pick Center: " + userDetails.UserPreference.AutoPickCenter);

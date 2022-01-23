@@ -20,8 +20,10 @@ namespace VaccineFinder
     public class SlotBookingRequest
     {
         public int dose { get; set; }
+        public int center_id { get; set; }
         public string session_id { get; set; }
         public string slot { get; set; }
         public List<string> beneficiaries { get; set; }
+        public bool is_precaution { get; set; }
     }
 }

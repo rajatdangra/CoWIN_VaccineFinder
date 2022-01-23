@@ -10,13 +10,13 @@ namespace VaccineFinder
 {
     public class UserDetails
     {
-        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService, string vaccine, string telegramChatID)
+        public UserDetails(string phone, List<string> emailIds, List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, bool isPrecautionDose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService, string vaccine, string telegramChatID)
         {
             EmailIDs = new List<string>();
             EmailIDs.AddRange(emailIds);
             Phone = phone;
             TelegramChatID = telegramChatID;
-            UserPreference = new UserPreference(pinCodes, ageCriteria, beneficiaryIds, dose, slotPreference, pollingTime, autoPickCenter, includePaidService, vaccine);
+            UserPreference = new UserPreference(pinCodes, ageCriteria, beneficiaryIds, dose, isPrecautionDose, slotPreference, pollingTime, autoPickCenter, includePaidService, vaccine);
         }
         public UserPreference UserPreference { get; set; }
         public string FirstName { get; set; }
@@ -58,7 +58,7 @@ namespace VaccineFinder
 
     public class UserPreference
     {
-        public UserPreference(List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService, string vaccine)
+        public UserPreference(List<string> pinCodes, int ageCriteria, List<string> beneficiaryIds, int dose, bool isPrecautionDose, int slotPreference, int pollingTime, bool autoPickCenter, bool includePaidService, string vaccine)
         {
             BeneficiaryIds = new List<string>();
             BeneficiaryIds.AddRange(beneficiaryIds);
@@ -66,6 +66,7 @@ namespace VaccineFinder
             PinCodes.AddRange(pinCodes);
             AgeCriteria = ageCriteria;
             Dose = dose;
+            IsPrecautionDose = isPrecautionDose;
             SlotPreference = slotPreference;
             PollingTime = pollingTime;
             AutoPickCenter = autoPickCenter;
@@ -79,6 +80,7 @@ namespace VaccineFinder
         //public string District { get; set; }
         public int AgeCriteria { get; set; }
         public int Dose { get; set; }
+        public bool IsPrecautionDose { get; set; }
         public int SlotPreference { get; set; }
         public int PollingTime { get; set; }
         public bool AutoPickCenter { get; set; }
