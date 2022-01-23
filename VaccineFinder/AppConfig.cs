@@ -98,6 +98,7 @@ namespace VaccineFinder
                 appSettings.Add("UserDetails:UserPreference:PinCodes", defaultDetails.UserPreference.PinCodeString);
                 appSettings.Add("UserDetails:UserPreference:MinAgeLimit", Convert.ToString(defaultDetails.UserPreference.AgeCriteria));
                 appSettings.Add("UserDetails:UserPreference:Dose", Convert.ToString(defaultDetails.UserPreference.Dose));
+                appSettings.Add("UserDetails:UserPreference:IsPrecautionDose", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.IsPrecautionDose)));
                 appSettings.Add("UserDetails:UserPreference:AutoPickCenter", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.AutoPickCenter)));
                 appSettings.Add("UserDetails:UserPreference:IncludePaidService", Convert.ToString(Convert.ToInt32(defaultDetails.UserPreference.IncludePaidService)));
                 appSettings.Add("UserDetails:FirstName", defaultDetails.FirstName);

@@ -135,6 +135,14 @@ namespace VaccineFinder
                 }
                 if (finalConfirmation.ToLower() == "n")
                 {
+                    inputMessage = "Is Precaution Dose: Y/N ?";
+                    finalConfirmation = TakeConfirmation(inputMessage);
+                    userDetails.UserPreference.IsPrecautionDose = (finalConfirmation.ToLower() == "y");
+
+                    finalConfirmation = TakeConfirmation(finalConfirmationMessage);
+                }
+                if (finalConfirmation.ToLower() == "n")
+                {
                     updateConfirmationMessage = CreateCustomMessage("Phone Number");
                     updateConfirmation = TakeConfirmation(updateConfirmationMessage);
 
