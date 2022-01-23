@@ -489,6 +489,7 @@ namespace VaccineFinder
 
                                     if (currSession == null)
                                         currSession = new SessionProxy();
+                                    currSession.CenterID = center.center_id;
                                     currSession.SessionID = session.session_id;
                                     CultureInfo provider = CultureInfo.InvariantCulture;
                                     DateTime date = new DateTime();
@@ -595,15 +596,17 @@ namespace VaccineFinder
         {
             bool slotBooked = false;
             string sessionId = string.Empty;
+            int centerId = 0;
             string slot = string.Empty;
             DateTime date = default(DateTime);
             if (session != null)
             {
+                centerId = session.CenterID;
                 sessionId = session.SessionID;
                 slot = session.Slots[slotNumber - 1];
                 date = session.Date;
             }
-            string stInfo = string.Format("BookSlot Call Started for Date: {0}, Slot: {1}, Session Id: {2}.", date.ToString("dd-MM-yyyy"), slot, sessionId);
+            string stInfo = string.Format("BookSlot Call Started for Date: {0}, Slot: {1}, Center Id: {2}, Session Id: {3}.", date.ToString("dd-MM-yyyy"), slot, centerId, sessionId);
             logger.Info(stInfo);
             //Console.WriteLine(stInfo);
 
@@ -613,7 +616,7 @@ namespace VaccineFinder
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                response = APIs.BookSlot(UserDetails.UserPreference.BeneficiaryIds, sessionId, slot, UserDetails.UserPreference.Dose, date, UserDetails.Phone);
+                response = APIs.BookSlot(UserDetails.UserPreference.BeneficiaryIds, centerId, sessionId, slot, UserDetails.UserPreference.Dose, UserDetails.UserPreference.IsPrecautionDose, date, UserDetails.Phone);
 
                 if (response != null)
                 {

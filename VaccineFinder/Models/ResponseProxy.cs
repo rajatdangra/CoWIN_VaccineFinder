@@ -12,6 +12,7 @@ namespace VaccineFinder
         {
             Slots = new List<string>();
         }
+        public int CenterID { get; set; }
         public string SessionID { get; set; }
         public int AvailableCapacity { get; set; }
         public DateTime Date { get; set; }

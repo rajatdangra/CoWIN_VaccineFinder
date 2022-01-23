@@ -416,17 +416,17 @@ namespace VaccineFinder
         //    }
         //}
 
-        public static SlotBookingResponse BookSlot(List<string> beneficiaryIds, string sessionId, string slot, int dose, DateTime date, string phone)
+        public static SlotBookingResponse BookSlot(List<string> beneficiaryIds, int centerId, string sessionId, string slot, int dose, bool isPrecautionDose, DateTime date, string phone)
         {
             logger.Info("BookSlot API call started.");
-            string stInfo = string.Format("Trying to book Vaccination slot for Date: {0}, Slot: {1}, Session Id: {2}.", date.ToString("dd-MM-yyyy"), slot, sessionId);
+            string stInfo = string.Format("Trying to book Vaccination slot for Date: {0}, Slot: {1}, Center Id: {2}, Session Id: {3}.", date.ToString("dd-MM-yyyy"), slot, centerId, sessionId);
             Console.WriteLine("\n" + stInfo);
             logger.Info(stInfo);
             try
             {
                 SlotBookingResponse apiResponse = null;
 
-                var requestObj = new SlotBookingRequest() { dose = dose, beneficiaries = beneficiaryIds.ToList(), session_id = sessionId, slot = slot };
+                var requestObj = new SlotBookingRequest() { dose = dose, is_precaution = isPrecautionDose, beneficiaries = beneficiaryIds.ToList(), center_id = centerId, session_id = sessionId, slot = slot };
                 var serRequestObj = JsonConvert.SerializeObject(requestObj);
                 IRestResponse response = PostRequest(AppConfig.ScheduleAppointmentUrl, serRequestObj);
                 var responseString = response.Content;
@@ -471,7 +471,7 @@ namespace VaccineFinder
                 }
                 else
                 {
-                    stInfo = string.Format("Unable to book Vaccination slot for Date: {0}, Slot: {1}, Session Id: {2}.\nResponse Code: {3}, Response: {4}", date.ToString("dd-MM-yyyy"), slot, sessionId, response.StatusCode, responseString);
+                    stInfo = string.Format("Unable to book Vaccination slot for Date: {0}, Slot: {1}, Center Id: {2}, Session Id: {3}.\nResponse Code: {4}, Response: {5}", date.ToString("dd-MM-yyyy"), slot, centerId, sessionId, response.StatusCode, responseString);
                     logger.Info(stInfo);
                     ConsoleMethods.PrintProgress(stInfo);
                 }
