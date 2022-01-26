@@ -69,8 +69,12 @@ namespace VaccineFinder
         internal static string CalendarByPinUrl => Cowin_BaseUrl + Convert.ToString(ProtectedAPIToBeUsed ? _configuration["CoWinAPI:ProtectedAPI:CalendarByPinUrl"] : _configuration["CoWinAPI:PublicAPI:CalendarByPinUrl"]);
         internal static string CalendarByDistrictUrl => Cowin_BaseUrl + Convert.ToString(ProtectedAPIToBeUsed ? _configuration["CoWinAPI:ProtectedAPI:CalendarByDistrictUrl"] : _configuration["CoWinAPI:PublicAPI:CalendarByDistrictUrl"]);
         internal static string ScheduleAppointmentUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:ScheduleAppointmentUrl"]);
+        internal static string CancelAppointmentUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:CancelAppointmentUrl"]);
+        internal static string AppointmentSlipUrl => Cowin_BaseUrl + Convert.ToString(_configuration["CoWinAPI:ProtectedAPI:AppointmentSlipUrl"]);
         //internal static int OtpExpiryTimeLimit => Convert.ToInt32(_configuration["OtpExpiryTimeLimit"]);
         //internal static int TokenExpiryTimeLimit => Convert.ToInt32(_configuration["TokenExpiryTimeLimit"]);
+        internal static bool DownloadAppointmentSlip => String.Equals(_configuration["CoWinAPI:DownloadAppointmentSlip"], "1");
+        internal static bool CancelAppointmentSupport => String.Equals(_configuration["CoWinAPI:CancelAppointmentSupport"], "1");
         internal static bool IsThrottlingToBeUsed => String.Equals(_configuration["CoWinAPI:IsThrottlingToBeUsed"], "1");
         internal static int ThrottlingRefreshTime => Convert.ToInt32(_configuration["CoWinAPI:ThrottlingRefreshTime"]);
         internal static bool TryToBookOtherSlots => String.Equals(_configuration["CoWinAPI:TryToBookOtherSlots"], "1");

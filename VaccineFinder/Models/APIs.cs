@@ -490,6 +490,53 @@ namespace VaccineFinder
             }
         }
 
+        public static void DownloadAppointmentSlip(string appointmentConfirmationNumber, string phone)
+        {
+            string stInfo = string.Empty;
+            try
+            {
+                UriBuilder builder;
+                NameValueCollection queryString;
+                var fileName = "Co-WIN Appointment_No_" + appointmentConfirmationNumber + ".pdf";
+                builder = new UriBuilder(AppConfig.AppointmentSlipUrl);
+                queryString = HttpUtility.ParseQueryString(builder.Query);
+                queryString["appointment_id"] = appointmentConfirmationNumber;
+                builder.Query = queryString.ToString();
+
+                string endpoint = builder.ToString();
+
+                IRestResponse response = GetRequest(endpoint);
+                var responseString = response.Content;
+
+                if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                {
+                    File.WriteAllBytes(Path.Combine(Directory.GetCurrentDirectory(), fileName), response.RawBytes);
+                    stInfo = $"Appointment Slip Successfully Downloaded for Confirmation number: {appointmentConfirmationNumber}. Saved Path: {Path.Combine(Directory.GetCurrentDirectory(), fileName)}";
+                    logger.Info(stInfo);
+                    ConsoleMethods.PrintSuccess(stInfo);
+                }
+                else if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    stInfo = $"[WARNING] Session Expired : Regenerating Auth Token.";
+                    logger.Warn(stInfo);
+                    ConsoleMethods.PrintProgress(stInfo);
+                    new OTPAuthenticator().ValidateUser(phone);
+                }
+                else
+                {
+                    stInfo = $"Unable to Download Appointment Slip for Confirmation number: {appointmentConfirmationNumber}.\nResponse Code: {response.StatusDescription}, Response: {responseString}";
+                    logger.Info(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
+                }
+            }
+            catch (Exception e)
+            {
+                stInfo = $"Error while downloading Appointment Slip, please download from Co-WIN PORTAL! Details: {e}";
+                logger.Info(stInfo);
+                ConsoleMethods.PrintError(stInfo);
+            }
+        }
+
         private static void IPThrottledNotifier()
         {
             while (!isIPThrottled)

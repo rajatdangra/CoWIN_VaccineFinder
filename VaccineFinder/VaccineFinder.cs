@@ -25,6 +25,7 @@ namespace VaccineFinder
         }
         private UserDetails UserDetails;
         private DateTime Date;
+        private string appointmentConfirmationNumber;
 
         public void StartFindingVaccine()
         {
@@ -642,6 +643,19 @@ namespace VaccineFinder
                     sessionNumber++;
                 }
             }
+
+            if (slotBooked)
+            {
+                if (AppConfig.DownloadAppointmentSlip)
+                {
+                    var confirmationMessage = "Would you like to download Appointment Slip: Y/N ?";
+                    var confirmation = Program.TakeConfirmation(confirmationMessage);
+                    if (confirmation.ToLower() == "y")
+                    {
+                        APIs.DownloadAppointmentSlip(appointmentConfirmationNumber, UserDetails.Phone);
+                    }
+                }
+            }
         }
 
         public bool BookSlotWithSessionPref(List<SessionProxy> sessionIds, int sessionPreference, int slotPreference)
@@ -702,6 +716,8 @@ namespace VaccineFinder
                     var timeTakenToBook = ts.TotalSeconds;
 
                     slotBooked = true;
+
+                    appointmentConfirmationNumber = response.appointment_confirmation_no;
 
                     var bookingDetails = $"\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary IDs: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Is Precaution Dose: {UserDetails.UserPreference.IsPrecautionDose}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}";
                     var bookingDetailsCopy = string.Empty;
