@@ -122,46 +122,36 @@ namespace VaccineFinder
                             var benInput = Console.ReadLine();
                             UserDetails.UserPreference.BeneficiaryIds = UserPreference.GetBeneficiaryIds(benInput);
                         }
-                        string previousVaccine;
-                        if (!HaveSameDoseAndVaccine(response, out previousVaccine))
+                        Beneficiary beneficiary;
+                        if (!HaveSameDoseAndVaccine(response, out beneficiary))
                         {
-                            Console.WriteLine("\nPlease enter comma separated beneficiary Ids with Same 'Dose and Vaccine':");
+                            Console.WriteLine("\nPlease enter comma separated beneficiary Ids with Same 'Dose, Vaccine and Precaution Dose Eligibilty':");
+                            var benInput = Console.ReadLine();
+                            UserDetails.UserPreference.BeneficiaryIds = UserPreference.GetBeneficiaryIds(benInput);
+                        }
+                        else if (beneficiary.due_dose > 2 && !beneficiary.is_eligible_for_precaution)
+                        {
+                            stInfo = "Beneficiaries specified are Not Eligible for Precaution Dose";
+                            ConsoleMethods.PrintError(stInfo);
+                            Console.WriteLine("\nPlease enter comma separated beneficiary Ids with Same 'Dose, Vaccine and Precaution Dose Eligibilty':");
                             var benInput = Console.ReadLine();
                             UserDetails.UserPreference.BeneficiaryIds = UserPreference.GetBeneficiaryIds(benInput);
                         }
                         else
                         {
-                            if (!string.IsNullOrEmpty(previousVaccine)) //Scenario for Dose > 1
+                            if (beneficiary.due_dose > 1)
                             {
-                                stInfo = "Checking if vaccine specified is same";
-                                ConsoleMethods.PrintProgress(stInfo);
-                                logger.Info(stInfo);
-                                if (previousVaccine.ToUpper().Equals(UserDetails.UserPreference.Vaccine.ToUpper()))
-                                {
-                                    stInfo = "Vaccine specified is same as previous vaccine";
-                                    ConsoleMethods.PrintSuccess(stInfo);
-                                    logger.Info(stInfo);
-                                }
-                                else
-                                {
-                                    stInfo = $"Vaccine specified: {UserDetails.UserPreference.Vaccine.ToUpper()}, is not same as Previous Vaccine: {previousVaccine}";
-                                    ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkYellow);
-                                    logger.Info(stInfo);
-                                    stInfo = $"Updating Vaccine: {previousVaccine}";
-                                    ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkCyan);
-                                    logger.Info(stInfo);
-                                    UserDetails.UserPreference.Vaccine = previousVaccine;
-                                    updateRequired = true;
-                                }
-                                //update this code
-                                if (!IsDoseSpecifiedValid(dose: 2))
+                                if (!IsVaccineSpecifiedValid(vaccine: beneficiary.vaccine))
                                     updateRequired = true;
                             }
-                            else //Scenario for Dose:1
-                            {
-                                if (!IsDoseSpecifiedValid(dose: 1))
-                                    updateRequired = true;
-                            }
+
+                            int doseNumber = beneficiary.due_dose - (beneficiary.is_eligible_for_precaution ? 2 : 0);
+                            if (!IsDoseSpecifiedValid(dose: doseNumber))
+                                updateRequired = true;
+
+                            if (!IsPrecautionDoseSpecifiedValid(isPrecautionDose: beneficiary.is_eligible_for_precaution))
+                                updateRequired = true;
+
                             break;
                         }
                     }
@@ -206,7 +196,7 @@ namespace VaccineFinder
                     var benDetails = response.beneficiaries.FirstOrDefault(a => a.beneficiary_reference_id == benId);
                     if (benDetails != null)
                     {
-                        stInfo = $"Beneficiary Id {benId} is valid, User Name: {benDetails.name}, Status: {benDetails.vaccination_status}, Vaccine: {benDetails.vaccine}";
+                        stInfo = $"Beneficiary Id {benId} is valid, User Name: {benDetails.name}, Status: {benDetails.vaccination_status}, Vaccine: {benDetails.vaccine}, Due Dose: {benDetails.due_dose}, Is Eligible for Precaution: {benDetails.is_eligible_for_precaution}";
                         ConsoleMethods.PrintInfo(stInfo, color: ConsoleColor.DarkCyan);
                         logger.Info(stInfo);
                     }
@@ -226,15 +216,17 @@ namespace VaccineFinder
             return areBeneficiariesVerified;
         }
 
-        public bool HaveSameDoseAndVaccine(GetBeneficiariesResponse response, out string previousVaccineName)
+        public bool HaveSameDoseAndVaccine(GetBeneficiariesResponse response, out Beneficiary beneficiary)
         {
-            previousVaccineName = string.Empty;
-            bool areDoseAndVaccineVerified = false;
+            beneficiary = new Beneficiary();
+            bool areDoseAndVaccineVerified = true;
             string stInfo = "Verifying if beneficiaries have same(valid) Dose and Vaccine";
             Console.WriteLine("\n" + stInfo);
             logger.Info(stInfo);
 
-            List<string> previousVaccines = response.beneficiaries.Where(a => UserDetails.UserPreference.BeneficiaryIds.Contains(a.beneficiary_reference_id)).Select(a => a.vaccine).ToList();
+            var beneficiaries = response.beneficiaries.Where(a => UserDetails.UserPreference.BeneficiaryIds.Contains(a.beneficiary_reference_id));
+
+            var previousVaccines = beneficiaries.Select(a => a.vaccine);
             if (previousVaccines.Distinct().Count() > 1)
             {
                 areDoseAndVaccineVerified = false;
@@ -242,19 +234,70 @@ namespace VaccineFinder
                 ConsoleMethods.PrintError(stInfo);
                 logger.Info(stInfo);
             }
-            else
+
+            var dueDoses = beneficiaries.Select(a => a.due_dose);
+            if (dueDoses.Distinct().Count() > 1)
             {
-                previousVaccineName = previousVaccines.First();
-                areDoseAndVaccineVerified = true;
-                if (!string.IsNullOrWhiteSpace(previousVaccineName))
-                {
-                    stInfo = $"Vaccine: {string.Join(", ", previousVaccines.Distinct())}";
-                    ConsoleMethods.PrintProgress(stInfo);
-                    logger.Info(stInfo);
-                }
+                areDoseAndVaccineVerified = false;
+                stInfo = $"Multiple Due Doses found: {string.Join(", ", dueDoses.Distinct())}";
+                ConsoleMethods.PrintError(stInfo);
+                logger.Info(stInfo);
+            }
+
+            var precautionDoseEligibility = beneficiaries.Select(a => a.is_eligible_for_precaution);
+            if (precautionDoseEligibility.Distinct().Count() > 1)
+            {
+                areDoseAndVaccineVerified = false;
+                stInfo = $"Multiple Precaution Dose Eligibility found: {string.Join(", ", precautionDoseEligibility.Distinct())}";
+                ConsoleMethods.PrintError(stInfo);
+                logger.Info(stInfo);
+            }
+
+            if (areDoseAndVaccineVerified)
+            {
+                beneficiary.vaccine = previousVaccines.First();
+                beneficiary.due_dose = dueDoses.First();
+                beneficiary.is_eligible_for_precaution = precautionDoseEligibility.First();
+
+                stInfo = string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(beneficiary.vaccine))
+                    stInfo += $"Vaccine: {beneficiary.vaccine}, ";
+
+                stInfo += $"Due Dose: {dueDoses.First()}, Precaution Eligible: {precautionDoseEligibility.First()}";
+                ConsoleMethods.PrintProgress(stInfo);
+                logger.Info(stInfo);
             }
 
             return areDoseAndVaccineVerified;
+        }
+
+        public bool IsVaccineSpecifiedValid(string vaccine)
+        {
+            bool isVaccineSpecifiedValid = false;
+            string stInfo = "Checking if vaccine specified is same";
+            ConsoleMethods.PrintProgress(stInfo);
+            logger.Info(stInfo);
+            if (vaccine.ToUpper().Equals(UserDetails.UserPreference.Vaccine.ToUpper()))
+            {
+                isVaccineSpecifiedValid = true;
+                stInfo = "Vaccine specified is same as previous vaccine";
+                ConsoleMethods.PrintSuccess(stInfo);
+                logger.Info(stInfo);
+            }
+            else
+            {
+                isVaccineSpecifiedValid = false;
+                stInfo = $"Vaccine specified: {UserDetails.UserPreference.Vaccine.ToUpper()}, is not same as Previous Vaccine: {vaccine}";
+                ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkYellow);
+                logger.Info(stInfo);
+
+                stInfo = $"Updating Vaccine: {vaccine}";
+                ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkCyan);
+                logger.Info(stInfo);
+                UserDetails.UserPreference.Vaccine = vaccine;
+            }
+            return isVaccineSpecifiedValid;
         }
 
         public bool IsDoseSpecifiedValid(int dose)
@@ -283,6 +326,34 @@ namespace VaccineFinder
                 UserDetails.UserPreference.Dose = dose;
             }
             return isDoseSpecifiedValid;
+        }
+
+        public bool IsPrecautionDoseSpecifiedValid(bool isPrecautionDose)
+        {
+            bool isPrecautionDoseSpecifiedValid = false;
+            string stInfo = "Checking if Precaution Dose specified is valid";
+            ConsoleMethods.PrintProgress(stInfo);
+            logger.Info(stInfo);
+            if (UserDetails.UserPreference.IsPrecautionDose == isPrecautionDose)
+            {
+                isPrecautionDoseSpecifiedValid = true;
+                stInfo = $"IsPrecautionDose specified {UserDetails.UserPreference.IsPrecautionDose} is valid";
+                ConsoleMethods.PrintSuccess(stInfo);
+                logger.Info(stInfo);
+            }
+            else
+            {
+                isPrecautionDoseSpecifiedValid = false;
+                stInfo = $"IsPrecautionDose specified {UserDetails.UserPreference.IsPrecautionDose} is invalid";
+                ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkYellow);
+                logger.Info(stInfo);
+
+                stInfo = $"Updating IsPrecautionDose: {isPrecautionDose}";
+                ConsoleMethods.PrintInfo(stInfo, ConsoleColor.DarkCyan);
+                logger.Info(stInfo);
+                UserDetails.UserPreference.IsPrecautionDose = isPrecautionDose;
+            }
+            return isPrecautionDoseSpecifiedValid;
         }
 
         public List<SessionProxy> CheckVaccineAvailabilityStatus()
@@ -451,6 +522,8 @@ namespace VaccineFinder
 
                 int counter = 0;
                 counter += foundedCount;
+
+                //update
                 bool isVaccineDose1 = UserDetails.UserPreference.Dose == 1;
 
                 //var allSessions = response.centers.SelectMany(a => a.sessions).Where(x => (isVaccineDose1 ? x.available_capacity_dose1 > 0 : x.available_capacity_dose2 > 0) && x.min_age_limit <= UserDetails.UserPreference.AgeCriteria);

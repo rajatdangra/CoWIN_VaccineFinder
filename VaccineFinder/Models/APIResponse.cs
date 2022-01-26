@@ -23,8 +23,26 @@ namespace VaccineFinder
         public List<Beneficiary> beneficiaries { get; set; }
     }
 
+    public class Appointment
+    {
+        public string appointment_id { get; set; }
+        public int center_id { get; set; }
+        public string name { get; set; }
+        public string state_name { get; set; }
+        public string district_name { get; set; }
+        public string block_name { get; set; }
+        public string from { get; set; }
+        public string to { get; set; }
+        public int dose { get; set; }
+        public string session_id { get; set; }
+        public string date { get; set; }
+        public string slot { get; set; }
+        public string is_precaution { get; set; }
+    }
+
     public class Beneficiary
     {
+        public string member_type { get; set; }
         public string beneficiary_reference_id { get; set; }
         public string name { get; set; }
         public string birth_year { get; set; }
@@ -35,10 +53,19 @@ namespace VaccineFinder
         public string comorbidity_ind { get; set; }
         public string vaccination_status { get; set; }
         public string vaccine { get; set; }
+        public int referral_count { get; set; }
+        public string is_referral_member { get; set; }
+        public string precaution_dose_one_date { get; set; }
+        public int precaution_dose { get; set; }
+        public string certificate_updated { get; set; }
+        public bool is_eligible_for_precaution { get; set; }
+        public int due_dose { get; set; }
         public string dose1_date { get; set; }
         public string dose2_date { get; set; }
-        public List<object> appointments { get; set; }
-        
+        public string next_vaccination_date { get; set; }
+        public string last_date { get; set; }
+        public List<Appointment> appointments { get; set; }
+
         public string Description
         {
             get
@@ -77,10 +104,13 @@ namespace VaccineFinder
         public string date { get; set; }
         public int available_capacity { get; set; }
         public int min_age_limit { get; set; }
+        public bool allow_all_age { get; set; }
         public string vaccine { get; set; }
         public List<string> slots { get; set; }
         public int available_capacity_dose1 { get; set; }
         public int available_capacity_dose2 { get; set; }
+        public int precaution_dose { get; set; }
+        public int precaution_online_dose_one_available { get; set; }
     }
 
     public class SlotBookingResponse
