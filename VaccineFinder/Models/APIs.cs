@@ -551,7 +551,7 @@ namespace VaccineFinder
                 logger.Info("Response from CancelAppointment API: " + responseString);
                 if (response.IsSuccessful && (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.NoContent))
                 {
-                    stInfo = "Cancelled Appointment Successfully";
+                    stInfo = "Cancelled Appointment Successfully!";
                     logger.Info(stInfo);
                     ConsoleMethods.PrintSuccess(stInfo);
                 }

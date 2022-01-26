@@ -84,9 +84,10 @@ namespace VaccineFinder.Models
                 else
                     builder.TextBody = message;
 
-                foreach (var file in Files)
+                foreach (var fileName in Files)
                 {
-                    builder.Attachments.Add(file);
+                    if (File.Exists(fileName))
+                        builder.Attachments.Add(fileName);
                 }
 
                 mailMessage.Body = builder.ToMessageBody();

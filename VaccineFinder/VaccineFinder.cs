@@ -733,7 +733,6 @@ namespace VaccineFinder
                     Thread soundThread = new Thread(() => Sound.PlayAsterisk(1));
                     soundThread.Start();
 
-
                     var fileName = "Co-WIN Appointment_No_" + appointmentConfirmationNumber + ".pdf";
                     var path = Path.Combine(Directory.GetCurrentDirectory(), fileName);
 
