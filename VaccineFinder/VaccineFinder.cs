@@ -554,7 +554,7 @@ namespace VaccineFinder
                                 {
                                     vaccineSlotFound = true;
                                     counter++;
-                                    var details = $"{counter}) Date: {session.date}, Name: {center.name}, Pin Code: {pinCode}, Vaccine: {session.vaccine}, Min Age: {session.min_age_limit}, Available Capacity Dose1: {session.available_capacity_dose1}, Available Capacity Dose2: {session.available_capacity_dose2}, Address: {center.address}";
+                                    var details = $"{counter}) Date: {session.date}, Name: {center.name}, Pin Code: {pinCode}, Vaccine: {session.vaccine}, Min Age: {session.min_age_limit}, Available Capacity Dose1: {session.available_capacity_dose1}, Available Capacity Dose2: {session.available_capacity_dose2}, Available Capacity Precaution Dose1: {session.precaution_online_dose_one_available}, Address: {center.address}";
                                     slots.AppendLine(details);
                                     logger.Info(details);
 
@@ -703,7 +703,7 @@ namespace VaccineFinder
 
                     slotBooked = true;
 
-                    var bookingDetails = $"\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary IDs: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}";
+                    var bookingDetails = $"\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary IDs: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Is Precaution Dose: {UserDetails.UserPreference.IsPrecautionDose}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}";
                     var bookingDetailsCopy = string.Empty;
 
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + response.appointment_confirmation_no;
