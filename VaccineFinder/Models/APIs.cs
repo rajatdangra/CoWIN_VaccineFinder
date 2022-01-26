@@ -490,14 +490,13 @@ namespace VaccineFinder
             }
         }
 
-        public static void DownloadAppointmentSlip(string appointmentConfirmationNumber, string phone)
+        public static void DownloadAppointmentSlip(string appointmentConfirmationNumber, string path, string phone)
         {
             string stInfo = string.Empty;
             try
             {
                 UriBuilder builder;
                 NameValueCollection queryString;
-                var fileName = "Co-WIN Appointment_No_" + appointmentConfirmationNumber + ".pdf";
                 builder = new UriBuilder(AppConfig.AppointmentSlipUrl);
                 queryString = HttpUtility.ParseQueryString(builder.Query);
                 queryString["appointment_id"] = appointmentConfirmationNumber;
@@ -510,8 +509,8 @@ namespace VaccineFinder
 
                 if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
                 {
-                    File.WriteAllBytes(Path.Combine(Directory.GetCurrentDirectory(), fileName), response.RawBytes);
-                    stInfo = $"Appointment Slip Successfully Downloaded for Confirmation number: {appointmentConfirmationNumber}.\nSaved Path: {Path.Combine(Directory.GetCurrentDirectory(), fileName)}";
+                    File.WriteAllBytes(path, response.RawBytes);
+                    stInfo = $"Appointment Slip Successfully Downloaded for Confirmation number: {appointmentConfirmationNumber}.\nSaved Path: {path}";
                     logger.Info(stInfo);
                     ConsoleMethods.PrintSuccess(stInfo);
                 }

@@ -3,6 +3,7 @@ using MimeKit;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,17 +21,19 @@ namespace VaccineFinder.Models
         private static string FromName = "Vaccine Finder";
         private static string Password = PrivateData.MailPass;
 
-        public EmailNotifier(string subject, string mailIdsTo, string fullNameTo, bool isHTMLBody = false)
+        public EmailNotifier(string subject, string mailIdsTo, string fullNameTo, List<string> files = null, bool isHTMLBody = false)
         {
             Subject = subject;
             MailIdsTo = mailIdsTo;
             FullNameTo = fullNameTo;
             IsHTMLBody = isHTMLBody;
+            Files = files ?? new List<string>();
         }
         public string Subject { get; set; }
         public string MailIdsTo { get; set; }
         public string FullNameTo { get; set; }
         public bool IsHTMLBody { get; set; }
+        public List<string> Files { get; set; }
 
         public void Notify(string message)
         {
@@ -48,10 +51,45 @@ namespace VaccineFinder.Models
                 mailMessage.Bcc.Add(new MailboxAddress(DeveloperName, FromEmail));
 
                 mailMessage.Subject = Subject;
-                mailMessage.Body = new TextPart(!IsHTMLBody ? "plain" : "html")
+
+                #region different method for attachment
+                //var body = new TextPart(!IsHTMLBody ? "plain" : "html")
+                //{
+                //    Text = message
+                //};
+                //mailMessage.Body = body;
+
+                //// create an image attachment for the file located at path
+                //var attachment = new MimePart("image", "gif")
+                //{
+                //    Content = new MimeContent(File.OpenRead(path)),
+                //    ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                //    ContentTransferEncoding = ContentEncoding.Base64,
+                //    FileName = Path.GetFileName(path)
+                //};
+
+                //// now create the multipart/mixed container to hold the message text and the
+                //// image attachment
+                //var multipart = new Multipart("mixed");
+                //multipart.Add(body);
+                //multipart.Add(attachment);
+
+                //// now set the multipart/mixed as the message body
+                //message.Body = multipart;
+                #endregion
+
+                var builder = new BodyBuilder();
+                if (IsHTMLBody)
+                    builder.HtmlBody = message;
+                else
+                    builder.TextBody = message;
+
+                foreach (var file in Files)
                 {
-                    Text = message
-                };
+                    builder.Attachments.Add(file);
+                }
+
+                mailMessage.Body = builder.ToMessageBody();
 
                 using (var smtpClient = new SmtpClient())
                 {

@@ -646,15 +646,6 @@ namespace VaccineFinder
 
             if (slotBooked)
             {
-                if (AppConfig.DownloadAppointmentSlip)
-                {
-                    var confirmationMessage = "Would you like to download Appointment Slip: Y/N ?";
-                    var confirmation = Program.TakeConfirmation(confirmationMessage);
-                    if (confirmation.ToLower() == "y")
-                    {
-                        APIs.DownloadAppointmentSlip(appointmentConfirmationNumber, UserDetails.Phone);
-                    }
-                }
                 if (AppConfig.CancelAppointmentSupport)
                 {
                     var confirmationMessage = "Would you like to cancel the Appointment: Y/N ?";
@@ -742,6 +733,20 @@ namespace VaccineFinder
                     Thread soundThread = new Thread(() => Sound.PlayAsterisk(1));
                     soundThread.Start();
 
+
+                    var fileName = "Co-WIN Appointment_No_" + appointmentConfirmationNumber + ".pdf";
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), fileName);
+
+                    if (AppConfig.DownloadAppointmentSlip)
+                    {
+                        var confirmationMessage = "Would you like to download the Appointment Slip: Y/N ?";
+                        var confirmation = Program.TakeConfirmation(confirmationMessage);
+                        if (confirmation.ToLower() == "y")
+                        {
+                            APIs.DownloadAppointmentSlip(appointmentConfirmationNumber, path, UserDetails.Phone);
+                        }
+                    }
+
                     if (AppConfig.SendEmail)
                     {
                         bookingDetailsCopy = bookingDetails;
@@ -762,7 +767,11 @@ namespace VaccineFinder
                             mailBody = bookingDetailsCopy;
                         }
 
-                        INotifier iNotifier = new EmailNotifier(AppConfig.Booking_MailSubject, UserDetails.EmailIdsString, UserDetails.FullName, isHTMLBody: true);
+                        var files = new List<string>();
+                        if (AppConfig.SendAttachment)
+                            files.Add(path);
+
+                        INotifier iNotifier = new EmailNotifier(AppConfig.Booking_MailSubject, UserDetails.EmailIdsString, UserDetails.FullName, files: files, isHTMLBody: true);
                         NotifierFactory notifier = new NotifierFactory(iNotifier);
                         Thread notifierThread = new Thread(() => notifier.Notify(mailBody));
                         notifierThread.Start();

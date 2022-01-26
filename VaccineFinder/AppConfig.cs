@@ -56,6 +56,7 @@ namespace VaccineFinder
         internal static bool SendEmail => String.Equals(_configuration["MailSettings:SendEmail"], "1");
         internal static string Availablity_MailSubject => Convert.ToString(_configuration["MailSettings:Availablity_MailSubject"]);
         internal static string Booking_MailSubject => Convert.ToString(_configuration["MailSettings:Booking_MailSubject"]);
+        internal static bool SendAttachment => String.Equals(_configuration["MailSettings:SendAttachment"], "1");
         #endregion
 
         #region Co-WIN APIs
