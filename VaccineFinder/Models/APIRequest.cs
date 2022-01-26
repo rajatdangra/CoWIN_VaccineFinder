@@ -26,4 +26,10 @@ namespace VaccineFinder
         public List<string> beneficiaries { get; set; }
         public bool is_precaution { get; set; }
     }
+
+    public class CancelAppointmentRequest
+    {
+        public string appointment_id { get; set; }
+        public List<string> beneficiariesToCancel { get; set; }
+    }
 }

@@ -655,6 +655,15 @@ namespace VaccineFinder
                         APIs.DownloadAppointmentSlip(appointmentConfirmationNumber, UserDetails.Phone);
                     }
                 }
+                if (AppConfig.CancelAppointmentSupport)
+                {
+                    var confirmationMessage = "Would you like to cancel the Appointment: Y/N ?";
+                    var confirmation = Program.TakeConfirmation(confirmationMessage);
+                    if (confirmation.ToLower() == "y")
+                    {
+                        APIs.CancelAppointment(appointmentConfirmationNumber, UserDetails.UserPreference.BeneficiaryIds);
+                    }
+                }
             }
         }
 

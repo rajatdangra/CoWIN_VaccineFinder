@@ -537,6 +537,44 @@ namespace VaccineFinder
             }
         }
 
+        public static void CancelAppointment(string appointmentConfirmationNumber, List<string> beneficiaryIds)
+        {
+            string stInfo = string.Empty;
+            logger.Info("CancelAppointment API call started.");
+            try
+            {
+                var requestObj = new CancelAppointmentRequest() { appointment_id = appointmentConfirmationNumber, beneficiariesToCancel = beneficiaryIds.ToList()};
+                var serRequestObj = JsonConvert.SerializeObject(requestObj);
+
+                IRestResponse response = PostRequest(AppConfig.CancelAppointmentUrl, serRequestObj);
+                var responseString = response.Content;
+                //Console.WriteLine(responseString);
+                logger.Info("Response from CancelAppointment API: " + responseString);
+                if (response.IsSuccessful && (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.NoContent))
+                {
+                    stInfo = "Cancelled Appointment Successfully";
+                    logger.Info(stInfo);
+                    ConsoleMethods.PrintSuccess(stInfo);
+                }
+                else
+                {
+                    stInfo = "Unable to Cancel Appointment";
+                    logger.Info(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                stInfo = "Error in CancelAppointment:\n" + ex;
+                ConsoleMethods.PrintError("Please check your Internet Connection\n" + stInfo);
+                logger.Error(stInfo);
+            }
+            finally
+            {
+                logger.Info("CancelAppointment API call end.");
+            }
+        }
+
         private static void IPThrottledNotifier()
         {
             while (!isIPThrottled)
