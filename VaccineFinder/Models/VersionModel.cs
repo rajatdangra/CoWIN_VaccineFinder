@@ -24,6 +24,7 @@ namespace VaccineFinder.Models
         [JsonProperty("body")]
         public string Body { get; set; }
 
+        public bool RepositoryNotFound { get; set; }
     }
 
     public partial class Asset

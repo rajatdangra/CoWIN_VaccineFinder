@@ -22,8 +22,12 @@ namespace VaccineFinder.Models
             string stInfo = "EvaluateCurrentSoftwareVersion call Started.";
             logger.Info(stInfo);
             var latestVersionDto = GetLatestVersionDetails();
-            // Allow App to Run if there is any issue in fetching the Relases info from Github for Update Checking so that Core functionality doesn't stop
-            if (latestVersionDto is null)
+
+            if (latestVersionDto is null) //internet issue, don't allow app to run - get more control over the use of App.
+            {
+                allowToRunApp = false;
+            }
+            else if (latestVersionDto.RepositoryNotFound)// Allow App to Run if there is any issue in fetching the Releases info from Github (due to private Repository) for Update Checking so that Core functionality doesn't stop
             {
                 allowToRunApp = true;
             }

@@ -542,7 +542,7 @@ namespace VaccineFinder
             logger.Info("CancelAppointment API call started.");
             try
             {
-                var requestObj = new CancelAppointmentRequest() { appointment_id = appointmentConfirmationNumber, beneficiariesToCancel = beneficiaryIds.ToList()};
+                var requestObj = new CancelAppointmentRequest() { appointment_id = appointmentConfirmationNumber, beneficiariesToCancel = beneficiaryIds.ToList() };
                 var serRequestObj = JsonConvert.SerializeObject(requestObj);
 
                 IRestResponse response = PostRequest(AppConfig.CancelAppointmentUrl, serRequestObj);
@@ -602,6 +602,14 @@ namespace VaccineFinder
                     stInfo = "Version fetched Successfully!";
                     logger.Info(stInfo);
                     ConsoleMethods.PrintSuccess(stInfo);
+                }
+                else if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    apiResponse = new VersionModel();
+                    apiResponse.RepositoryNotFound = true;
+                    stInfo = $"Unable to Fetch Latest Version - Repository not found.\nResponse Code: {response.StatusCode}, Response: {responseString}";
+                    logger.Info(stInfo);
+                    ConsoleMethods.PrintError(stInfo);
                 }
                 else
                 {

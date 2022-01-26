@@ -65,7 +65,7 @@ _In **appsettings.json**_: (Highly Recommended not to update these settings)
 	 - case a) If AutoBookCenter is False ("0"), get preferred center input (number) from user, and only try to book slots of specific center. 
 	 - case b) If AutoBookCenter is True ("1"), it will sort available centers based on Pin-Code preference, then sort by availability. Then tries to book slot, it will hit all the centers until slot is successfully booked.
    - Try to Book Slot, with Slot preference. If booking fails, it tries to book other slots (depending on _TryToBookOtherSlots_ setting in appsettings.json) whichever is available.
-   - Sends Confirmation Notification over E-Mail (on defined Email Ids), and Telegram.
+   - Sends Confirmation Notification and Appointment Slip over E-Mail (on defined Email Ids), and Telegram.
 8. Download Appointment Slip - User is prompted to Download or Ignore Appointment Slip.
 9. Cancel Appointment - User is prompted to Cancel the Appointment (instantly cancel in case of any mistake).
 10. Automatically close in 30 seconds (depends on _AutomaticCloseProgramWaitTime_ setting in appsettings.json).
