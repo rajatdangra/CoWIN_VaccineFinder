@@ -26,15 +26,16 @@ _Mandatory_:
 2. Pin-Codes : Search is based on Priority order defined (first come basis). Format - Comma separated (eg. 100001, 100002).
 3. Beneficiary IDs: IDs found in Co-Win app against individual user. Don't worry, we will fetch everthing for you. Format - Comma separated (eg. 123456789, 789101134).
 4. Dose (eg. 1 or 2).
-5. Vaccine (eg. ANY, COVISHIELD, COVAXIN, SPUTNIK V).
-6. Email Ids: Email ids where mail will be sent in case of slots availability. Format - Comma separated (eg. abc@gmail.com, def@gmail.com).
-7. Minimum Age Limit: 18 or 45.
-8. Slot Preference: (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM).
-9. From Date: Date from which vaccination slots will be searched (for 7 days). Format - "dd-MM-yyyy" (eg. 31-03-2021).
-10. Retry Frequency (in Seconds): Frequency at which retry call should happen (in case of no slots found), (eg. 10). Value less than 3 Seconds is not recommended due to rate limiting imposed by the Government.
-11. AutoPickCenter - If True ("1"), it auto picks center with the combination of 'Pin-code priority and the center with most available slots'. If false, it asks user to input preferred center.
-12. IncludePaidService - If True ("1"), it will also include centers with as 'Paid' Service (Fee Type). If false, it will only pick centers with 'Free' service.
-13. Telegram Chat ID: Chat ID with @Covid19VaccineSlotFinderBot, will not send Notification if this field is left Empty in appsettings.json. You can Get your Chat ID by Pinging @Covid19VaccineSlotFinderBot, and then we can update this on the fly based on UserName.
+5. Is Precaution Dose.
+6. Vaccine (eg. ANY, COVISHIELD, COVAXIN, SPUTNIK V).
+7. Email Ids: Email ids where mail will be sent in case of slots availability. Format - Comma separated (eg. abc@gmail.com, def@gmail.com).
+8. Minimum Age Limit: 18 or 45.
+9. Slot Preference: (1=> 09:00AM-11:00AM, 2=> 11:00AM-01:00PM, 3=> 01:00PM-03:00PM, 4=> After 03:00PM).
+10. From Date: Date from which vaccination slots will be searched (for 7 days). Format - "dd-MM-yyyy" (eg. 31-03-2021).
+11. Retry Frequency (in Seconds): Frequency at which retry call should happen (in case of no slots found), (eg. 10). Value less than 3 Seconds is not recommended due to rate limiting imposed by the Government.
+12. AutoPickCenter - If True ("1"), it auto picks center with the combination of 'Pin-code priority and the center with most available slots'. If false, it asks user to input preferred center.
+13. IncludePaidService - If True ("1"), it will also include centers with as 'Paid' Service (Fee Type). If false, it will only pick centers with 'Free' service.
+14. Telegram Chat ID: Chat ID with @Covid19VaccineSlotFinderBot, will not send Notification if this field is left Empty in appsettings.json. You can Get your Chat ID by Pinging @Covid19VaccineSlotFinderBot, and then we can update this on the fly based on UserName.
 
 _Optional_:
 1. First Name - will be used in E-Mail.
@@ -46,6 +47,8 @@ _In **appsettings.json**_: (Highly Recommended not to update these settings)
 3. SendNotification - True or False to enable/disable Telegram Notifications.
 4. AutomaticCloseProgramWaitTime (in Seconds)- At the point of termination, program will wait for seconds before closing Automatically.
 5. TryToBookOtherSlots - True or False. Try to Book Slots other than Slot Preference specified in UserPreference if enabled ("1"), By default disabled ("0") as we think availability is for the entire day, it is not segregated in individual slots.
+6. DownloadAppointmentSlip - True or False. Support to Download Appointment Slip.
+7. CancelAppointmentSupport - True or False. Support to Cancel Appointment.
 
 ### <ins>***Process***</ins>:
 
@@ -63,7 +66,9 @@ _In **appsettings.json**_: (Highly Recommended not to update these settings)
 	 - case b) If AutoBookCenter is True ("1"), it will sort available centers based on Pin-Code preference, then sort by availability. Then tries to book slot, it will hit all the centers until slot is successfully booked.
    - Try to Book Slot, with Slot preference. If booking fails, it tries to book other slots (depending on _TryToBookOtherSlots_ setting in appsettings.json) whichever is available.
    - Sends Confirmation Notification over E-Mail (on defined Email Ids), and Telegram.
-8. Automatically close in 30 seconds (depends on _AutomaticCloseProgramWaitTime_ setting in appsettings.json).
+8. Download Appointment Slip - User is prompted to Download or Ignore Appointment Slip.
+9. Cancel Appointment - User is prompted to Cancel the Appointment (instantly cancel in case of any mistake).
+10. Automatically close in 30 seconds (depends on _AutomaticCloseProgramWaitTime_ setting in appsettings.json).
 
 [Click Here To Watch The Demo](https://www.youtube.com/watch?v=z_5E703sMKY)
 
@@ -72,7 +77,9 @@ _In **appsettings.json**_: (Highly Recommended not to update these settings)
 Following are some of the main features of the App:
 - [x] Extremely User Friendly Settings: All the preferences can be Customized. User can Control Everthing.
 - [x] One Time Setup: User Preferences will be saved in Settings, so need not to set ever again. Just input the OTP and you are good to go anytime.
-- [x] Intelligent App: The App can VALIDATE beneficiaries, IDENTIFY invalid inputs (like beneficiaries combination, Dose, Vaccine etc.), Automatically UPDATES valid values and SAVE Settings.
+- [x] Intelligent App: The App can VALIDATE beneficiaries, IDENTIFY invalid inputs (like beneficiaries combination, Dose, Vaccine, Precaution Dose etc.), Automatically UPDATES valid values and SAVE Settings.
+- [x] Support to Download Appointment Slip on Successful Booking of Slot.
+- [x] Option to Cancel Appointment instantly.
 - [x] BEEP Notifier for user, in case of any important event - OTP, Availability, Booking, Session Timeout, IP Blocked.
 - [x] Auto-Regenerate OTP in case of Session Timeout, IP Blocked.
 - [x] Integration of Notification Engine with Telegram Bot.

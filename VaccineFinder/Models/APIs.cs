@@ -511,7 +511,7 @@ namespace VaccineFinder
                 if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
                 {
                     File.WriteAllBytes(Path.Combine(Directory.GetCurrentDirectory(), fileName), response.RawBytes);
-                    stInfo = $"Appointment Slip Successfully Downloaded for Confirmation number: {appointmentConfirmationNumber}. Saved Path: {Path.Combine(Directory.GetCurrentDirectory(), fileName)}";
+                    stInfo = $"Appointment Slip Successfully Downloaded for Confirmation number: {appointmentConfirmationNumber}.\nSaved Path: {Path.Combine(Directory.GetCurrentDirectory(), fileName)}";
                     logger.Info(stInfo);
                     ConsoleMethods.PrintSuccess(stInfo);
                 }
