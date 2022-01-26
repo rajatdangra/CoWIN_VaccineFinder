@@ -525,6 +525,7 @@ namespace VaccineFinder
 
                 //update
                 bool isVaccineDose1 = UserDetails.UserPreference.Dose == 1;
+                bool isPrecautionDose = UserDetails.UserPreference.IsPrecautionDose;
 
                 //var allSessions = response.centers.SelectMany(a => a.sessions).Where(x => (isVaccineDose1 ? x.available_capacity_dose1 > 0 : x.available_capacity_dose2 > 0) && x.min_age_limit <= UserDetails.UserPreference.AgeCriteria);
                 ////Sort based on Nearest date and More Available Capacity
@@ -542,10 +543,10 @@ namespace VaccineFinder
                     {
                         if (session.available_capacity > 0 && session.min_age_limit <= UserDetails.UserPreference.AgeCriteria)
                         {
-                            int chosenDoseAvailability = (isVaccineDose1 ? session.available_capacity_dose1 : session.available_capacity_dose2);
+                            int chosenDoseAvailability = (!isPrecautionDose ? (isVaccineDose1 ? session.available_capacity_dose1 : session.available_capacity_dose2) : session.precaution_online_dose_one_available);
                             if (chosenDoseAvailability > 0)//For Dose 1 or 2 selection
                             {
-                                stInfo = string.Format("Dose {0} is available in Center: {1}", (isVaccineDose1 ? 1 : 2), center.name);
+                                stInfo = string.Format($"{(isPrecautionDose ? "Precaution " : "")}Dose {(isVaccineDose1 ? 1 : 2)} is available in Center: {center.name}");
                                 logger.Info(stInfo);
 
                                 bool isPreferenceVaccine = UserDetails.UserPreference.IsPreferenceVaccine(session.vaccine);
@@ -580,14 +581,17 @@ namespace VaccineFinder
                                 else
                                 {
                                     stInfo = string.Format("Other Vaccine {0} is available in Center: {1}", session.vaccine, center.name);
-                                    ConsoleMethods.PrintProgress(stInfo);
                                     logger.Info(stInfo);
+
+                                    if (!(UserDetails.UserPreference.Dose > 1 || UserDetails.UserPreference.IsPrecautionDose))
+                                        ConsoleMethods.PrintProgress(stInfo);
                                 }
                             }
                             else
                             {
-                                stInfo = string.Format("Other Dose {0} is available in Center: {1}", (isVaccineDose1 ? 2 : 1), center.name);
-                                logger.Info(stInfo);
+                                //stInfo = string.Format("Other Dose {0} is available in Center: {1}", (isVaccineDose1 ? 2 : 1), center.name);
+                                //logger.Info(stInfo);
+
                                 //var details = string.Format(counter + ") Date: {0}, Name: {1}, Pin Code: {2}, Vaccine: {3}, Min Age: {4}, Available Capacity Dose1: {5}, Available Capacity Dose2: {6}, Address: {7}", session.date, center.name, pinCode, session.vaccine, session.min_age_limit, session.available_capacity_dose1, session.available_capacity_dose2, center.address);
                                 //otherDoseSlots.Append(details + "\n");
                             }
