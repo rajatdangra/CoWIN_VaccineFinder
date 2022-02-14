@@ -490,7 +490,7 @@ namespace VaccineFinder
             }
         }
 
-        public static void DownloadAppointmentSlip(string appointmentConfirmationNumber, string path, string phone)
+        public static void DownloadAppointmentSlip(string appointmentConfirmationNumber, string basePath, string fileName, string phone)
         {
             string stInfo = string.Empty;
             try
@@ -509,6 +509,9 @@ namespace VaccineFinder
 
                 if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
                 {
+                    if (!Directory.Exists(basePath))
+                        Directory.CreateDirectory(basePath);
+                    var path = Path.Combine(basePath, fileName);
                     File.WriteAllBytes(path, response.RawBytes);
                     stInfo = $"Appointment Slip Successfully Downloaded for Confirmation number: {appointmentConfirmationNumber}.\nSaved Path: {path}";
                     logger.Info(stInfo);

@@ -735,7 +735,8 @@ namespace VaccineFinder
                     soundThread.Start();
 
                     var fileName = "Co-WIN Appointment_No_" + appointmentConfirmationNumber + ".pdf";
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), fileName);
+                    var basePath = Path.Combine(Directory.GetCurrentDirectory(), "AppointmentSlip");
+                    var path = Path.Combine(basePath, fileName);
 
                     if (AppConfig.DownloadAppointmentSlip)
                     {
@@ -743,7 +744,7 @@ namespace VaccineFinder
                         var confirmation = Program.TakeConfirmation(confirmationMessage);
                         if (confirmation.ToLower() == "y")
                         {
-                            APIs.DownloadAppointmentSlip(appointmentConfirmationNumber, path, UserDetails.Phone);
+                            APIs.DownloadAppointmentSlip(appointmentConfirmationNumber, basePath, fileName, UserDetails.Phone);
                         }
                     }
 
