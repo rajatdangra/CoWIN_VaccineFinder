@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using VaccineFinder.Methods.ExtensionMethods;
 using VaccineFinder.Models;
 using VaccineFinder.Templates.EmailTemplates;
 using VaccineFinder.Templates.MessageTemplates;
@@ -719,7 +720,7 @@ namespace VaccineFinder
 
                     appointmentConfirmationNumber = response.appointment_confirmation_no;
 
-                    var bookingDetails = $"\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary IDs: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Is Precaution Dose: {UserDetails.UserPreference.IsPrecautionDose}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}";
+                    var bookingDetails = $"\t- Confirmation number: {response.appointment_confirmation_no}\n\t- Phone: {UserDetails.Phone}\n\t- Beneficiary IDs: {UserDetails.UserPreference.BeneficiaryIdsString}\n\t- Date: {(session.Date.IsDefault() ? "" : session.Date.ToString("dd-MM-yyyy"))}\n\t- Slot: {slot}\n\t- Dose: {UserDetails.UserPreference.Dose}\n\t- Vaccine: {session.Vaccine}\n\t- Is Precaution Dose: {UserDetails.UserPreference.IsPrecautionDose.ConvertToString()}\n\t- Center: {session.CenterName}\n\t- Address: {session.Address}";
                     var bookingDetailsCopy = string.Empty;
 
                     stInfo = "Vaccination slot has been booked Successfully!" + " - Confirmation number: " + response.appointment_confirmation_no;
