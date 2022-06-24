@@ -8,11 +8,11 @@ namespace VaccineFinder.Models
 {
     public class NotifierFactory
     {
+        private INotifier _notifier;
         public NotifierFactory(INotifier notifier)
         {
             _notifier = notifier;
         }
-        private INotifier _notifier;
 
         public void Notify(string message)
         {

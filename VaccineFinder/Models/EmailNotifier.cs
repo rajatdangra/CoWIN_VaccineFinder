@@ -19,7 +19,7 @@ namespace VaccineFinder.Models
         internal static string DeveloperName = PrivateData.DeveloperName;
         private static string FromEmail = PrivateData.FromEmail;
         private static string FromName = "Vaccine Finder";
-        private static string Password = PrivateData.MailPass;
+        private static string Password = PrivateData.AppPass/*.MailPass*/;
 
         public EmailNotifier(string subject, string mailIdsTo, string fullNameTo, List<string> files = null, bool isHTMLBody = false)
         {
